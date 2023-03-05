@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "287100018568",
+    "project_id": "care-vista-ver05",
+    "storage_bucket": "care-vista-ver05.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:287100018568:android:e5f197341b698b50efe43d",
+        "android_client_info": {
+          "package_name": "com.example.carevista_ver05"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "287100018568-u81jns2j8rr0nq3abpjblprlmrmofah5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.carevista_ver05",
+            "certificate_hash": "53c2f660139188e89b454b07213b4999c61e9251"
+          }
+        },
+        {
+          "client_id": "287100018568-9b87nhk6bitfvohbh6djeo9c1gi4gvmb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC89ZnKspsTWi5VS2XpwGs-5y_LeqaQ9yg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "287100018568-9b87nhk6bitfvohbh6djeo9c1gi4gvmb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

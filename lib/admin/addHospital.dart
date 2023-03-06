@@ -1,4 +1,5 @@
 import 'package:carevista_ver05/Service/database_service.dart';
+import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:humanitarian_icons/humanitarian_icons.dart';
@@ -1038,7 +1039,7 @@ class _AddHospitalState extends State<AddHospital> {
                         Container(
                             padding: const EdgeInsets.all(10),
                             width: double.infinity,
-                            height: 265,
+                            height: 249,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Theme.of(context).cardColor),
@@ -1048,51 +1049,113 @@ class _AddHospitalState extends State<AddHospital> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                      child: Text(
-                                    'Doctors Name & Specialist',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  )),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          'Doctors Name & Specialist',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5,
+                                        ),
+                                        Expanded(child: Container()),
+                                        IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                                color: Colors.redAccent,
+                                                Icons.remove_circle)),
+                                        IconButton(
+                                            color: Colors.green,
+                                            onPressed: () {},
+                                            icon: const Icon(Icons.add_circle))
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 10),
-                              Flexible(
-                                  child: TextFormFieldOvalWidget(
-                                      labelText: 'Distance',
-                                      onChange: (value) {
-                                        surroundDistance2 = value;
-                                      },
-                                      validator: (val) {
-                                        if (val!.isEmpty) {
-                                          return "Enter Distance";
-                                        } else {
-                                          return RegExp(
-                                                      r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                  .hasMatch(val)
-                                              ? "Please enter Distance"
-                                              : null;
-                                        }
-                                      },
-                                      icon: Icons.place_outlined)),
-                              const SizedBox(width: 5),
-                              Flexible(
-                                  child: TextFormFieldOvalWidget(
-                                      labelText: 'Time',
-                                      onChange: (value) {
-                                        surroundTime2 = value;
-                                      },
-                                      validator: (val) {
-                                        if (val!.isEmpty) {
-                                          return "Enter Time";
-                                        } else {
-                                          return RegExp(
-                                                      r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                  .hasMatch(val)
-                                              ? "Please enter Time"
-                                              : null;
-                                        }
-                                      },
-                                      icon: Icons.timer_outlined))
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                width: double.infinity,
+                                height: 170,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: MyApp.themeNotifier.value ==
+                                          ThemeMode.light
+                                      ? Colors.white
+                                      : const Color(0xFFFB4C5B),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Flexible(
+                                      child: Row(
+                                        children: [
+                                          Flexible(
+                                              child: TextFormFieldOvalWidget(
+                                                  labelText: 'Doctor Name',
+                                                  onChange: (value) {
+                                                    surroundDistance2 = value;
+                                                  },
+                                                  validator: (val) {
+                                                    if (val!.isEmpty) {
+                                                      return "Enter Doctor Name";
+                                                    } else {
+                                                      return RegExp(
+                                                                  r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
+                                                              .hasMatch(val)
+                                                          ? "Please enter Doctor Name"
+                                                          : null;
+                                                    }
+                                                  },
+                                                  icon: LineAwesomeIcons
+                                                      .stethoscope)),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          Flexible(
+                                              child: TextFormFieldOvalWidget(
+                                                  labelText: 'Specialist',
+                                                  onChange: (value) {
+                                                    surroundTime2 = value;
+                                                  },
+                                                  validator: (val) {
+                                                    if (val!.isEmpty) {
+                                                      return "Enter Specialist";
+                                                    } else {
+                                                      return RegExp(
+                                                                  r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
+                                                              .hasMatch(val)
+                                                          ? "Please enter Specialist"
+                                                          : null;
+                                                    }
+                                                  },
+                                                  icon: Icons.folder_special)),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          Flexible(
+                                              child: TextFormFieldOvalWidget(
+                                                  labelText: 'Doctor Photo',
+                                                  onChange: (value) {
+                                                    surroundTime2 = value;
+                                                  },
+                                                  validator: (val) {},
+                                                  icon: Icons.image)),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
                             ])),
                         const SizedBox(height: 10),
                         Container(

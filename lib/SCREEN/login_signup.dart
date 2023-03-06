@@ -29,10 +29,9 @@ class LoginSignUpScreen extends StatelessWidget {
                         style: TextStyle(fontSize: 40, fontFamily: 'brandon_H'),
                       ),
                       Text(
-                        'Personalized Healthcare Assistant for all your health needs including services @home.',
-                        style: Theme.of(context).textTheme.bodyText1,
-                        textAlign: TextAlign.center,
-                      ),
+                          'Personalized Healthcare Assistant for all your health needs including services @home.',
+                          style: Theme.of(context).textTheme.bodyText1,
+                          textAlign: TextAlign.center),
                     ],
                   ),
                   Row(

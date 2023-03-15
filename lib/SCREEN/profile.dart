@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carevista_ver05/SCREEN/editprofile.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
 import 'package:carevista_ver05/SCREEN/profile/additionaldetail.dart';
@@ -14,6 +16,7 @@ class ProfilePage extends StatefulWidget {
   String userName;
   String email;
   String phoneNo;
+
   ProfilePage({
     Key? key,
     required this.phoneNo,
@@ -24,6 +27,8 @@ class ProfilePage extends StatefulWidget {
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
+
+File? image;
 
 class _ProfilePageState extends State<ProfilePage> {
   AuthService authService = AuthService();
@@ -77,10 +82,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       SizedBox(
                         width: 150,
                         height: 150,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child:
-                                Image.asset('Assets/images/profile-user.jpg')),
+                        child: Image == null
+                            ? CircleAvatar(
+                                backgroundImage: FileImage(image!),
+                                radius: 50,
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.asset(
+                                    'Assets/images/profile-user.jpg'),
+                              ),
                       ),
                       Positioned(
                           bottom: 0,
@@ -91,9 +102,19 @@ class _ProfilePageState extends State<ProfilePage> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
                                 color: Theme.of(context).backgroundColor),
-                            child: const Icon(
-                              LineAwesomeIcons.alternate_pencil,
-                              color: Colors.white,
+                            child: IconButton(
+                              onPressed: () {
+                                nextScreen(
+                                    context,
+                                    EditProfile(
+                                        phoneNo: widget.phoneNo,
+                                        email: widget.email,
+                                        userName: widget.userName));
+                              },
+                              icon: const Icon(
+                                LineAwesomeIcons.alternate_pencil,
+                                color: Colors.white,
+                              ),
                             ),
                           ))
                     ],
@@ -115,9 +136,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         nextScreen(
                             context,
                             EditProfile(
-                                phoneNo: widget.phoneNo,
-                                email: widget.email,
-                                userName: widget.userName));
+                              phoneNo: widget.phoneNo,
+                              email: widget.email,
+                              userName: widget.userName,
+                            ));
                       },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 13),

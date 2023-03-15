@@ -288,7 +288,7 @@ class _SignupScreenState extends State<SignupScreen> {
           await HelperFunction.saveUserPhoneSF(phoneumber);
           await HelperFunction.saveUserAdkeyFromSF(adKey);
           // ignore: use_build_context_synchronously
-          nextScreenReplace(context, const Dashboard());
+          nextScreenReplace(context, Dashboard());
         } else {
           setState(() {
             showSnackbar(context, Colors.red, value);

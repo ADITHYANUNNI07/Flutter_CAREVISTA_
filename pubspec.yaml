@@ -54,6 +54,9 @@ dependencies:
   awesome_snackbar_content: ^0.1.1
   email_auth: ^1.0.0
   email_otp: ^1.0.4
+  firebase_storage: ^11.0.15
+  pinput: ^2.2.21
+  fluttertoast: ^8.2.1
 
 
 dev_dependencies:

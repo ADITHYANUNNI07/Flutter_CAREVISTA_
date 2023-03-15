@@ -3,7 +3,6 @@ import 'package:carevista_ver05/Helper/helper_function.dart';
 import 'package:carevista_ver05/SCREEN/dashboard.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
 import 'package:carevista_ver05/SCREEN/welcome.dart';
-import 'package:carevista_ver05/Service/provider_phoneotp.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -99,8 +98,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
     // ignore: use_build_context_synchronously
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) =>
-            _isSignedIn ? const Dashboard() : const ScreenWelcome(),
+        builder: (context) => _isSignedIn ? Dashboard() : const ScreenWelcome(),
       ),
     );
   }

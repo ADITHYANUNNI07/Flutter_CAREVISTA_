@@ -1,15 +1,18 @@
 import 'package:carevista_ver05/Helper/helper_function.dart';
 import 'package:carevista_ver05/SCREEN/dashboard.dart';
 import 'package:carevista_ver05/SCREEN/forgotpass.dart';
+import 'package:carevista_ver05/SCREEN/login_with_phone.dart';
 import 'package:carevista_ver05/SCREEN/send_otp.dart';
 import 'package:carevista_ver05/SCREEN/signup.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Service/database_service.dart';
+
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
@@ -200,7 +203,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   Navigator.of(context).push(
                                                       MaterialPageRoute(
                                                           builder: (context) =>
-                                                              const ForgotPwdPhone()));
+                                                              LoginWithPhone()
+                                                          //const ForgotPwdPhone()
+                                                          ));
                                                 },
                                                 child: Container(
                                                   padding:
@@ -351,7 +356,8 @@ class _LoginScreenState extends State<LoginScreen> {
           await HelperFunction.saveUserPhoneSF(snapshot.docs[0]['phoneNo']);
           await HelperFunction.saveUserAdkeyFromSF(snapshot.docs[0]['AdKey']);
           // ignore: use_build_context_synchronously
-          nextScreenReplace(context, const Dashboard());
+          //provide_phoneotp.dart...update..profile
+          nextScreenReplace(context, Dashboard());
         } else {
           setState(() {
             showSnackbar(context, Colors.red, value);

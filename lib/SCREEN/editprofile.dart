@@ -1,15 +1,19 @@
+import 'dart:io';
+
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:carevista_ver05/admin/addHospital.dart';
-import 'package:dob_input_field/dob_input_field.dart';
+import 'package:carevista_ver05/Service/database_service.dart';
+import 'package:carevista_ver05/utils/utils.dart';
+import 'package:carevista_ver05/widget/widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class EditProfile extends StatefulWidget {
   String userName;
   String email;
   String phoneNo;
+
   EditProfile({
     super.key,
     required this.phoneNo,
@@ -23,16 +27,18 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   final fromKey = GlobalKey<FormState>();
-
+  final dateController = TextEditingController();
   String fullname = "";
 
-  String password = "";
-
   String phone = "";
-
+  String uid = "";
   String email = "";
   String _gender = "";
   String gender = "";
+  File? image;
+  String dob = "";
+  bool imagebool = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -68,13 +74,23 @@ class _EditProfileState extends State<EditProfile> {
                   children: [
                     Stack(
                       children: [
-                        SizedBox(
-                          width: 150,
-                          height: 150,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Image.asset(
-                                  'Assets/images/profile-user.jpg')),
+                        InkWell(
+                          onTap: () {
+                            SelectImage();
+                          },
+                          child: SizedBox(
+                              width: 150,
+                              height: 150,
+                              child: imagebool == false
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: Image.asset(
+                                          'Assets/images/profile-user.jpg'),
+                                    )
+                                  : CircleAvatar(
+                                      backgroundImage: FileImage(image!),
+                                      radius: 50,
+                                    )),
                         ),
                         Positioned(
                             bottom: 0,
@@ -201,7 +217,7 @@ class _EditProfileState extends State<EditProfile> {
                                                 onChanged: (value) {
                                                   setState(() {
                                                     _gender = value!;
-                                                    gender = _gender;
+                                                    gender = "Male";
                                                   });
                                                 },
                                               )),
@@ -214,6 +230,7 @@ class _EditProfileState extends State<EditProfile> {
                                                 onChanged: (value) {
                                                   setState(() {
                                                     _gender = value!;
+                                                    gender = "Female";
                                                   });
                                                 },
                                               )),
@@ -226,6 +243,7 @@ class _EditProfileState extends State<EditProfile> {
                                                 onChanged: (value) {
                                                   setState(() {
                                                     _gender = value!;
+                                                    gender = "Other";
                                                   });
                                                 },
                                               )),
@@ -237,14 +255,26 @@ class _EditProfileState extends State<EditProfile> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            DOBInputField(
-                                inputDecoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.calendar_month),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(100)),
-                                ),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime.now()),
+                            TextField(
+                              readOnly: true,
+                              controller: dateController,
+                              decoration: InputDecoration(
+                                hintText: 'Pick your Date',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(100)),
+                              ),
+                              onTap: () async {
+                                var date = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(1900),
+                                    lastDate: DateTime(2100));
+                                if (date != null) {
+                                  dateController.text =
+                                      DateFormat('MM/dd/yyyy').format(date);
+                                }
+                              },
+                            ),
                             const SizedBox(height: 5),
                             SizedBox(
                               width: double.infinity,
@@ -259,6 +289,7 @@ class _EditProfileState extends State<EditProfile> {
                                         Theme.of(context).backgroundColor,
                                   ),
                                   onPressed: () {
+                                    print(dateController.text);
                                     if (gender.isEmpty) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
@@ -290,8 +321,43 @@ class _EditProfileState extends State<EditProfile> {
         ));
   }
 
+  void SelectImage() async {
+    image = await pickImage(context);
+    setState(() {
+      imagebool = true;
+      print(image);
+    });
+  }
+
   updateProfile() async {
-    if (fromKey.currentState!.validate()) {}
+    print(email);
+    if (phone.isEmpty) {
+      phone = widget.phoneNo;
+    }
+    if (email.isEmpty) {
+      email = widget.email;
+    }
+    if (fullname.isEmpty) {
+      fullname = widget.userName;
+    }
+    String dob = dateController.text;
+    if (fromKey.currentState!.validate()) {
+      //print(widget.password);
+      String userid = FirebaseAuth.instance.currentUser!.uid;
+      print(userid);
+      // uploading image to firebase storage.UserCredential userCredential = await auth.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: '123456',
+      ); // Upload image to Firebase Storage
+
+      await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+          .updateUserData(fullname, email, phone, gender, dob);
+      // ignore: use_build_context_synchronously
+      newshowSnackbar(context, 'Update Profile',
+          'your profile update successfully', ContentType.success);
+    }
   }
 }
 

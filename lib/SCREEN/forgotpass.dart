@@ -3,8 +3,9 @@ import 'dart:isolate';
 import 'dart:math';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:carevista_ver05/SCREEN/otpverification.dart';
+
 import 'package:carevista_ver05/Service/database_service.dart';
+
 import 'package:carevista_ver05/utils/utils.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +14,7 @@ import 'package:email_auth/email_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -326,23 +328,7 @@ class _ForgotPwdPhoneState extends State<ForgotPwdPhone> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            var Phonenumber = "+91$pNumber";
-                            print(Phonenumber);
-                            FirebaseFirestore.instance
-                                .collection("Users")
-                                .where("phoneNo", isEqualTo: Phonenumber)
-                                .get()
-                                .then((value) => {
-                                      print(value.docs.length),
-                                      if (value.docs.length == 0)
-                                        {
-                                          print("its new user"),
-                                        }
-                                      else
-                                        {
-                                          print("its old user"),
-                                        }
-                                    });
+                            sendPhoneNumber();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
@@ -363,88 +349,14 @@ class _ForgotPwdPhoneState extends State<ForgotPwdPhone> {
     );
   }
 
-  /*Future checkPhoneNo(phonenumber) async {
-    FirebaseFirestore.instance
-        .collection("users")
-        .where("phoneNo", isEqualTo: phonenumber)
-        .get()
-        .then((value) {
-      if (value != null) {
-        return true;
-        setState(() {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text(
-                'This number is found.',
-                style: TextStyle(fontSize: 14),
-              ),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 5),
-              action: SnackBarAction(
-                label: "OK",
-                onPressed: () {},
-                textColor: Colors.white,
-              ),
-            ),
-          );
-        });
-      }
-    });
-  }*/
-
-  /*void phoneVali() {
+  Future<void> phoneVali() async {
     var Phonenumber = "+91$pNumber";
-    print(Phonenumber);
-    FirebaseFirestore.instance
-        .collection("Users")
-        .where("phone", isEqualTo: Phonenumber)
-        .get()
-        .then((value) => {
-              print(value.docs.length),
-              if (value.docs.length == 0)
-                {
-                  print("its new user"),
-                }
-            });
-    /*checkPhoneNo(
-        Phonenumber); .then((value) => value > 0
-            ? //setState(() {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text(
-                    'This number is found.',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  backgroundColor: Colors.red,
-                  duration: const Duration(seconds: 5),
-                  action: SnackBarAction(
-                    label: "OK",
-                    onPressed: () {},
-                    textColor: Colors.white,
-                  ),
-                ),
-              )
-            // })
-            : //result = false
-            //setState(() {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text(
-                    'Sorry this number is not found.',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  backgroundColor: Colors.red,
-                  duration: const Duration(seconds: 5),
-                  action: SnackBarAction(
-                    label: "OK",
-                    onPressed: () {},
-                    textColor: Colors.white,
-                  ),
-                ),
-              )
-        //}),
-        );*/
-    /*if (result == true) {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .where("phoneNo", isEqualTo: Phonenumber)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      print('Phone number found');
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -463,6 +375,7 @@ class _ForgotPwdPhoneState extends State<ForgotPwdPhone> {
         );
       });
     } else {
+      print('Phone number not found');
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -480,6 +393,8 @@ class _ForgotPwdPhoneState extends State<ForgotPwdPhone> {
           ),
         );
       });
-    }*/
-  }*/
+    }
+  }
+
+  void sendPhoneNumber() {}
 }

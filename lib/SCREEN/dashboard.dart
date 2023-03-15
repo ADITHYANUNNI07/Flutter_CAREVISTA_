@@ -16,7 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  Dashboard({
+    super.key,
+  });
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -173,7 +175,10 @@ class _DashboardState extends State<Dashboard> {
                         title: "Add Hospital",
                         icon: LineAwesomeIcons.hospital_symbol,
                         onPress: () {
-                          nextScreen(context, AddHospital());
+                          nextScreen(
+                              context,
+                              AddHospital(
+                                  username: userName, userphoneno: phoneNo));
                         },
                       )
                     : const SizedBox(),

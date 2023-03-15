@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 
 void nextScreen(context, page) {
@@ -33,6 +36,18 @@ void showSnackbar(context, color, message) {
       ),
     ),
   );
+}
+
+void newshowSnackbar(context, title, message, contentType) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      behavior: SnackBarBehavior.floating,
+      content: AwesomeSnackbarContent(
+          inMaterialBanner: true,
+          title: title,
+          message: message,
+          contentType: contentType)));
 }
 
 class FormWiget extends StatelessWidget {
@@ -75,7 +90,7 @@ class TextFormFieldOvalWidget extends StatelessWidget {
   const TextFormFieldOvalWidget({
     Key? key,
     required this.labelText,
-    required this.onChange,
+    this.onChange,
     required this.validator,
     required this.icon,
   }) : super(key: key);
@@ -120,6 +135,32 @@ class TextFormFieldAreaWidget extends StatelessWidget {
       ),
       onChanged: onChange,
       validator: validator,
+    );
+  }
+}
+
+class TextFormFieldOvalControllerWidget extends StatelessWidget {
+  const TextFormFieldOvalControllerWidget({
+    Key? key,
+    required this.labelText,
+    required this.validator,
+    required this.icon,
+    required this.controller,
+  }) : super(key: key);
+  final String labelText;
+  final String? Function(String?)? validator;
+  final IconData icon;
+  final TextEditingController controller;
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon),
+        labelText: labelText,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(100)),
+      ),
+      validator: validator,
+      controller: controller,
     );
   }
 }

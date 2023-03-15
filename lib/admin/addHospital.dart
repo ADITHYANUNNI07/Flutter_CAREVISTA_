@@ -1,8 +1,16 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carevista_ver05/Service/database_service.dart';
 import 'package:carevista_ver05/main.dart';
+import 'package:carevista_ver05/utils/utils.dart';
 import 'package:carevista_ver05/widget/widget.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:humanitarian_icons/humanitarian_icons.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 enum DistrictEnum {
@@ -23,13 +31,17 @@ enum DistrictEnum {
 }
 
 class AddHospital extends StatefulWidget {
-  AddHospital({super.key});
-
+  AddHospital({super.key, required this.username, required this.userphoneno});
+  String username;
+  String userphoneno;
   @override
   State<AddHospital> createState() => _AddHospitalState();
 }
 
 class _AddHospitalState extends State<AddHospital> {
+  final List<TextEditingController> _DoctorName = [];
+  final List<TextEditingController> _Specialist = [];
+  final List<TextEditingController> _DoctorPhoto = [];
   final fromKey = GlobalKey<FormState>();
   TimeOfDay pickedTime = TimeOfDay(hour: 8, minute: 30);
   String hospitalname = "";
@@ -56,6 +68,7 @@ class _AddHospitalState extends State<AddHospital> {
   String _time = "";
   String gp = "";
   String _gp = "";
+  String _emergency = "";
   String type = "";
   String affUniversity = "";
   String emergency = "";
@@ -66,11 +79,52 @@ class _AddHospitalState extends State<AddHospital> {
   String surround2 = "";
   String surroundDistance2 = "";
   String surroundTime2 = "";
+  double count = -1;
+  String logoUrl = "";
+  String image1Url = "";
+  String image2Url = "";
+  String image3Url = "";
+  String image4Url = "";
+  String image5Url = "";
+  String nearhospital1 = '';
+  String nearhospital2 = '';
+  String nearhospital3 = '';
+  bool imagebool = false;
+  bool imagebool1 = false;
+  bool imagebool2 = false;
+  bool imagebool3 = false;
+  bool imagebool4 = false;
+  bool imagebool5 = false;
+  File? hospitalimage1;
+  File? hospitalimage2;
+  File? hospitalimage3;
+  File? hospitalimage4;
+  File? hospitalimage5;
+  File? file;
+  String services = '';
   TextEditingController timeinput = TextEditingController();
   TextEditingController timeinputlast = TextEditingController();
   void initState() {
     timeinput.text = ""; //set the initial value of text field
     super.initState();
+  }
+
+  addDoctorDetails() {
+    setState(() {
+      _DoctorName.add(TextEditingController());
+      _Specialist.add(TextEditingController());
+      _DoctorPhoto.add(TextEditingController());
+      count++;
+    });
+  }
+
+  removeDoctorDetails(i) {
+    setState(() {
+      _DoctorName.removeAt(i);
+      _Specialist.removeAt(i);
+      _DoctorPhoto.removeAt(i);
+      count--;
+    });
   }
 
   @override
@@ -110,9 +164,16 @@ class _AddHospitalState extends State<AddHospital> {
                     SizedBox(
                       width: 150,
                       height: 150,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: Image.asset('Assets/images/profile-user.jpg')),
+                      child: imagebool == false
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.asset(
+                                  'Assets/images/Hospital building-cuate.jpg'),
+                            )
+                          : CircleAvatar(
+                              backgroundImage: FileImage(file!),
+                              radius: 50,
+                            ),
                     ),
                     Positioned(
                         bottom: 0,
@@ -123,10 +184,61 @@ class _AddHospitalState extends State<AddHospital> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(100),
                               color: Theme.of(context).backgroundColor),
-                          child: const Icon(
-                            LineAwesomeIcons.camera,
-                            color: Colors.white,
-                          ),
+                          child: IconButton(
+                              onPressed: () async {
+                                if (hospitalname.isEmpty) {
+                                  newshowSnackbar(
+                                      context,
+                                      'Warning',
+                                      'please fill the hospital Name',
+                                      ContentType.warning);
+                                } else {
+                                  file = await pickImage(context);
+                                  setState(() {
+                                    imagebool = true;
+                                  });
+                                  if (file == null) return;
+
+                                  Reference referenceRoot =
+                                      FirebaseStorage.instance.ref();
+                                  Reference referenceDirImages =
+                                      referenceRoot.child(
+                                          'hospital images/$hospitalname/logo');
+
+                                  //Create a reference for the image to be stored
+                                  Reference referenceImageToUpload =
+                                      referenceDirImages
+                                          .child('${hospitalname}logo');
+
+                                  //Handle errors/success
+                                  try {
+                                    //Store the file
+                                    await referenceImageToUpload
+                                        .putFile(File(file!.path));
+                                    logoUrl = await referenceImageToUpload
+                                        .getDownloadURL();
+                                  } catch (error) {
+                                    //Some error occurred
+                                  }
+                                  if (logoUrl.isEmpty) {
+                                    newshowSnackbar(
+                                        context,
+                                        'Failed',
+                                        'Please try again...That logo is not upload..',
+                                        ContentType.failure);
+                                  } else {
+                                    newshowSnackbar(
+                                        context,
+                                        'Upload Successfully',
+                                        'Hospital Logo Upload Successfully',
+                                        ContentType.success);
+                                  }
+                                }
+                              },
+                              icon: const Icon(
+                                LineAwesomeIcons.camera,
+                                color: Colors.white,
+                              )),
                         ))
                   ],
                 ),
@@ -294,10 +406,10 @@ class _AddHospitalState extends State<AddHospital> {
                                                 time: "Yes",
                                                 radioBtn: Radio(
                                                   value: 'yes',
-                                                  groupValue: _gp,
+                                                  groupValue: _emergency,
                                                   onChanged: (value) {
                                                     setState(() {
-                                                      _gp = value!;
+                                                      _emergency = value!;
                                                       emergency = "Yes";
                                                     });
                                                   },
@@ -307,10 +419,10 @@ class _AddHospitalState extends State<AddHospital> {
                                                 time: "NO",
                                                 radioBtn: Radio(
                                                   value: 'No',
-                                                  groupValue: _gp,
+                                                  groupValue: _emergency,
                                                   onChanged: (value) {
                                                     setState(() {
-                                                      _gp = value!;
+                                                      _emergency = value!;
                                                       emergency = "No";
                                                     });
                                                   },
@@ -560,11 +672,7 @@ class _AddHospitalState extends State<AddHospital> {
                               if (val!.isEmpty) {
                                 return "Enter hospital Address";
                               } else {
-                                return RegExp(
-                                            r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                        .hasMatch(val)
-                                    ? "Please enter hospital Address"
-                                    : null;
+                                return null;
                               }
                             },
                             icon: LineAwesomeIcons.address_card),
@@ -578,11 +686,7 @@ class _AddHospitalState extends State<AddHospital> {
                               if (val!.isEmpty) {
                                 return "Enter one hospital Highlight";
                               } else {
-                                return RegExp(
-                                            r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                        .hasMatch(val)
-                                    ? "Enter one hospital Highlight"
-                                    : null;
+                                return null;
                               }
                             },
                             icon: Icons.highlight_alt),
@@ -863,7 +967,7 @@ class _AddHospitalState extends State<AddHospital> {
                                                   addTime = true;
                                                 });
                                               },
-                                              icon: Icon(
+                                              icon: const Icon(
                                                 Icons.add_circle,
                                                 color: Colors.green,
                                               )),
@@ -879,7 +983,7 @@ class _AddHospitalState extends State<AddHospital> {
                         Container(
                             padding: const EdgeInsets.all(10),
                             width: double.infinity,
-                            height: 341,
+                            height: 420,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Theme.of(context).cardColor),
@@ -936,11 +1040,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             if (val!.isEmpty) {
                                               return "Enter Distance";
                                             } else {
-                                              return RegExp(
-                                                          r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                      .hasMatch(val)
-                                                  ? "Please enter Distance"
-                                                  : null;
+                                              return null;
                                             }
                                           },
                                           icon: Icons.place_outlined)),
@@ -955,17 +1055,13 @@ class _AddHospitalState extends State<AddHospital> {
                                             if (val!.isEmpty) {
                                               return "Enter time";
                                             } else {
-                                              return RegExp(
-                                                          r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                      .hasMatch(val)
-                                                  ? "Please enter time"
-                                                  : null;
+                                              return null;
                                             }
                                           },
                                           icon: Icons.timer_outlined))
                                 ],
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 25),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -980,11 +1076,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             if (val!.isEmpty) {
                                               return "Enter Surroundings Place";
                                             } else {
-                                              return RegExp(
-                                                          r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                      .hasMatch(val)
-                                                  ? "Please enter Surroundings Place"
-                                                  : null;
+                                              return null;
                                             }
                                           },
                                           icon: Icons.place_outlined))
@@ -1005,11 +1097,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             if (val!.isEmpty) {
                                               return "Enter Distance";
                                             } else {
-                                              return RegExp(
-                                                          r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                      .hasMatch(val)
-                                                  ? "Please enter Distance"
-                                                  : null;
+                                              return null;
                                             }
                                           },
                                           icon: Icons.place_outlined)),
@@ -1024,11 +1112,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             if (val!.isEmpty) {
                                               return "Enter Time";
                                             } else {
-                                              return RegExp(
-                                                          r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                      .hasMatch(val)
-                                                  ? "Please enter Time"
-                                                  : null;
+                                              return null;
                                             }
                                           },
                                           icon: Icons.timer_outlined))
@@ -1039,7 +1123,7 @@ class _AddHospitalState extends State<AddHospital> {
                         Container(
                             padding: const EdgeInsets.all(10),
                             width: double.infinity,
-                            height: 249,
+                            height: 320 + (230 * count),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Theme.of(context).cardColor),
@@ -1057,15 +1141,11 @@ class _AddHospitalState extends State<AddHospital> {
                                               .textTheme
                                               .headline5,
                                         ),
-                                        Expanded(child: Container()),
-                                        IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                                color: Colors.redAccent,
-                                                Icons.remove_circle)),
                                         IconButton(
                                             color: Colors.green,
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              addDoctorDetails();
+                                            },
                                             icon: const Icon(Icons.add_circle))
                                       ],
                                     ),
@@ -1073,95 +1153,108 @@ class _AddHospitalState extends State<AddHospital> {
                                 ],
                               ),
                               const SizedBox(height: 10),
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                width: double.infinity,
-                                height: 170,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: MyApp.themeNotifier.value ==
-                                          ThemeMode.light
-                                      ? Colors.white
-                                      : const Color(0xFFFB4C5B),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                              for (int i = 0; i < _DoctorName.length; i++)
+                                Column(
                                   children: [
-                                    Flexible(
-                                      child: Row(
-                                        children: [
-                                          Flexible(
-                                              child: TextFormFieldOvalWidget(
-                                                  labelText: 'Doctor Name',
-                                                  onChange: (value) {
-                                                    surroundDistance2 = value;
-                                                  },
-                                                  validator: (val) {
-                                                    if (val!.isEmpty) {
-                                                      return "Enter Doctor Name";
-                                                    } else {
-                                                      return RegExp(
-                                                                  r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                              .hasMatch(val)
-                                                          ? "Please enter Doctor Name"
-                                                          : null;
-                                                    }
-                                                  },
-                                                  icon: LineAwesomeIcons
-                                                      .stethoscope)),
-                                        ],
+                                    const SizedBox(height: 10),
+                                    Container(
+                                      padding: const EdgeInsets.all(10),
+                                      width: double.infinity,
+                                      height: 220,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: MyApp.themeNotifier.value ==
+                                                ThemeMode.light
+                                            ? Colors.white
+                                            : Colors.black45,
                                       ),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Flexible(
                                       child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           Flexible(
-                                              child: TextFormFieldOvalWidget(
-                                                  labelText: 'Specialist',
-                                                  onChange: (value) {
-                                                    surroundTime2 = value;
+                                              child: Row(
+                                            children: [
+                                              Expanded(child: Container()),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    removeDoctorDetails(i);
                                                   },
-                                                  validator: (val) {
-                                                    if (val!.isEmpty) {
-                                                      return "Enter Specialist";
-                                                    } else {
-                                                      return RegExp(
-                                                                  r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                              .hasMatch(val)
-                                                          ? "Please enter Specialist"
-                                                          : null;
-                                                    }
-                                                  },
-                                                  icon: Icons.folder_special)),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Flexible(
-                                      child: Column(
-                                        children: [
+                                                  icon: const Icon(
+                                                      color: Colors.redAccent,
+                                                      Icons.remove_circle)),
+                                            ],
+                                          )),
                                           Flexible(
-                                              child: TextFormFieldOvalWidget(
-                                                  labelText: 'Doctor Photo',
-                                                  onChange: (value) {
-                                                    surroundTime2 = value;
-                                                  },
-                                                  validator: (val) {},
-                                                  icon: Icons.image)),
+                                            child: Row(
+                                              children: [
+                                                Flexible(
+                                                    child:
+                                                        TextFormFieldOvalControllerWidget(
+                                                            labelText:
+                                                                'Doctor Name',
+                                                            controller:
+                                                                _DoctorName[i],
+                                                            validator: (val) {
+                                                              if (val!
+                                                                  .isEmpty) {
+                                                                return "Enter Doctor Name";
+                                                              } else {
+                                                                return RegExp(
+                                                                            r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
+                                                                        .hasMatch(
+                                                                            val)
+                                                                    ? "Please enter Doctor Name"
+                                                                    : null;
+                                                              }
+                                                            },
+                                                            icon: LineAwesomeIcons
+                                                                .stethoscope)),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Flexible(
+                                            child: Column(
+                                              children: [
+                                                Flexible(
+                                                    child:
+                                                        TextFormFieldOvalControllerWidget(
+                                                            controller:
+                                                                _Specialist[i],
+                                                            labelText:
+                                                                'Specialist',
+                                                            validator: (val) {
+                                                              if (val!
+                                                                  .isEmpty) {
+                                                                return "Enter Specialist";
+                                                              } else {
+                                                                return RegExp(
+                                                                            r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
+                                                                        .hasMatch(
+                                                                            val)
+                                                                    ? "Please enter Specialist"
+                                                                    : null;
+                                                              }
+                                                            },
+                                                            icon: Icons
+                                                                .folder_special)),
+                                              ],
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
                                   ],
                                 ),
-                              )
                             ])),
                         const SizedBox(height: 10),
                         Container(
                             padding: const EdgeInsets.all(10),
                             width: double.infinity,
-                            height: 265,
+                            height: 327,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Theme.of(context).cardColor),
@@ -1187,7 +1280,7 @@ class _AddHospitalState extends State<AddHospital> {
                                       child: TextFormFieldOvalWidget(
                                           labelText: 'Hospital 1',
                                           onChange: (value) {
-                                            surround1 = value;
+                                            nearhospital1 = value;
                                           },
                                           validator: (val) {
                                             if (val!.isEmpty) {
@@ -1212,7 +1305,7 @@ class _AddHospitalState extends State<AddHospital> {
                                       child: TextFormFieldOvalWidget(
                                           labelText: 'Hospital 2',
                                           onChange: (value) {
-                                            surround2 = value;
+                                            nearhospital2 = value;
                                           },
                                           validator: (val) {
                                             if (val!.isEmpty) {
@@ -1237,7 +1330,7 @@ class _AddHospitalState extends State<AddHospital> {
                                       child: TextFormFieldOvalWidget(
                                           labelText: 'Hospital 3',
                                           onChange: (value) {
-                                            surround2 = value;
+                                            nearhospital3 = value;
                                           },
                                           validator: (val) {
                                             if (val!.isEmpty) {
@@ -1306,6 +1399,935 @@ class _AddHospitalState extends State<AddHospital> {
                               }
                             },
                             icon: Icons.view_compact_alt_outlined),
+                        const SizedBox(height: 10),
+                        TextFormFieldAreaWidget(
+                            labelText: "Services",
+                            onChange: (value) {
+                              services = value;
+                            },
+                            validator: (p0) {
+                              if (p0!.isEmpty) {
+                                return 'Please  Enter Services ';
+                              } else {
+                                return null;
+                              }
+                            },
+                            icon: HumanitarianIcons.services_and_tools),
+                        const SizedBox(height: 15),
+                        const SizedBox(height: 10),
+                        Container(
+                            padding: const EdgeInsets.all(10),
+                            width: double.infinity,
+                            height: 620,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Theme.of(context).cardColor),
+                            child: Column(children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                      child: Text(
+                                    'Upload Hospital Images',
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  )),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 10),
+                                        Container(
+                                          padding: const EdgeInsets.all(10),
+                                          width: double.infinity,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: MyApp.themeNotifier.value ==
+                                                    ThemeMode.light
+                                                ? Colors.white
+                                                : Colors.black87,
+                                          ),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                child: SizedBox(
+                                                  width: 100,
+                                                  height: 100,
+                                                  child: imagebool1 == false
+                                                      ? ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      100),
+                                                          child: const Icon(
+                                                            Icons.photo,
+                                                          ))
+                                                      : CircleAvatar(
+                                                          backgroundImage:
+                                                              FileImage(
+                                                                  hospitalimage1!),
+                                                          radius: 50,
+                                                        ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  shape: const StadiumBorder(),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 13,
+                                                      horizontal: 22),
+                                                  foregroundColor: Colors.white,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .backgroundColor,
+                                                ),
+                                                onPressed: () async {
+                                                  hospitalimage1 =
+                                                      await pickImage(context);
+                                                  setState(() {
+                                                    imagebool1 = true;
+                                                  });
+                                                },
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const Icon(Icons.photo),
+                                                    Text(
+                                                      'Select Image',
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(width: 1),
+                                              ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    side: BorderSide.none,
+                                                    shape: const CircleBorder(),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 10),
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    backgroundColor:
+                                                        Theme.of(context)
+                                                            .backgroundColor,
+                                                  ),
+                                                  onPressed: () async {
+                                                    if (hospitalname.isEmpty) {
+                                                      newshowSnackbar(
+                                                          context,
+                                                          'Warning',
+                                                          'please fill the hospital Name',
+                                                          ContentType.warning);
+                                                    } else {
+                                                      if (imagebool1 == true) {
+                                                        if (hospitalimage1 ==
+                                                            null) return;
+
+                                                        Reference
+                                                            referenceRoot =
+                                                            FirebaseStorage
+                                                                .instance
+                                                                .ref();
+                                                        Reference
+                                                            referenceDirImages =
+                                                            referenceRoot.child(
+                                                                'hospital images/$hospitalname/photos');
+
+                                                        //Create a reference for the image to be stored
+                                                        Reference
+                                                            referenceImageToUpload =
+                                                            referenceDirImages
+                                                                .child(
+                                                                    '${hospitalname}image1');
+
+                                                        //Handle errors/success
+                                                        try {
+                                                          //Store the file
+                                                          await referenceImageToUpload
+                                                              .putFile(File(
+                                                                  hospitalimage1!
+                                                                      .path));
+                                                          image1Url =
+                                                              await referenceImageToUpload
+                                                                  .getDownloadURL();
+                                                        } catch (error) {
+                                                          //Some error occurred
+                                                        }
+                                                        if (image1Url.isEmpty) {
+                                                          newshowSnackbar(
+                                                              context,
+                                                              'Failed',
+                                                              'Please try again...That image 1 is not upload..',
+                                                              ContentType
+                                                                  .failure);
+                                                        } else {
+                                                          newshowSnackbar(
+                                                              context,
+                                                              'Upload Successfully',
+                                                              'Hospital image 1 Upload Successfully',
+                                                              ContentType
+                                                                  .success);
+                                                        }
+                                                      } else {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Warning',
+                                                            'please select image',
+                                                            ContentType
+                                                                .warning);
+                                                      }
+                                                    }
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.cloud_upload,
+                                                    size: 30,
+                                                  )),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 10),
+                                        Container(
+                                          padding: const EdgeInsets.all(10),
+                                          width: double.infinity,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: MyApp.themeNotifier.value ==
+                                                    ThemeMode.light
+                                                ? Colors.white
+                                                : Colors.black87,
+                                          ),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                child: SizedBox(
+                                                  width: 100,
+                                                  height: 100,
+                                                  child: imagebool2 == false
+                                                      ? ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      100),
+                                                          child: const Icon(
+                                                            Icons.photo,
+                                                          ))
+                                                      : CircleAvatar(
+                                                          backgroundImage:
+                                                              FileImage(
+                                                                  hospitalimage2!),
+                                                          radius: 50,
+                                                        ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  shape: const StadiumBorder(),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 13,
+                                                      horizontal: 22),
+                                                  foregroundColor: Colors.white,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .backgroundColor,
+                                                ),
+                                                onPressed: () async {
+                                                  hospitalimage2 =
+                                                      await pickImage(context);
+                                                  setState(() {
+                                                    imagebool2 = true;
+                                                  });
+                                                },
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const Icon(Icons.photo),
+                                                    Text(
+                                                      'Select Image',
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(width: 1),
+                                              ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    side: BorderSide.none,
+                                                    shape: const CircleBorder(),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 10),
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    backgroundColor:
+                                                        Theme.of(context)
+                                                            .backgroundColor,
+                                                  ),
+                                                  onPressed: () async {
+                                                    if (hospitalname.isEmpty) {
+                                                      newshowSnackbar(
+                                                          context,
+                                                          'Warning',
+                                                          'please fill the hospital Name',
+                                                          ContentType.warning);
+                                                    } else {
+                                                      if (imagebool2 == true) {
+                                                        if (hospitalimage2 ==
+                                                            null) return;
+
+                                                        Reference
+                                                            referenceRoot =
+                                                            FirebaseStorage
+                                                                .instance
+                                                                .ref();
+                                                        Reference
+                                                            referenceDirImages =
+                                                            referenceRoot.child(
+                                                                'hospital images/$hospitalname/photos');
+
+                                                        //Create a reference for the image to be stored
+                                                        Reference
+                                                            referenceImageToUpload =
+                                                            referenceDirImages
+                                                                .child(
+                                                                    '${hospitalname}image2');
+
+                                                        //Handle errors/success
+                                                        try {
+                                                          //Store the file
+                                                          await referenceImageToUpload
+                                                              .putFile(File(
+                                                                  hospitalimage2!
+                                                                      .path));
+                                                          image2Url =
+                                                              await referenceImageToUpload
+                                                                  .getDownloadURL();
+                                                        } catch (error) {
+                                                          //Some error occurred
+                                                        }
+                                                        if (image2Url.isEmpty) {
+                                                          newshowSnackbar(
+                                                              context,
+                                                              'Failed',
+                                                              'Please try again...That image 2 is not upload..',
+                                                              ContentType
+                                                                  .failure);
+                                                        } else {
+                                                          newshowSnackbar(
+                                                              context,
+                                                              'Upload Successfully',
+                                                              'Hospital image 2 Upload Successfully',
+                                                              ContentType
+                                                                  .success);
+                                                        }
+                                                      } else {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Warning',
+                                                            'please select image',
+                                                            ContentType
+                                                                .warning);
+                                                      }
+                                                    }
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.cloud_upload,
+                                                    size: 30,
+                                                  )),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 10),
+                                        Container(
+                                          padding: const EdgeInsets.all(10),
+                                          width: double.infinity,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: MyApp.themeNotifier.value ==
+                                                    ThemeMode.light
+                                                ? Colors.white
+                                                : Colors.black87,
+                                          ),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                child: SizedBox(
+                                                  width: 100,
+                                                  height: 100,
+                                                  child: imagebool3 == false
+                                                      ? ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      100),
+                                                          child: const Icon(
+                                                            Icons.photo,
+                                                          ))
+                                                      : CircleAvatar(
+                                                          backgroundImage:
+                                                              FileImage(
+                                                                  hospitalimage3!),
+                                                          radius: 50,
+                                                        ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  shape: const StadiumBorder(),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 13,
+                                                      horizontal: 22),
+                                                  foregroundColor: Colors.white,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .backgroundColor,
+                                                ),
+                                                onPressed: () async {
+                                                  hospitalimage3 =
+                                                      await pickImage(context);
+                                                  setState(() {
+                                                    imagebool3 = true;
+                                                  });
+                                                },
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const Icon(Icons.photo),
+                                                    Text(
+                                                      'Select Image',
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(width: 1),
+                                              ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    side: BorderSide.none,
+                                                    shape: const CircleBorder(),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 10),
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    backgroundColor:
+                                                        Theme.of(context)
+                                                            .backgroundColor,
+                                                  ),
+                                                  onPressed: () async {
+                                                    if (hospitalname.isEmpty) {
+                                                      newshowSnackbar(
+                                                          context,
+                                                          'Warning',
+                                                          'please fill the hospital Name',
+                                                          ContentType.warning);
+                                                    } else {
+                                                      if (imagebool3 == true) {
+                                                        if (hospitalimage3 ==
+                                                            null) return;
+
+                                                        Reference
+                                                            referenceRoot =
+                                                            FirebaseStorage
+                                                                .instance
+                                                                .ref();
+                                                        Reference
+                                                            referenceDirImages =
+                                                            referenceRoot.child(
+                                                                'hospital images/$hospitalname/photos');
+
+                                                        //Create a reference for the image to be stored
+                                                        Reference
+                                                            referenceImageToUpload =
+                                                            referenceDirImages
+                                                                .child(
+                                                                    '${hospitalname}image3');
+
+                                                        //Handle errors/success
+                                                        try {
+                                                          //Store the file
+                                                          await referenceImageToUpload
+                                                              .putFile(File(
+                                                                  hospitalimage2!
+                                                                      .path));
+                                                          image3Url =
+                                                              await referenceImageToUpload
+                                                                  .getDownloadURL();
+                                                        } catch (error) {
+                                                          //Some error occurred
+                                                        }
+                                                        if (image3Url.isEmpty) {
+                                                          newshowSnackbar(
+                                                              context,
+                                                              'Failed',
+                                                              'Please try again...That image 3 is not upload..',
+                                                              ContentType
+                                                                  .failure);
+                                                        } else {
+                                                          newshowSnackbar(
+                                                              context,
+                                                              'Upload Successfully',
+                                                              'Hospital image 3 Upload Successfully',
+                                                              ContentType
+                                                                  .success);
+                                                        }
+                                                      } else {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Warning',
+                                                            'please select image',
+                                                            ContentType
+                                                                .warning);
+                                                      }
+                                                    }
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.cloud_upload,
+                                                    size: 30,
+                                                  )),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 10),
+                                        Container(
+                                          padding: const EdgeInsets.all(10),
+                                          width: double.infinity,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: MyApp.themeNotifier.value ==
+                                                    ThemeMode.light
+                                                ? Colors.white
+                                                : Colors.black87,
+                                          ),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                child: SizedBox(
+                                                  width: 100,
+                                                  height: 100,
+                                                  child: imagebool4 == false
+                                                      ? ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      100),
+                                                          child: const Icon(
+                                                            Icons.photo,
+                                                          ))
+                                                      : CircleAvatar(
+                                                          backgroundImage:
+                                                              FileImage(
+                                                                  hospitalimage4!),
+                                                          radius: 50,
+                                                        ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  shape: const StadiumBorder(),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 13,
+                                                      horizontal: 22),
+                                                  foregroundColor: Colors.white,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .backgroundColor,
+                                                ),
+                                                onPressed: () async {
+                                                  hospitalimage4 =
+                                                      await pickImage(context);
+                                                  setState(() {
+                                                    imagebool4 = true;
+                                                  });
+                                                },
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const Icon(Icons.photo),
+                                                    Text(
+                                                      'Select Image',
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(width: 1),
+                                              ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    side: BorderSide.none,
+                                                    shape: const CircleBorder(),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 10),
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    backgroundColor:
+                                                        Theme.of(context)
+                                                            .backgroundColor,
+                                                  ),
+                                                  onPressed: () async {
+                                                    if (hospitalname.isEmpty) {
+                                                      newshowSnackbar(
+                                                          context,
+                                                          'Warning',
+                                                          'please fill the hospital Name',
+                                                          ContentType.warning);
+                                                    } else {
+                                                      if (imagebool4 == true) {
+                                                        if (hospitalimage4 ==
+                                                            null) return;
+
+                                                        Reference
+                                                            referenceRoot =
+                                                            FirebaseStorage
+                                                                .instance
+                                                                .ref();
+                                                        Reference
+                                                            referenceDirImages =
+                                                            referenceRoot.child(
+                                                                'hospital images/$hospitalname/photos');
+
+                                                        //Create a reference for the image to be stored
+                                                        Reference
+                                                            referenceImageToUpload =
+                                                            referenceDirImages
+                                                                .child(
+                                                                    '${hospitalname}image4');
+
+                                                        //Handle errors/success
+                                                        try {
+                                                          //Store the file
+                                                          await referenceImageToUpload
+                                                              .putFile(File(
+                                                                  hospitalimage4!
+                                                                      .path));
+                                                          image4Url =
+                                                              await referenceImageToUpload
+                                                                  .getDownloadURL();
+                                                        } catch (error) {
+                                                          //Some error occurred
+                                                        }
+                                                        if (image4Url.isEmpty) {
+                                                          newshowSnackbar(
+                                                              context,
+                                                              'Failed',
+                                                              'Please try again...That image 4 is not upload..',
+                                                              ContentType
+                                                                  .failure);
+                                                        } else {
+                                                          newshowSnackbar(
+                                                              context,
+                                                              'Upload Successfully',
+                                                              'Hospital image 4 Upload Successfully',
+                                                              ContentType
+                                                                  .success);
+                                                        }
+                                                      } else {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Warning',
+                                                            'please select image',
+                                                            ContentType
+                                                                .warning);
+                                                      }
+                                                    }
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.cloud_upload,
+                                                    size: 30,
+                                                  )),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 10),
+                                        Container(
+                                          padding: const EdgeInsets.all(10),
+                                          width: double.infinity,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: MyApp.themeNotifier.value ==
+                                                    ThemeMode.light
+                                                ? Colors.white
+                                                : Colors.black87,
+                                          ),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                child: SizedBox(
+                                                  width: 100,
+                                                  height: 100,
+                                                  child: imagebool5 == false
+                                                      ? ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      100),
+                                                          child: const Icon(
+                                                            Icons.photo,
+                                                          ))
+                                                      : CircleAvatar(
+                                                          backgroundImage:
+                                                              FileImage(
+                                                                  hospitalimage5!),
+                                                          radius: 50,
+                                                        ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  shape: const StadiumBorder(),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 13,
+                                                      horizontal: 22),
+                                                  foregroundColor: Colors.white,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .backgroundColor,
+                                                ),
+                                                onPressed: () async {
+                                                  hospitalimage5 =
+                                                      await pickImage(context);
+                                                  setState(() {
+                                                    imagebool5 = true;
+                                                  });
+                                                },
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const Icon(Icons.photo),
+                                                    Text(
+                                                      'Select Image',
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(width: 1),
+                                              ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    side: BorderSide.none,
+                                                    shape: const CircleBorder(),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 10),
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    backgroundColor:
+                                                        Theme.of(context)
+                                                            .backgroundColor,
+                                                  ),
+                                                  onPressed: () async {
+                                                    if (hospitalname.isEmpty) {
+                                                      newshowSnackbar(
+                                                          context,
+                                                          'Warning',
+                                                          'please fill the hospital Name',
+                                                          ContentType.warning);
+                                                    } else {
+                                                      if (imagebool5 == true) {
+                                                        if (hospitalimage5 ==
+                                                            null) return;
+
+                                                        Reference
+                                                            referenceRoot =
+                                                            FirebaseStorage
+                                                                .instance
+                                                                .ref();
+                                                        Reference
+                                                            referenceDirImages =
+                                                            referenceRoot.child(
+                                                                'hospital images/$hospitalname/photos');
+
+                                                        //Create a reference for the image to be stored
+                                                        Reference
+                                                            referenceImageToUpload =
+                                                            referenceDirImages
+                                                                .child(
+                                                                    '${hospitalname}image5');
+
+                                                        //Handle errors/success
+                                                        try {
+                                                          //Store the file
+                                                          await referenceImageToUpload
+                                                              .putFile(File(
+                                                                  hospitalimage5!
+                                                                      .path));
+                                                          image5Url =
+                                                              await referenceImageToUpload
+                                                                  .getDownloadURL();
+                                                        } catch (error) {
+                                                          //Some error occurred
+                                                        }
+                                                        if (image5Url.isEmpty) {
+                                                          newshowSnackbar(
+                                                              context,
+                                                              'Failed',
+                                                              'Please try again...That image 5 is not upload..',
+                                                              ContentType
+                                                                  .failure);
+                                                        } else {
+                                                          newshowSnackbar(
+                                                              context,
+                                                              'Upload Successfully',
+                                                              'Hospital image 5 Upload Successfully',
+                                                              ContentType
+                                                                  .success);
+                                                        }
+                                                      } else {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Warning',
+                                                            'please select image',
+                                                            ContentType
+                                                                .warning);
+                                                      }
+                                                    }
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.cloud_upload,
+                                                    size: 30,
+                                                  )),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 15),
+                            ])),
                         const SizedBox(height: 15),
                         SizedBox(
                           width: double.infinity,
@@ -1320,6 +2342,7 @@ class _AddHospitalState extends State<AddHospital> {
                                     Theme.of(context).backgroundColor,
                               ),
                               onPressed: () {
+                                //upload();
                                 save();
                               },
                               child: const Text('SAVE')),
@@ -1334,21 +2357,70 @@ class _AddHospitalState extends State<AddHospital> {
     );
   }
 
+  /*upload() {
+    print(_DoctorName);
+    print(_Specialist);
+    List ak = _DoctorName;
+    print(ak);
+    for (int i = 0; i < _DoctorName.length; i++) {
+      print(ak.toList()[i].text);
+      print(ak.toList()[i].text);
+    }
+  }*/
+
   save() async {
-    if (fromKey.currentState!.validate()) {
-      await DatabaseServiceHospital().savingHospitaldetails(
-          hospitalname,
-          establisedYr,
-          location,
-          district,
-          address,
-          highlight,
-          phone,
-          time,
-          noDoctors,
-          bed,
-          noambulance,
-          locationMap);
+    if (logoUrl.isEmpty ||
+        image1Url.isEmpty ||
+        image2Url.isEmpty ||
+        image3Url.isEmpty ||
+        image4Url.isEmpty ||
+        image5Url.isEmpty) {
+      newshowSnackbar(context, 'Hospital Logo', 'please upload hospital logo',
+          ContentType.failure);
+    } else {
+      if (fromKey.currentState!.validate()) {
+        await DatabaseServiceHospital().savingHospitaldetails(
+            hospitalname,
+            establisedYr,
+            location,
+            district,
+            address,
+            highlight,
+            phone,
+            time,
+            noDoctors,
+            bed,
+            noambulance,
+            locationMap,
+            logoUrl,
+            gp,
+            type,
+            affUniversity,
+            emergency,
+            surround1,
+            surroundDistance1,
+            surroundTime1,
+            surround2,
+            surroundDistance2,
+            surroundTime2,
+            _DoctorName.length,
+            _DoctorName,
+            _Specialist,
+            nearhospital1,
+            nearhospital2,
+            nearhospital3,
+            overview,
+            services,
+            image1Url,
+            image2Url,
+            image3Url,
+            image4Url,
+            image5Url,
+            widget.username,
+            widget.userphoneno);
+        newshowSnackbar(context, 'Successfully',
+            'successfully upload the hospital details', ContentType.success);
+      }
     }
   }
 }

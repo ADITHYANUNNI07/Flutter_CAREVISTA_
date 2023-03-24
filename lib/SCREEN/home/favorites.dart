@@ -56,9 +56,7 @@ class _FavoritesState extends State<Favorites> {
             selsctedIconIndex = index;
           });
         },
-        animationDuration: const Duration(
-          milliseconds: 200,
-        ),
+        animationDuration: const Duration(milliseconds: 200),
         items: <Widget>[
           IconButton(
             onPressed: () {

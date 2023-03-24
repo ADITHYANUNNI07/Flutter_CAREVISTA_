@@ -2,8 +2,11 @@ import 'package:carevista_ver05/Helper/helper_function.dart';
 import 'package:carevista_ver05/SCREEN/dashboard.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
+import 'package:carevista_ver05/Service/database_service.dart';
 import 'package:carevista_ver05/widget/widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_picker/country_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -287,6 +290,10 @@ class _SignupScreenState extends State<SignupScreen> {
           await HelperFunction.saveUserEmailSF(email);
           await HelperFunction.saveUserPhoneSF(phoneumber);
           await HelperFunction.saveUserAdkeyFromSF(adKey);
+          QuerySnapshot snapshot =
+              await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+                  .gettingUserData(email);
+          await HelperFunction.saveUserUIDFromSF(snapshot.docs[0]['uid']);
           // ignore: use_build_context_synchronously
           nextScreenReplace(context, Dashboard());
         } else {

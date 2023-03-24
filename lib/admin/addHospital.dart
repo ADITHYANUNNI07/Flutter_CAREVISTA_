@@ -320,7 +320,7 @@ class _AddHospitalState extends State<AddHospital> {
                                                   onChanged: (value) {
                                                     setState(() {
                                                       _gp = value!;
-                                                      gp = "Government";
+                                                      gp = "Govt.";
                                                     });
                                                   },
                                                 ))
@@ -336,11 +336,7 @@ class _AddHospitalState extends State<AddHospital> {
                               if (val!.isEmpty) {
                                 return "Enter Hospital type";
                               } else {
-                                return RegExp(
-                                            r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                        .hasMatch(val)
-                                    ? "Please enter valid Hospital Type"
-                                    : null;
+                                return null;
                               }
                             },
                             icon: Icons.type_specimen_outlined),
@@ -481,7 +477,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             groupValue: _districtEnum,
                                             onChanged: (value) {
                                               setState(() {
-                                                district = 'TRIVANDRUM';
+                                                district = 'Trivandrum';
                                                 _districtEnum = value;
                                               });
                                             },
@@ -494,7 +490,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             groupValue: _districtEnum,
                                             onChanged: (value) {
                                               setState(() {
-                                                district = 'KOLLAM';
+                                                district = 'Kollam';
                                                 _districtEnum = value;
                                               });
                                             },
@@ -508,7 +504,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'PATHANAMTHITTA';
+                                                district = 'Pathanamthitta';
                                               });
                                             },
                                           )),
@@ -521,7 +517,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'ALAPPUZHA';
+                                                district = 'Alappuzha';
                                               });
                                             },
                                           )),
@@ -534,7 +530,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'KOTTAYAM';
+                                                district = 'Kottayam';
                                               });
                                             },
                                           )),
@@ -547,7 +543,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'IDUKKI';
+                                                district = 'Idukki';
                                               });
                                             },
                                           )),
@@ -560,7 +556,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'ERNAKULAM';
+                                                district = 'Ernakulam';
                                               });
                                             },
                                           )),
@@ -573,7 +569,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'THRISSUR';
+                                                district = 'Thrissur';
                                               });
                                             },
                                           )),
@@ -586,7 +582,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'PALAKKAD';
+                                                district = 'Palakkad';
                                               });
                                             },
                                           )),
@@ -599,7 +595,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'MALAPPURAM';
+                                                district = 'Malappuram';
                                               });
                                             },
                                           )),
@@ -612,7 +608,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'KOZHIKODE';
+                                                district = 'Kozhikode';
                                               });
                                             },
                                           )),
@@ -625,7 +621,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'WAYANAD';
+                                                district = 'Wayanad';
                                               });
                                             },
                                           )),
@@ -638,7 +634,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'KANNUR';
+                                                district = 'Kannur';
                                               });
                                             },
                                           )),
@@ -651,7 +647,7 @@ class _AddHospitalState extends State<AddHospital> {
                                             onChanged: (value) {
                                               setState(() {
                                                 _districtEnum = value;
-                                                district = 'KASARAGOD';
+                                                district = 'Kasaragod';
                                               });
                                             },
                                           ))
@@ -743,6 +739,7 @@ class _AddHospitalState extends State<AddHospital> {
                                               setState(() {
                                                 _time = value!;
                                                 time = _time;
+                                                print(time);
                                                 isVisible = false;
                                               });
                                             },
@@ -757,6 +754,7 @@ class _AddHospitalState extends State<AddHospital> {
                                               setState(() {
                                                 isVisible = true;
                                                 _time = value!;
+                                                print(_time);
                                               });
                                             },
                                           )),
@@ -773,7 +771,7 @@ class _AddHospitalState extends State<AddHospital> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       SizedBox(
-                                        width: 126,
+                                        width: 308,
                                         child: TextFormField(
                                           controller: timeinput,
                                           readOnly: true,
@@ -791,8 +789,8 @@ class _AddHospitalState extends State<AddHospital> {
                                               setState(() {
                                                 timeinput.text =
                                                     pickedTime.format(context);
-                                                startTime = timeinput.text;
-                                                print(startTime);
+                                                time = "Open " + timeinput.text;
+                                                print(time);
                                               });
                                             } else {
                                               print("Time is not selected");
@@ -801,181 +799,17 @@ class _AddHospitalState extends State<AddHospital> {
                                           decoration: const InputDecoration(
                                             prefixIcon:
                                                 Icon(LineAwesomeIcons.clock),
-                                            labelText: 'Time',
+                                            labelText: 'Open Time',
                                             border: OutlineInputBorder(),
                                           ),
                                           validator: (value) {},
                                         ),
                                       ),
-                                      const SizedBox(width: 5),
-                                      const Text("TO"),
-                                      const SizedBox(width: 5),
-                                      SizedBox(
-                                        width: 126,
-                                        child: TextFormField(
-                                          controller: timeinputlast,
-                                          readOnly: true,
-                                          onTap: () async {
-                                            await showTimePicker(
-                                              initialTime: TimeOfDay.now(),
-                                              context: context,
-                                            ).then((value) {
-                                              setState(() {
-                                                pickedTime = value!;
-                                              });
-                                            });
-
-                                            if (pickedTime != null) {
-                                              setState(() {
-                                                timeinputlast.text =
-                                                    pickedTime.format(context);
-                                                lastTime = timeinputlast.text;
-                                                print(lastTime);
-                                              });
-                                            } else {
-                                              print("Time is not selected");
-                                            }
-                                          },
-                                          decoration: const InputDecoration(
-                                            prefixIcon:
-                                                Icon(LineAwesomeIcons.clock),
-                                            labelText: 'Time',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                          validator: (value) {
-                                            if (startTime == lastTime) {
-                                              return "Both Time are Same";
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(width: 0),
-                                      IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              if (addTime == false) {
-                                                addTime = true;
-                                                addtimeSize = 43;
-                                              } else {
-                                                addTime = false;
-                                                addtimeSize = 0;
-                                              }
-                                            });
-                                          },
-                                          icon: Icon(
-                                            addTime == false
-                                                ? Icons.add_circle
-                                                : Icons.remove_circle,
-                                            color: addTime == false
-                                                ? Colors.green
-                                                : Colors.redAccent,
-                                          )),
                                     ],
                                   ),
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              addTime
-                                  ? Container(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 126,
-                                            child: TextFormField(
-                                              controller: timeinput,
-                                              readOnly: true,
-                                              onTap: () async {
-                                                await showTimePicker(
-                                                  initialTime: TimeOfDay.now(),
-                                                  context: context,
-                                                ).then((value) {
-                                                  setState(() {
-                                                    pickedTime = value!;
-                                                  });
-                                                });
-
-                                                if (pickedTime != null) {
-                                                  setState(() {
-                                                    timeinput.text = pickedTime
-                                                        .format(context);
-                                                    startTime = timeinput.text;
-                                                    print(startTime);
-                                                  });
-                                                } else {
-                                                  print("Time is not selected");
-                                                }
-                                              },
-                                              decoration: const InputDecoration(
-                                                prefixIcon: Icon(
-                                                    LineAwesomeIcons.clock),
-                                                labelText: 'Time',
-                                                border: OutlineInputBorder(),
-                                              ),
-                                              validator: (value) {},
-                                            ),
-                                          ),
-                                          const SizedBox(width: 5),
-                                          const Text("TO"),
-                                          const SizedBox(width: 5),
-                                          SizedBox(
-                                            width: 126,
-                                            child: TextFormField(
-                                              controller: timeinputlast,
-                                              readOnly: true,
-                                              onTap: () async {
-                                                await showTimePicker(
-                                                  initialTime: TimeOfDay.now(),
-                                                  context: context,
-                                                ).then((value) {
-                                                  setState(() {
-                                                    pickedTime = value!;
-                                                  });
-                                                });
-
-                                                if (pickedTime != null) {
-                                                  setState(() {
-                                                    timeinputlast.text =
-                                                        pickedTime
-                                                            .format(context);
-                                                    lastTime =
-                                                        timeinputlast.text;
-                                                    print(lastTime);
-                                                  });
-                                                } else {
-                                                  print("Time is not selected");
-                                                }
-                                              },
-                                              decoration: const InputDecoration(
-                                                prefixIcon: Icon(
-                                                    LineAwesomeIcons.clock),
-                                                labelText: 'Time',
-                                                border: OutlineInputBorder(),
-                                              ),
-                                              validator: (value) {
-                                                if (startTime == lastTime) {
-                                                  return "Both Time are Same";
-                                                }
-                                              },
-                                            ),
-                                          ),
-                                          const SizedBox(width: 0),
-                                          IconButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  addTime = true;
-                                                });
-                                              },
-                                              icon: const Icon(
-                                                Icons.add_circle,
-                                                color: Colors.green,
-                                              )),
-                                          const SizedBox(width: 1),
-                                        ],
-                                      ),
-                                    )
-                                  : const SizedBox()
                             ],
                           ),
                         ),
@@ -1285,13 +1119,7 @@ class _AddHospitalState extends State<AddHospital> {
                                           validator: (val) {
                                             if (val!.isEmpty) {
                                               return "Enter Hospital name";
-                                            } else {
-                                              return RegExp(
-                                                          r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                      .hasMatch(val)
-                                                  ? "Please enter Hospital name"
-                                                  : null;
-                                            }
+                                            } else {}
                                           },
                                           icon: Icons.place_outlined))
                                 ],
@@ -1310,13 +1138,7 @@ class _AddHospitalState extends State<AddHospital> {
                                           validator: (val) {
                                             if (val!.isEmpty) {
                                               return "Enter Hospital name";
-                                            } else {
-                                              return RegExp(
-                                                          r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                      .hasMatch(val)
-                                                  ? "Please enter Hospital name"
-                                                  : null;
-                                            }
+                                            } else {}
                                           },
                                           icon: Icons.place_outlined))
                                 ],
@@ -1335,13 +1157,7 @@ class _AddHospitalState extends State<AddHospital> {
                                           validator: (val) {
                                             if (val!.isEmpty) {
                                               return "Enter Hospital name";
-                                            } else {
-                                              return RegExp(
-                                                          r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                      .hasMatch(val)
-                                                  ? "Please enter Hospital name"
-                                                  : null;
-                                            }
+                                            } else {}
                                           },
                                           icon: Icons.place_outlined))
                                 ],
@@ -1353,13 +1169,7 @@ class _AddHospitalState extends State<AddHospital> {
                             onChange: (value) {
                               noDoctors = value;
                             },
-                            validator: (p0) {
-                              if (p0!.isEmpty) {
-                                return 'Please Established Year';
-                              } else {
-                                return null;
-                              }
-                            },
+                            validator: (p0) {},
                             icon: LineAwesomeIcons.stethoscope),
                         const SizedBox(height: 10),
                         TextFormFieldOvalNumberWidget(
@@ -1379,12 +1189,12 @@ class _AddHospitalState extends State<AddHospital> {
                             icon: LineAwesomeIcons.ambulance),
                         const SizedBox(height: 10),
                         TextFormFieldOvalWidget(
-                            labelText: "Google Map Link",
+                            labelText: "Hospital Site Link",
                             onChange: (value) {
                               locationMap = value;
                             },
                             validator: (p0) {},
-                            icon: LineAwesomeIcons.location_arrow),
+                            icon: LineAwesomeIcons.hospital),
                         const SizedBox(height: 10),
                         TextFormFieldAreaWidget(
                             labelText: "Overview",
@@ -1839,7 +1649,7 @@ class _AddHospitalState extends State<AddHospital> {
                                                         ),
                                                 ),
                                               ),
-                                              SizedBox(width: 10),
+                                              const SizedBox(width: 10),
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                   side: BorderSide.none,
@@ -1925,7 +1735,7 @@ class _AddHospitalState extends State<AddHospital> {
                                                           //Store the file
                                                           await referenceImageToUpload
                                                               .putFile(File(
-                                                                  hospitalimage2!
+                                                                  hospitalimage3!
                                                                       .path));
                                                           image3Url =
                                                               await referenceImageToUpload
@@ -2017,7 +1827,7 @@ class _AddHospitalState extends State<AddHospital> {
                                                         ),
                                                 ),
                                               ),
-                                              SizedBox(width: 10),
+                                              const SizedBox(width: 10),
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                   side: BorderSide.none,
@@ -2420,6 +2230,12 @@ class _AddHospitalState extends State<AddHospital> {
             widget.userphoneno);
         newshowSnackbar(context, 'Successfully',
             'successfully upload the hospital details', ContentType.success);
+      } else {
+        newshowSnackbar(
+            context,
+            'Please check Hospital Details',
+            'the hospital details contain a invalid format please check above the form',
+            ContentType.failure);
       }
     }
   }

@@ -31,7 +31,7 @@ class ThemeApp {
       primaryColor: const Color(0xFFFB4C5B),
       primaryColorLight: const Color(0xFF04FBC3),
       backgroundColor: const Color(0xFFFB4C5B),
-      highlightColor: const Color(0xFFFB4C5B),
+      //highlightColor: const Color(0xFFFB4C5B),
       primaryColorDark: Colors.white,
       cardColor: Colors.grey.shade900,
       textTheme: TextTheme(

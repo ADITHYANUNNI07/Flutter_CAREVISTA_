@@ -355,6 +355,7 @@ class _LoginScreenState extends State<LoginScreen> {
           await HelperFunction.saveUserEmailSF(email);
           await HelperFunction.saveUserPhoneSF(snapshot.docs[0]['phoneNo']);
           await HelperFunction.saveUserAdkeyFromSF(snapshot.docs[0]['AdKey']);
+          await HelperFunction.saveUserUIDFromSF(snapshot.docs[0]['uid']);
           // ignore: use_build_context_synchronously
           //provide_phoneotp.dart...update..profile
           nextScreenReplace(context, Dashboard());

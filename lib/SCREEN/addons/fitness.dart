@@ -118,7 +118,7 @@ class _FitnessScreenState extends State<FitnessScreen> {
                                   .AppColor.homePageContainerTextSmall),
                         ),
                         Text(
-                          'and Cheste Workout',
+                          'and Chest Workout',
                           style: TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.w600,
@@ -267,7 +267,7 @@ class _FitnessScreenState extends State<FitnessScreen> {
                                 ),
                                 SizedBox(width: 20),
                                 AreaFocusWidget(
-                                    title: 'Cheste',
+                                    title: 'Chest',
                                     image:
                                         'Assets/images/Personal Trainer-pana.png')
                               ],

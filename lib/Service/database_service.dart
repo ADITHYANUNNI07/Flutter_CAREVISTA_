@@ -41,6 +41,13 @@ class DatabaseService {
     });
   }
 
+  Future folderDB(String folderName, String remark) async {
+    final userDoc = await userCollection.doc(uid).get();
+    final newCollectionRef = userDoc.reference.collection('PatientRecord');
+    final newDocRef = await newCollectionRef
+        .add({'FolderName': folderName, 'Remark': remark});
+  }
+
   //Getting the user data
   Future gettingUserData(String email) async {
     QuerySnapshot snapshot =
@@ -118,7 +125,7 @@ class DatabaseServiceHospital {
       "time": time,
       "doctorsNo": doctorsNo,
       "bedNo": bedNo,
-      "gMap": gmap,
+      "sitLink": gmap,
       "Logo": logoUrl,
       "doctorName&Specialist": FieldValue.arrayUnion([
         for (int i = 0; i < length; i++)
@@ -127,11 +134,9 @@ class DatabaseServiceHospital {
             "Specialist": specialist.toList()[i].text,
           },
       ]),
-      "nearesthospital": {
-        "hospital1": hospital1,
-        "hospital2": hospital2,
-        "hospital3": hospital3,
-      },
+      "hospital1": hospital1,
+      "hospital2": hospital2,
+      "hospital3": hospital3,
       "ambulanceNo": ambulanceNo,
       "overview": overview,
       "services": service,
@@ -140,8 +145,14 @@ class DatabaseServiceHospital {
       "image3": image3url,
       "image4": image4url,
       "image5": image5url,
+      'uploadDocternumber': length,
       "uploaderName": uploadername,
-      "uploaderName": uploaderphone,
+      "uploaderPhoneNo": uploaderphone,
     });
   }
+}
+
+class CreateFolderDB {
+  final CollectionReference folderCollection =
+      FirebaseFirestore.instance.collection("users");
 }

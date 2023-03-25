@@ -17,9 +17,37 @@ class _FavoritesState extends State<Favorites> {
     int selsctedIconIndex = 3;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Firestore Data', style: TextStyle(color: Colors.black)),
+        title:
+            const Text('Firestore Data', style: TextStyle(color: Colors.black)),
       ),
       body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .collection('PatientRecord')
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return Text('Loading...');
+            default:
+              return ListView(
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data() as Map<String, dynamic>;
+                  return ListTile(
+                    title: Text(data['FolderName'] ?? ''),
+                    subtitle: Text(data['Remark'] ?? ''),
+                  );
+                }).toList(),
+              );
+          }
+        },
+      ),
+      /*StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('hospitals').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
@@ -39,12 +67,12 @@ class _FavoritesState extends State<Favorites> {
               child: Text('Error: ${snapshot.error}'),
             );
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
         },
-      ),
+      )*/
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
         index: selsctedIconIndex,
@@ -365,3 +393,126 @@ class _HospitalListPageState extends State<HospitalListPage> {
     );
   }
 }*/
+
+class HospitalList extends StatelessWidget {
+  const HospitalList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    ThemeData txttheme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('hospitals').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          List<DocumentSnapshot> hospitals = snapshot.data!.docs;
+          List<DocumentSnapshot> thiruvananthapuramHospitals = hospitals
+              .where((hospital) => hospital['district'] == 'Thiruvananthapuram')
+              .toList();
+          List<DocumentSnapshot> kollamHospitals = hospitals
+              .where((hospital) => hospital['district'] == 'Kollam')
+              .toList();
+          List<DocumentSnapshot> pathanamthittaHospitals = hospitals
+              .where((hospital) => hospital['district'] == 'Pathanamthitta')
+              .toList();
+          List<DocumentSnapshot> sortedHospitals = [
+            ...thiruvananthapuramHospitals,
+            ...kollamHospitals,
+            ...pathanamthittaHospitals
+          ];
+          return ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: sortedHospitals.length,
+            itemBuilder: (BuildContext context, int index) {
+              DocumentSnapshot data = sortedHospitals[index];
+              return Row(
+                children: [
+                  TopHospitalListScroll(
+                    hospitalName: data['hospitalName'],
+                    district: data['district'],
+                    imageSrc: data['Logo'],
+                    txttheme: txttheme,
+                    onPress: () {
+                      // Handle hospital selection
+                    },
+                  ),
+                  const SizedBox(width: 20),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class TopHospitalListScroll extends StatelessWidget {
+  const TopHospitalListScroll({
+    Key? key,
+    required this.hospitalName,
+    required this.district,
+    required this.imageSrc,
+    required this.txttheme,
+    required this.onPress,
+  }) : super(key: key);
+
+  final String hospitalName;
+  final String district;
+  final String imageSrc;
+  final ThemeData txttheme;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: onPress,
+        child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 100,
+                  width: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    image: DecorationImage(
+                      image: NetworkImage(imageSrc),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        hospitalName,
+                        style: txttheme.textTheme.headline6,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )));
+  }
+}

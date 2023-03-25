@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 class DatabaseService {
   final String? uid;
@@ -44,8 +45,12 @@ class DatabaseService {
   Future folderDB(String folderName, String remark) async {
     final userDoc = await userCollection.doc(uid).get();
     final newCollectionRef = userDoc.reference.collection('PatientRecord');
-    final newDocRef = await newCollectionRef
-        .add({'FolderName': folderName, 'Remark': remark});
+    final currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    final newDocRef = await newCollectionRef.add({
+      'FolderName': folderName,
+      'Remark': remark,
+      'Date': currentDate,
+    });
   }
 
   //Getting the user data
@@ -150,9 +155,4 @@ class DatabaseServiceHospital {
       "uploaderPhoneNo": uploaderphone,
     });
   }
-}
-
-class CreateFolderDB {
-  final CollectionReference folderCollection =
-      FirebaseFirestore.instance.collection("users");
 }

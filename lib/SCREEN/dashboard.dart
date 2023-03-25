@@ -485,12 +485,87 @@ class _DashboardState extends State<Dashboard> {
                         if (!snapshot.hasData) {
                           return Center(child: CircularProgressIndicator());
                         }
+                        List<DocumentSnapshot> hospitals = snapshot.data!.docs;
+                        List<DocumentSnapshot> thiruvananthapuramHospitals =
+                            hospitals
+                                .where((hospital) =>
+                                    hospital['district'] == 'Trivandrum')
+                                .toList();
+                        List<DocumentSnapshot> kollamHospitals = hospitals
+                            .where(
+                                (hospital) => hospital['district'] == 'Kollam')
+                            .toList();
+                        List<DocumentSnapshot> pathanamthittaHospitals =
+                            hospitals
+                                .where((hospital) =>
+                                    hospital['district'] == 'Pathanamthitta')
+                                .toList();
+                        List<DocumentSnapshot> alaHospitals = hospitals
+                            .where((hospital) =>
+                                hospital['district'] == 'Alappuzha')
+                            .toList();
+                        List<DocumentSnapshot> KottayamHospitals = hospitals
+                            .where((hospital) =>
+                                hospital['district'] == 'Kottayam')
+                            .toList();
+                        List<DocumentSnapshot> IdukkiHospitals = hospitals
+                            .where(
+                                (hospital) => hospital['district'] == 'Idukki')
+                            .toList();
+                        List<DocumentSnapshot> ErnakulamHospitals = hospitals
+                            .where((hospital) =>
+                                hospital['district'] == 'Ernakulam')
+                            .toList();
+                        List<DocumentSnapshot> ThrissurHospitals = hospitals
+                            .where((hospital) =>
+                                hospital['district'] == 'Thrissur')
+                            .toList();
+                        List<DocumentSnapshot> PalakkadHospitals = hospitals
+                            .where((hospital) =>
+                                hospital['district'] == 'Palakkad')
+                            .toList();
+                        List<DocumentSnapshot> MalappuramHospitals = hospitals
+                            .where((hospital) =>
+                                hospital['district'] == 'Malappuram')
+                            .toList();
+                        List<DocumentSnapshot> KozhikodeHospitals = hospitals
+                            .where((hospital) =>
+                                hospital['district'] == 'Kozhikode')
+                            .toList();
+                        List<DocumentSnapshot> WayanadHospitals = hospitals
+                            .where(
+                                (hospital) => hospital['district'] == 'Wayanad')
+                            .toList();
+                        List<DocumentSnapshot> KannurHospitals = hospitals
+                            .where(
+                                (hospital) => hospital['district'] == 'Kannur')
+                            .toList();
+                        List<DocumentSnapshot> KasaragodHospitals = hospitals
+                            .where((hospital) =>
+                                hospital['district'] == 'Kasaragod')
+                            .toList();
+                        List<DocumentSnapshot> sortedHospitals = [
+                          ...thiruvananthapuramHospitals,
+                          ...kollamHospitals,
+                          ...pathanamthittaHospitals,
+                          ...alaHospitals,
+                          ...KottayamHospitals,
+                          ...IdukkiHospitals,
+                          ...ErnakulamHospitals,
+                          ...ThrissurHospitals,
+                          ...PalakkadHospitals,
+                          ...MalappuramHospitals,
+                          ...KozhikodeHospitals,
+                          ...WayanadHospitals,
+                          ...KannurHospitals,
+                          ...KasaragodHospitals
+                        ];
                         return ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          itemCount: snapshot.data!.docs.length,
+                          itemCount: sortedHospitals.length,
                           itemBuilder: (BuildContext context, int index) {
-                            DocumentSnapshot data = snapshot.data!.docs[index];
+                            DocumentSnapshot data = sortedHospitals[index];
                             return Row(
                               children: [
                                 TopHospitalListScroll(
@@ -506,6 +581,8 @@ class _DashboardState extends State<Dashboard> {
                                       }
                                     });
                                   },
+                                  Adkey: adKey,
+                                  uploaderName: data['uploaderName'],
                                   sIcon: saveIcon,
                                   txttheme: txttheme,
                                   onPress: () {
@@ -669,13 +746,17 @@ class TopHospitalListScroll extends StatefulWidget {
     required this.hospitalName,
     required this.district,
     required this.imageSrc,
+    required this.uploaderName,
+    required this.Adkey,
   }) : super(key: key);
   final VoidCallback onPress;
   final VoidCallback onPressIcon;
   final bool sIcon;
+  final bool Adkey;
   final TextTheme txttheme;
   final String hospitalName;
   final String district;
+  final String uploaderName;
   final String imageSrc;
   @override
   State<TopHospitalListScroll> createState() => _TopHospitalListScrollState();
@@ -726,7 +807,7 @@ class _TopHospitalListScrollState extends State<TopHospitalListScroll> {
                   )
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
               Text(
                 widget.hospitalName,
                 style: GoogleFonts.montserrat(
@@ -739,6 +820,14 @@ class _TopHospitalListScrollState extends State<TopHospitalListScroll> {
                   style: TextStyle(
                       fontSize: 16,
                       color: specialcolor.AppColor.homePageContainerTextSmall)),
+              const SizedBox(height: 5),
+              widget.Adkey == true
+                  ? Text(widget.uploaderName,
+                      style: TextStyle(
+                          fontSize: 10,
+                          color:
+                              specialcolor.AppColor.homePageContainerTextSmall))
+                  : SizedBox(),
             ],
           ),
         ),

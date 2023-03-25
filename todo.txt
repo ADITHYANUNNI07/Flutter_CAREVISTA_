@@ -1,104 +1,87 @@
- ListView(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                children: [
-                                  TopHospitalListScroll(
-                                    hospitalName: data['hospitalName'],
-                                    district: data['district'],
-                                    onPressIcon: () {
-                                      setState(() {
-                                        if (saveIcon == true) {
-                                          saveIcon = false;
-                                        } else {
-                                          saveIcon = true;
-                                        }
-                                      });
-                                    },
-                                    sIcon: saveIcon,
-                                    txttheme: txttheme,
-                                    onPress: () {
-                                      nextScreen(context, HospitalPage());
-                                    },
-                                  ),
-                                  const SizedBox(width: 10),
-                                  TopHospitalListScroll(
-                                      hospitalName: data['hospitalName'],
-                                      district: data['district'],
-                                      onPressIcon: () {
-                                        setState(() {
-                                          if (saveIcon == true) {
-                                            saveIcon = false;
-                                          } else {
-                                            saveIcon = true;
-                                          }
-                                        });
-                                      },
-                                      sIcon: saveIcon,
-                                      txttheme: txttheme,
-                                      onPress: () {}),
-                                  const SizedBox(width: 10),
-                                  TopHospitalListScroll(
-                                      hospitalName: data['hospitalName'],
-                                      district: data['district'],
-                                      onPressIcon: () {
-                                        setState(() {
-                                          if (saveIcon == true) {
-                                            saveIcon = false;
-                                          } else {
-                                            saveIcon = true;
-                                          }
-                                        });
-                                      },
-                                      sIcon: saveIcon,
-                                      txttheme: txttheme,
-                                      onPress: () {}),
-                                  const SizedBox(width: 10),
-                                  TopHospitalListScroll(
-                                      hospitalName: data['hospitalName'],
-                                      district: data['district'],
-                                      onPressIcon: () {
-                                        setState(() {
-                                          if (saveIcon == true) {
-                                            saveIcon = false;
-                                          } else {
-                                            saveIcon = true;
-                                          }
-                                        });
-                                      },
-                                      sIcon: saveIcon,
-                                      txttheme: txttheme,
-                                      onPress: () {}),
-                                  const SizedBox(width: 10),
-                                  TopHospitalListScroll(
-                                      hospitalName: data['hospitalName'],
-                                      district: data['district'],
-                                      onPressIcon: () {
-                                        setState(() {
-                                          if (saveIcon == true) {
-                                            saveIcon = false;
-                                          } else {
-                                            saveIcon = true;
-                                          }
-                                        });
-                                      },
-                                      sIcon: saveIcon,
-                                      txttheme: txttheme,
-                                      onPress: () {}),
-                                  const SizedBox(width: 10),
-                                  TopHospitalListScroll(
-                                      hospitalName: data['hospitalName'],
-                                      district: data['district'],
-                                      onPressIcon: () {
-                                        setState(() {
-                                          if (saveIcon == true) {
-                                            saveIcon = false;
-                                          } else {
-                                            saveIcon = true;
-                                          }
-                                        });
-                                      },
-                                      sIcon: saveIcon,
-                                      txttheme: txttheme,
-                                      onPress: () {}),
-                                ],
-                              ),
+ StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('hospitals')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            DocumentSnapshot data = snapshot.data!.docs[index];
+                            return Row(
+                              children: [
+                                TopHospitalListScroll(
+                                  hospitalName: data['hospitalName'],
+                                  district: data['district'],
+                                  imageSrc: data['Logo'],
+                                  onPressIcon: () {
+                                    setState(() {
+                                      if (saveIcon == true) {
+                                        saveIcon = false;
+                                      } else {
+                                        saveIcon = true;
+                                      }
+                                    });
+                                  },
+                                  sIcon: saveIcon,
+                                  txttheme: txttheme,
+                                  onPress: () {
+                                    nextScreen(
+                                        context,
+                                        HospitalPage(
+                                          hospitalName: data['hospitalName'],
+                                          district: data['district'],
+                                          logo: data['Logo'],
+                                          address: data['address'],
+                                          affiliatted:
+                                              data['affiliateduniversity'],
+                                          ambulanceNo: data['ambulanceNo'],
+                                          bedNo: data['bedNo'],
+                                          doctorsNo: data['doctorsNo'],
+                                          emergencydpt:
+                                              data['emergencydepartment'],
+                                          sitlink: data['sitLink'],
+                                          govtprivate: data['GovtorPrivate'],
+                                          highlight: data['highlight'],
+                                          hospital1: data['hospital1'],
+                                          hospital2: data['hospital2'],
+                                          hospital3: data['hospital3'],
+                                          image1url: data['image1'],
+                                          image2url: data['image2'],
+                                          image3url: data['image3'],
+                                          image4url: data['image4'],
+                                          image5url: data['image5'],
+                                          length: data['uploadDocternumber'],
+                                          location: data['location'],
+                                          overview: data['overview'],
+                                          phoneno: data['phoneno'],
+                                          sdistance1:
+                                              data['surroundingdistance1'],
+                                          sdistance2:
+                                              data['surroundingdistance2'],
+                                          service: data['services'],
+                                          splace1: data['surroundingplace1'],
+                                          splace2: data['surroundingplace2'],
+                                          stime1: data['surroundingtime1'],
+                                          stime2: data['surroundingtime2'],
+                                          time: data['time'],
+                                          type: data['type'],
+                                          year: data['establishedYear'],
+                                          doctorSpeciality: List.from(
+                                              data['doctorName&Specialist']),
+                                          doctordetails: _buildDoctorList(data),
+                                        ));
+                                  },
+                                ),
+                                const SizedBox(width: 20),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),

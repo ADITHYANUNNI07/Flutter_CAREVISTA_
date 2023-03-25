@@ -1,25 +1,20 @@
-import 'dart:io';
-
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carevista_ver05/Helper/helper_function.dart';
+import 'package:carevista_ver05/SCREEN/addons/recorddetails.dart';
 import 'package:carevista_ver05/SCREEN/dashboard.dart';
 import 'package:carevista_ver05/SCREEN/home/favorites.dart';
 import 'package:carevista_ver05/SCREEN/profile.dart';
-import 'package:carevista_ver05/SCREEN/send_otp.dart';
 import 'package:carevista_ver05/Service/database_service.dart';
 import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'color.dart' as specialcolor;
 
 class PatientRecord extends StatefulWidget {
   const PatientRecord({super.key});
-
   @override
   State<PatientRecord> createState() => _PatientRecordState();
 }
@@ -99,143 +94,264 @@ class _PatientRecordState extends State<PatientRecord> {
                 color: Theme.of(context).primaryColorDark),
           ),
         ),
-        body: Container(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    createfolder = true;
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  height: createfolder == false ? 49 : 400,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                      color: Color(0XFF407BFF),
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10))),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            'Add New Folder',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Expanded(child: Container()),
-                          IconButton(
-                              onPressed: () {
-                                if (createfolder == false) {
-                                  setState(() {
-                                    createfolder = true;
-                                  });
-                                } else {
-                                  setState(() {
-                                    createfolder = false;
-                                  });
-                                }
-                              },
-                              icon: createfolder == false
-                                  ? const Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                    )
-                                  : const Icon(
-                                      Icons.remove,
-                                      color: Colors.white,
-                                    ))
-                        ],
-                      ),
-                      createfolder == true
-                          ? Container(
-                              padding: const EdgeInsets.all(34),
-                              decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
-                                      topLeft: Radius.circular(10),
-                                      topRight: Radius.circular(10))),
-                              child: Form(
-                                key: fromKey,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  // ignore: prefer_const_literals_to_create_immutables
-                                  children: [
-                                    Text('Enter New Folder Name and Remark',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2),
-                                    const SizedBox(height: 20),
-                                    TextFormField(
-                                      decoration: const InputDecoration(
-                                          prefixIcon:
-                                              Icon(Icons.folder_outlined),
-                                          labelText: 'Folder Name',
-                                          border: OutlineInputBorder()),
-                                      onChanged: (val) {
-                                        Fname = val;
-                                      },
-                                      // check tha validation
-                                      validator: (val) {
-                                        if (val!.isEmpty) {
-                                          return "Please Enter Folder Name";
-                                        }
-                                      },
-                                    ),
-                                    const SizedBox(height: 15),
-                                    TextFormField(
-                                      obscureText: true,
-                                      decoration: const InputDecoration(
-                                        prefixIcon: Icon(LineAwesomeIcons.pen),
-                                        labelText: 'Remark',
-                                        border: OutlineInputBorder(),
+        body: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      createfolder = true;
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    height: createfolder == false ? 49 : 400,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                        color: Color(0XFF407BFF),
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10))),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              'Add New Folder',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Expanded(child: Container()),
+                            IconButton(
+                                onPressed: () {
+                                  if (createfolder == false) {
+                                    setState(() {
+                                      createfolder = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      createfolder = false;
+                                    });
+                                  }
+                                },
+                                icon: createfolder == false
+                                    ? const Icon(
+                                        Icons.add,
+                                        color: Colors.white,
+                                      )
+                                    : const Icon(
+                                        Icons.remove,
+                                        color: Colors.white,
+                                      ))
+                          ],
+                        ),
+                        createfolder == true
+                            ? Container(
+                                padding: const EdgeInsets.all(34),
+                                decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10),
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10))),
+                                child: Form(
+                                  key: fromKey,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    // ignore: prefer_const_literals_to_create_immutables
+                                    children: [
+                                      Text('Enter New Folder Name and Remark',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2),
+                                      const SizedBox(height: 20),
+                                      TextFormField(
+                                        decoration: const InputDecoration(
+                                            prefixIcon:
+                                                Icon(Icons.folder_outlined),
+                                            labelText: 'Folder Name',
+                                            border: OutlineInputBorder()),
+                                        onChanged: (val) {
+                                          Fname = val;
+                                        },
+                                        // check tha validation
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Please Enter Folder Name";
+                                          }
+                                        },
                                       ),
-                                      onChanged: (val) {
-                                        Fremark = val;
-                                      },
-                                      validator: (val) {
-                                        if (val!.isEmpty) {
-                                          return "Please Enter Remark";
-                                        } else {
-                                          return null;
-                                        }
-                                      },
-                                    ),
-                                    const SizedBox(height: 15),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 13),
-                                            foregroundColor: Colors.white,
-                                            backgroundColor:
-                                                const Color(0XFF407BFF),
-                                          ),
-                                          onPressed: () {
-                                            createFolder();
-                                          },
-                                          child: const Text(
-                                            'CREATE',
-                                          )),
-                                    ),
-                                  ],
+                                      const SizedBox(height: 15),
+                                      TextFormField(
+                                        decoration: const InputDecoration(
+                                          prefixIcon:
+                                              Icon(LineAwesomeIcons.pen),
+                                          labelText: 'Remark',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        onChanged: (val) {
+                                          Fremark = val;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Please Enter Remark";
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                      ),
+                                      const SizedBox(height: 15),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 13),
+                                              foregroundColor: Colors.white,
+                                              backgroundColor:
+                                                  const Color(0XFF407BFF),
+                                            ),
+                                            onPressed: () {
+                                              createFolder();
+                                            },
+                                            child: const Text(
+                                              'CREATE',
+                                            )),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                          : Container()
-                    ],
+                              )
+                            : Container(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                SizedBox(
+                  height: 8000,
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(uid)
+                        .collection('PatientRecord')
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return const Text('Loading...');
+                        default:
+                          return ListView(
+                            //shrinkWrap: false,
+                            //scrollDirection: Axis.vertical,
+                            children: snapshot.data!.docs
+                                .map((DocumentSnapshot document) {
+                              Map<String, dynamic> data =
+                                  document.data() as Map<String, dynamic>;
+                              return Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 318,
+                                        height: 100,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            nextScreen(context, HospitalList()
+                                                /*RecordDetails(
+                                                    folderName:
+                                                        data['FolderName'] ??
+                                                            '',
+                                                    date: data['Date'] ?? '')*/
+                                                );
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.only(
+                                                left: 30, right: 10, top: 10),
+                                            decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                    colors: [
+                                                      specialcolor.AppColor
+                                                          .gradientFirst
+                                                          .withOpacity(0.9),
+                                                      specialcolor.AppColor
+                                                          .gradientSecond
+                                                          .withOpacity(0.9)
+                                                    ],
+                                                    begin: Alignment.bottomLeft,
+                                                    end: Alignment.centerRight),
+                                                color: const Color(0XFF407BFF),
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                        bottomLeft:
+                                                            Radius.circular(10),
+                                                        bottomRight:
+                                                            Radius.circular(10),
+                                                        topLeft:
+                                                            Radius.circular(10),
+                                                        topRight:
+                                                            Radius.circular(
+                                                                10))),
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(data['FolderName'] ?? '',
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 27,
+                                                          color: Colors.white)),
+                                                  const SizedBox(height: 7),
+                                                  Text(data['Remark'] ?? '',
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontSize: 15,
+                                                          color: Colors.white)),
+                                                  const SizedBox(height: 7),
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                          child: Container()),
+                                                      Text(data['Date'] ?? '',
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300,
+                                                                  fontSize: 10,
+                                                                  color: Colors
+                                                                      .white)),
+                                                    ],
+                                                  )
+                                                ]),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10)
+                                ],
+                              );
+                            }).toList(),
+                          );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: CurvedNavigationBar(

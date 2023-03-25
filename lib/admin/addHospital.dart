@@ -2233,7 +2233,7 @@ class _AddHospitalState extends State<AddHospital> {
       } else {
         newshowSnackbar(
             context,
-            'Please check Hospital Details',
+            'Please check above Details',
             'the hospital details contain a invalid format please check above the form',
             ContentType.failure);
       }

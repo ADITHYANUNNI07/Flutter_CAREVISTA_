@@ -392,7 +392,7 @@ class _HospitalListPageState extends State<HospitalListPage> {
             ),
     );
   }
-}*/
+}
 
 class HospitalList extends StatelessWidget {
   const HospitalList({Key? key}) : super(key: key);
@@ -515,4 +515,4 @@ class TopHospitalListScroll extends StatelessWidget {
               ],
             )));
   }
-}
+}*/

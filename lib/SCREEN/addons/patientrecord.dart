@@ -45,7 +45,6 @@ class _PatientRecordState extends State<PatientRecord> {
     await HelperFunction.getUserUIDFromSF().then((value) {
       setState(() {
         uid = value!;
-        print(uid);
       });
     });
     await HelperFunction.getUserNameFromSF().then((value) {
@@ -267,13 +266,18 @@ class _PatientRecordState extends State<PatientRecord> {
                                         height: 100,
                                         child: GestureDetector(
                                           onTap: () {
-                                            nextScreen(context, HospitalList()
-                                                /*RecordDetails(
-                                                    folderName:
-                                                        data['FolderName'] ??
-                                                            '',
-                                                    date: data['Date'] ?? '')*/
-                                                );
+                                            nextScreen(
+                                                context,
+                                                RecordDetails(
+                                                  folderName:
+                                                      data['FolderName'] ?? '',
+                                                  date: data['Date'] ?? '',
+                                                  folderCreatedate:
+                                                      data['UpdateDate'] ?? '',
+                                                  folderNo:
+                                                      data['FileNo'] ?? '',
+                                                  remark: data['Remark'] ?? '',
+                                                ));
                                           },
                                           child: Container(
                                             padding: const EdgeInsets.only(

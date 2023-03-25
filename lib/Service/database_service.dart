@@ -1,8 +1,4 @@
-import 'dart:io';
-
-import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 class DatabaseService {
@@ -46,10 +42,38 @@ class DatabaseService {
     final userDoc = await userCollection.doc(uid).get();
     final newCollectionRef = userDoc.reference.collection('PatientRecord');
     final currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
-    final newDocRef = await newCollectionRef.add({
+    final newDocRef = await newCollectionRef.doc(folderName).set({
       'FolderName': folderName,
       'Remark': remark,
       'Date': currentDate,
+      'FileNo': '1',
+      'UpdateDate': '',
+      'File2': '',
+      'File11': '',
+      'File3': '',
+      'File4': '',
+      'File5': '',
+      'File6': '',
+      'File7': '',
+      'File8': '',
+      'File9': '',
+      'File10': '',
+    });
+  }
+
+  Future<void> updateFolderDB(String folderId, String folderName, String remark,
+      String date, String fileNo, String file, String fileurl) async {
+    final userDoc = await userCollection.doc(uid).get();
+    final folderDoc =
+        await userDoc.reference.collection('PatientRecord').doc(folderId).get();
+    final updateDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    await folderDoc.reference.update({
+      'FolderName': folderName,
+      'Remark': remark,
+      'Date': date,
+      'FileNo': fileNo,
+      'UpdateDate': updateDate,
+      file: fileurl,
     });
   }
 

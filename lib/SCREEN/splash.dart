@@ -65,20 +65,6 @@ class _ScreenSplashState extends State<ScreenSplash> {
               height: 120,
             ),
           ),
-          Positioned(
-            left: 185,
-            bottom: 250,
-            child: Container(
-              alignment: Alignment.center,
-              height: 20,
-              width: 20,
-              child: const CircularProgressIndicator(
-                color: Color(0xFF00008F),
-                backgroundColor: Color(0xFF04FBC3),
-                strokeWidth: 3,
-              ),
-            ),
-          ),
         ],
       ),
       backgroundColor: const Color(0xFF04FBC3),
@@ -93,7 +79,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
   Future animatedShape() async {
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() => animate = true);
-    await Future.delayed(const Duration(milliseconds: 3500));
+    await Future.delayed(const Duration(milliseconds: 1000));
 
     // ignore: use_build_context_synchronously
     Navigator.of(context).pushReplacement(

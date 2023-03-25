@@ -60,6 +60,7 @@ dependencies:
   url_launcher: ^6.0.3
   maps_launcher: ^2.2.0
   geolocator: ^9.0.2
+  uuid: ^3.0.7
 
 dev_dependencies:
 

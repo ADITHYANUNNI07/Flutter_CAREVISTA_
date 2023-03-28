@@ -1,4 +1,7 @@
 import 'package:carevista_ver05/Helper/helper_function.dart';
+import 'package:carevista_ver05/SCREEN/addons/diary.dart';
+import 'package:carevista_ver05/SCREEN/addons/diseasecomplication.dart';
+import 'package:carevista_ver05/SCREEN/addons/firstAID.dart';
 import 'package:carevista_ver05/SCREEN/addons/fitness.dart';
 import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
 import 'package:carevista_ver05/SCREEN/home/favorites.dart';
@@ -205,7 +208,7 @@ class _DashboardState extends State<Dashboard> {
                 const Divider(),
                 ListTile(
                   onTap: () {
-                    nextScreen(context, const FitnessScreen());
+                    nextScreen(context, HomePage());
                   },
                   leading: Container(
                       width: 40,
@@ -420,14 +423,16 @@ class _DashboardState extends State<Dashboard> {
                                         LargeContainerOptionsWidget(
                                           icon: LineAwesomeIcons.first_aid,
                                           title: 'First AID Treatement',
-                                          onPress: () {},
-                                        ),
-                                        LargeContainerOptionsWidget(
-                                          icon: Icons.fitness_center_outlined,
-                                          title: 'Fitness',
                                           onPress: () {
                                             nextScreen(
-                                                context, FitnessScreen());
+                                                context, const FirstAID());
+                                          },
+                                        ),
+                                        LargeContainerOptionsWidget(
+                                          icon: Icons.note_add,
+                                          title: 'Diary',
+                                          onPress: () {
+                                            nextScreen(context, Diary());
                                           },
                                         ),
                                         LargeContainerOptionsWidget(
@@ -452,7 +457,10 @@ class _DashboardState extends State<Dashboard> {
                                         LargeContainerOptionsWidget(
                                           icon: LineAwesomeIcons.heartbeat,
                                           title: 'Disease Complication',
-                                          onPress: () {},
+                                          onPress: () {
+                                            nextScreen(context,
+                                                const DiseaseComplication());
+                                          },
                                         ),
                                         LargeContainerOptionsWidget(
                                           icon: Icons.favorite,

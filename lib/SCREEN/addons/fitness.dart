@@ -253,7 +253,7 @@ class _FitnessScreenState extends State<FitnessScreen> {
                                 ),
                                 SizedBox(width: 20),
                                 AreaFocusWidget(
-                                    title: 'Cheste',
+                                    title: 'Chest',
                                     image: 'Assets/images/Coach-pana.png')
                               ],
                             ),
@@ -267,7 +267,7 @@ class _FitnessScreenState extends State<FitnessScreen> {
                                 ),
                                 SizedBox(width: 20),
                                 AreaFocusWidget(
-                                    title: 'Chest',
+                                    title: 'Abs',
                                     image:
                                         'Assets/images/Personal Trainer-pana.png')
                               ],

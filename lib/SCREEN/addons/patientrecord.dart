@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carevista_ver05/Helper/helper_function.dart';
 import 'package:carevista_ver05/SCREEN/addons/recorddetails.dart';
@@ -11,6 +14,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'color.dart' as specialcolor;
 
 class PatientRecord extends StatefulWidget {
@@ -20,13 +25,16 @@ class PatientRecord extends StatefulWidget {
 }
 
 final fromKey = GlobalKey<FormState>();
+// ignore: non_constant_identifier_names
 String Fname = "";
+// ignore: non_constant_identifier_names
 String Fremark = "";
 String uid = '';
 String userName = "";
 String email = "";
 String phoneNo = "";
 bool createfolder = false;
+bool menubool = false;
 
 class _PatientRecordState extends State<PatientRecord> {
   @override
@@ -66,6 +74,10 @@ class _PatientRecordState extends State<PatientRecord> {
     });
   }
 
+  // ignore: non_constant_identifier_names
+  final Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+  late File pdfFile;
   Widget build(BuildContext context) {
     int selsctedIconIndex = 0;
     return Container(
@@ -238,7 +250,7 @@ class _PatientRecordState extends State<PatientRecord> {
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('users')
-                        .doc(uid)
+                        .doc(Uid)
                         .collection('PatientRecord')
                         .snapshots(),
                     builder: (BuildContext context,
@@ -263,7 +275,7 @@ class _PatientRecordState extends State<PatientRecord> {
                                     children: [
                                       SizedBox(
                                         width: 318,
-                                        height: 100,
+                                        height: menubool == false ? 110 : 190,
                                         child: GestureDetector(
                                           onTap: () {
                                             nextScreen(
@@ -274,14 +286,27 @@ class _PatientRecordState extends State<PatientRecord> {
                                                   date: data['Date'] ?? '',
                                                   folderCreatedate:
                                                       data['UpdateDate'] ?? '',
-                                                  folderNo:
-                                                      data['FileNo'] ?? '',
+                                                  imageNo:
+                                                      data['ImageNo'] ?? '',
+                                                  pdfNo: data['PDFNo'] ?? '',
                                                   remark: data['Remark'] ?? '',
+                                                  fileurl1: data['File2'] ?? '',
+                                                  fileurl2: data['File3'] ?? '',
+                                                  fileurl3: data['File4'] ?? '',
+                                                  fileurl4: data['File5'] ?? '',
+                                                  fileurl5: data['File6'] ?? '',
+                                                  fileurl6: data['File7'] ?? '',
+                                                  fileurl7: data['File8'] ?? '',
+                                                  fileurl8: data['File9'] ?? '',
+                                                  fileurl9:
+                                                      data['File10'] ?? '',
+                                                  fileurl10:
+                                                      data['File11'] ?? '',
                                                 ));
                                           },
                                           child: Container(
                                             padding: const EdgeInsets.only(
-                                                left: 30, right: 10, top: 10),
+                                                left: 30, right: 10, top: 5),
                                             decoration: BoxDecoration(
                                                 gradient: LinearGradient(
                                                     colors: [
@@ -310,12 +335,50 @@ class _PatientRecordState extends State<PatientRecord> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(data['FolderName'] ?? '',
-                                                      style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontSize: 27,
-                                                          color: Colors.white)),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                          data['FolderName'] ??
+                                                              '',
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontSize: 27,
+                                                                  color: Colors
+                                                                      .white)),
+                                                      Expanded(
+                                                          child: Container()),
+                                                      IconButton(
+                                                          onPressed: () {
+                                                            if (menubool ==
+                                                                false) {
+                                                              setState(() {
+                                                                menubool = true;
+                                                              });
+                                                            } else {
+                                                              setState(() {
+                                                                menubool =
+                                                                    false;
+                                                              });
+                                                            }
+                                                          },
+                                                          icon: menubool ==
+                                                                  false
+                                                              ? const Icon(
+                                                                  Icons.menu,
+                                                                  color: Colors
+                                                                      .white,
+                                                                )
+                                                              : const Icon(
+                                                                  Icons
+                                                                      .menu_open,
+                                                                  color: Colors
+                                                                      .white,
+                                                                ))
+                                                    ],
+                                                  ),
                                                   const SizedBox(height: 7),
                                                   Text(data['Remark'] ?? '',
                                                       style: const TextStyle(
@@ -338,7 +401,193 @@ class _PatientRecordState extends State<PatientRecord> {
                                                                   color: Colors
                                                                       .white)),
                                                     ],
-                                                  )
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  menubool == false
+                                                      ? Container()
+                                                      : Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 10,
+                                                                  right: 10),
+                                                          height: 50,
+                                                          width:
+                                                              double.infinity,
+                                                          decoration: const BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius: BorderRadius.only(
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          10))),
+                                                          child: Row(
+                                                            children: [
+                                                              IconButton(
+                                                                onPressed: () {
+                                                                  nextScreen(
+                                                                      context,
+                                                                      RecordDetails(
+                                                                        folderName:
+                                                                            data['FolderName'] ??
+                                                                                '',
+                                                                        date: data['Date'] ??
+                                                                            '',
+                                                                        folderCreatedate:
+                                                                            data['UpdateDate'] ??
+                                                                                '',
+                                                                        imageNo:
+                                                                            data['ImageNo'] ??
+                                                                                '',
+                                                                        pdfNo: data['PDFNo'] ??
+                                                                            '',
+                                                                        remark:
+                                                                            data['Remark'] ??
+                                                                                '',
+                                                                        fileurl1:
+                                                                            data['File2'] ??
+                                                                                '',
+                                                                        fileurl2:
+                                                                            data['File3'] ??
+                                                                                '',
+                                                                        fileurl3:
+                                                                            data['File4'] ??
+                                                                                '',
+                                                                        fileurl4:
+                                                                            data['File5'] ??
+                                                                                '',
+                                                                        fileurl5:
+                                                                            data['File6'] ??
+                                                                                '',
+                                                                        fileurl6:
+                                                                            data['File7'] ??
+                                                                                '',
+                                                                        fileurl7:
+                                                                            data['File8'] ??
+                                                                                '',
+                                                                        fileurl8:
+                                                                            data['File9'] ??
+                                                                                '',
+                                                                        fileurl9:
+                                                                            data['File10'] ??
+                                                                                '',
+                                                                        fileurl10:
+                                                                            data['File11'] ??
+                                                                                '',
+                                                                      ));
+                                                                },
+                                                                icon: const Icon(
+                                                                    Icons
+                                                                        .file_open,
+                                                                    color: Color(
+                                                                        0XFF407BFF)),
+                                                              ),
+                                                              Expanded(
+                                                                  child:
+                                                                      Container()),
+                                                              IconButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  // Set the email subject
+                                                                  const String
+                                                                      subject =
+                                                                      'Carevista';
+
+                                                                  // Create the email body by concatenating file URLs using string interpolation
+                                                                  String body =
+                                                                      '${data['File2'] ?? ''} ${data['File3'] ?? ''} ${data['File4'] ?? ''} ${data['File5'] ?? ''} ${data['File6'] ?? ''} ${data['File7'] ?? ''} ${data['File8'] ?? ''} ${data['File9'] ?? ''} ${data['File10'] ?? ''} ${data['File11'] ?? ''}';
+
+                                                                  // Encode the subject and body into a URI format
+                                                                  final Uri
+                                                                      params =
+                                                                      Uri(
+                                                                    scheme:
+                                                                        'mailto',
+                                                                    query:
+                                                                        'subject=$subject&body=$body',
+                                                                  );
+
+                                                                  // Convert the URI to a string
+                                                                  final String
+                                                                      url =
+                                                                      params
+                                                                          .toString();
+
+                                                                  // Launch the email client with the subject and body pre-filled
+                                                                  if (await canLaunch(
+                                                                      url)) {
+                                                                    await launch(
+                                                                        url);
+                                                                  } else {
+                                                                    throw 'Could not launch $url';
+                                                                  }
+                                                                },
+                                                                icon:
+                                                                    Image.asset(
+                                                                  'Assets/images/gmail (1).png',
+                                                                  width: 40,
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                  child:
+                                                                      Container()),
+                                                              IconButton(
+                                                                onPressed: () {
+                                                                  showDialog(
+                                                                      barrierDismissible:
+                                                                          false,
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (context) {
+                                                                        return AlertDialog(
+                                                                          title:
+                                                                              const Text("Delect This Folder"),
+                                                                          content:
+                                                                              Text("Are you sure you want to Delect This ${data['FolderName'] ?? ''}"),
+                                                                          actions: [
+                                                                            IconButton(
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              icon: const Icon(
+                                                                                Icons.cancel,
+                                                                                color: Colors.red,
+                                                                              ),
+                                                                            ),
+                                                                            IconButton(
+                                                                              onPressed: () async {
+                                                                                DocumentReference docRef = FirebaseFirestore.instance.collection('users').doc(uid).collection('PatientRecord').doc('${data['FolderName'] ?? ''}');
+                                                                                docRef.delete().then((value) => print('Document deleted')).catchError((error) => print('Error deleting document: $error'));
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              icon: const Icon(
+                                                                                Icons.done,
+                                                                                color: Colors.green,
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        );
+                                                                      });
+                                                                },
+                                                                icon: const Icon(
+                                                                    Icons
+                                                                        .delete,
+                                                                    color: Color(
+                                                                        0XFF407BFF)),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        )
                                                 ]),
                                           ),
                                         ),

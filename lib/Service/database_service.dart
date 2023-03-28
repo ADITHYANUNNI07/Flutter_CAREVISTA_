@@ -1,3 +1,4 @@
+import 'package:carevista_ver05/SCREEN/addons/recorddetails.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
@@ -42,11 +43,13 @@ class DatabaseService {
     final userDoc = await userCollection.doc(uid).get();
     final newCollectionRef = userDoc.reference.collection('PatientRecord');
     final currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    // ignore: unused_local_variable
     final newDocRef = await newCollectionRef.doc(folderName).set({
       'FolderName': folderName,
       'Remark': remark,
       'Date': currentDate,
-      'FileNo': '1',
+      'ImageNo': '1',
+      'PDFNo': '5',
       'UpdateDate': '',
       'File2': '',
       'File11': '',
@@ -61,8 +64,15 @@ class DatabaseService {
     });
   }
 
-  Future<void> updateFolderDB(String folderId, String folderName, String remark,
-      String date, String fileNo, String file, String fileurl) async {
+  Future<void> updateFolderDB(
+      String folderId,
+      String folderName,
+      String remark,
+      String date,
+      String imageNo,
+      String pdfNo,
+      String file,
+      String fileurl) async {
     final userDoc = await userCollection.doc(uid).get();
     final folderDoc =
         await userDoc.reference.collection('PatientRecord').doc(folderId).get();
@@ -71,9 +81,24 @@ class DatabaseService {
       'FolderName': folderName,
       'Remark': remark,
       'Date': date,
-      'FileNo': fileNo,
+      'ImageNo': imageNo,
+      'PDFNo': pdfNo,
       'UpdateDate': updateDate,
       file: fileurl,
+    });
+  }
+
+  Future diaryDB(String title, String note) async {
+    final userDoc = await userCollection.doc(uid).get();
+    // ignore: unused_local_variable
+    final newCollectionRef = userDoc.reference.collection('Diary');
+    // ignore: unused_local_variable
+    final currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    final newDocRef = await newCollectionRef.doc(title).set({
+      'Title': title,
+      'Diary': note,
+      'Date': currentDate,
+      'UpdateDate': '',
     });
   }
 

@@ -59,8 +59,10 @@ dependencies:
   fluttertoast: ^8.2.1
   url_launcher: ^6.0.3
   maps_launcher: ^2.2.0
-  geolocator: ^9.0.2
   uuid: ^3.0.7
+  file_picker: ^5.2.6
+  geolocator: ^9.0.2
+ 
 
 dev_dependencies:
 

@@ -5,6 +5,14 @@ import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:carevista_ver05/Theme/theme.dart';
+import 'package:geolocator/geolocator.dart';
+import 'dart:math' show cos, sqrt, asin;
+import 'dart:async';
+import 'dart:math' show cos, sqrt, asin;
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
 
 class Favorites extends StatefulWidget {
   @override
@@ -515,4 +523,338 @@ class TopHospitalListScroll extends StatelessWidget {
               ],
             )));
   }
+}
+
+class HospitalList extends StatefulWidget {
+  const HospitalList({Key? key}) : super(key: key);
+
+  @override
+  _HospitalListState createState() => _HospitalListState();
+}
+
+class _HospitalListState extends State<HospitalList> {
+  Position? _currentPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  void _getCurrentLocation() async {
+    final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      _currentPosition = position;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final txttheme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('hospitals').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData || _currentPosition == null) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final List<DocumentSnapshot> hospitals = snapshot.data!.docs;
+          final List<DocumentSnapshot> sortedHospitals =
+              _sortHospitalsByDistance(hospitals, _currentPosition!);
+
+          return ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: sortedHospitals.length,
+            itemBuilder: (BuildContext context, int index) {
+              DocumentSnapshot data = sortedHospitals[index];
+              return Row(
+                children: [
+                  HospitalListScroll(
+                    txttheme: txttheme,
+                    hospitalName: data['hospitalName'],
+                    district: data['district'],
+                    imageSrc: data['Logo'],
+                    onPress: () {
+                      // Handle hospital selection
+                    },
+                  ),
+                  const SizedBox(width: 20),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class HospitalListScroll extends StatelessWidget {
+  const HospitalListScroll({
+    Key? key,
+    required this.hospitalName,
+    required this.district,
+    required this.imageSrc,
+    required this.txttheme,
+    required this.onPress,
+  }) : super(key: key);
+
+  final String hospitalName;
+  final String district;
+  final String imageSrc;
+  final ThemeData txttheme;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: onPress,
+        child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 100,
+                  width: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    image: DecorationImage(
+                      image: NetworkImage(imageSrc),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        hospitalName,
+                        style: txttheme.textTheme.headline6,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )));
+  }
+}
+
+
+class HospitalWithDistance {
+  final DocumentSnapshot hospital;
+  final double distanceInMeters;
+
+  HospitalWithDistance(
+      {required this.hospital, required this.distanceInMeters});
+}
+
+class HospitalsList extends StatefulWidget {
+  const HospitalsList({Key? key}) : super(key: key);
+
+  @override
+  _HospitalsListState createState() => _HospitalsListState();
+}
+
+class _HospitalsListState extends State<HospitalsList> {
+  late Position _currentPosition;
+  bool _isLoading = true;
+  late List<DocumentSnapshot> _hospitals;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      final Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      setState(() {
+        _currentPosition = position;
+      });
+      await _getHospitals();
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      print(e);
+    }
+  }
+
+  Future<void> _getHospitals() async {
+    final CollectionReference hospitalsRef =
+        FirebaseFirestore.instance.collection('hospitals');
+    final QuerySnapshot querySnapshot = await hospitalsRef.get();
+    final List<DocumentSnapshot> hospitals = querySnapshot.docs;
+    final List<DocumentSnapshot> sortedHospitals =
+        _sortHospitalsByDistance(hospitals, _currentPosition);
+    setState(() {
+      _isLoading = false;
+      _hospitals = sortedHospitals;
+    });
+  }
+
+  List<DocumentSnapshot> _sortHospitalsByDistance(
+      List<DocumentSnapshot> hospitals, Position currentPosition) {
+    final List<HospitalWithDistance> hospitalsWithDistances =
+        hospitals.map((hospital) {
+      final double distanceInMeters = _calculateDistanceInMeters(
+          currentPosition.latitude,
+          currentPosition.longitude,
+          hospital['location']['latitude'],
+          hospital['location']['longitude']);
+      return HospitalWithDistance(
+        hospital: hospital,
+        distanceInMeters: distanceInMeters,
+      );
+    }).toList();
+    hospitalsWithDistances
+        .sort((a, b) => a.distanceInMeters.compareTo(b.distanceInMeters));
+    return hospitalsWithDistances
+        .map((hospitalWithDistance) => hospitalWithDistance.hospital)
+        .toList();
+  }
+
+  double _calculateDistanceInMeters(
+      double lat1, double lon1, double lat2, double lon2) {
+    const int radiusOfEarthInMeters = 6371000;
+    final double latDistance = _toRadians(lat2 - lat1);
+    final double lonDistance = _toRadians(lon2 - lon1);
+    final double a = sin(latDistance / 2) * sin(latDistance / 2) +
+        cos(_toRadians(lat1)) *
+            cos(_toRadians(lat2)) *
+            sin(lonDistance / 2) *
+            sin(lonDistance / 2);
+    final double c = 2 * asin(sqrt(a));
+    return radiusOfEarthInMeters * c;
+  }
 }*/
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late Position currentPosition;
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    setState(() {
+      isLoading = true;
+    });
+    currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Nearest Hospitals'),
+      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : HospitalList(currentPosition: currentPosition),
+    );
+  }
+}
+
+class HospitalList extends StatefulWidget {
+  final Position currentPosition;
+
+  const HospitalList({Key? key, required this.currentPosition})
+      : super(key: key);
+
+  @override
+  _HospitalListState createState() => _HospitalListState();
+}
+
+class _HospitalListState extends State<HospitalList> {
+  List<DocumentSnapshot> hospitals = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getHospitals();
+  }
+
+  Future<void> _getHospitals() async {
+    final QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('hospitals').get();
+    setState(() {
+      hospitals = snapshot.docs;
+      hospitals.sort((a, b) {
+        double distanceToA = calculateDistance(
+            widget.currentPosition.latitude,
+            widget.currentPosition.longitude,
+            a['location'].latitude,
+            a['location'].longitude);
+        double distanceToB = calculateDistance(
+            widget.currentPosition.latitude,
+            widget.currentPosition.longitude,
+            b['location'].latitude,
+            b['location'].longitude);
+        return distanceToA.compareTo(distanceToB);
+      });
+    });
+  }
+
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    const p = 0.017453292519943295;
+    final a = 0.5 -
+        cos((lat2 - lat1) * p) / 2 +
+        cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: hospitals.length,
+      itemBuilder: (BuildContext context, int index) {
+        final hospital = hospitals[index];
+        double distanceToHospital = calculateDistance(
+            widget.currentPosition.latitude,
+            widget.currentPosition.longitude,
+            hospital['location'].latitude,
+            hospital['location'].longitude);
+        return ListTile(
+          title: Text(hospital['name']),
+          subtitle: Text('${distanceToHospital.toStringAsFixed(2)} km away'),
+        );
+      },
+    );
+  }
+}

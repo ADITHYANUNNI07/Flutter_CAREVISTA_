@@ -77,7 +77,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
   }
 
   Future animatedShape() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 950));
     setState(() => animate = true);
     await Future.delayed(const Duration(milliseconds: 1000));
 

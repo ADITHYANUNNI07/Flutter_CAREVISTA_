@@ -115,6 +115,7 @@ class _HospitalPageState extends State<HospitalPage> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
         body: Container(
       decoration: const BoxDecoration(
@@ -182,7 +183,7 @@ class _HospitalPageState extends State<HospitalPage> {
                   widget.hospitalName,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 19,
                       fontWeight: FontWeight.w600,
                       color: specialcolor.AppColor.secondPageTitleColor),
                 ),
@@ -192,7 +193,7 @@ class _HospitalPageState extends State<HospitalPage> {
                       fontSize: 15,
                       color: specialcolor.AppColor.secondPageTitleColor),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

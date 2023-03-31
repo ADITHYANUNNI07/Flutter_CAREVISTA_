@@ -43,7 +43,8 @@ class _AddHospitalState extends State<AddHospital> {
   final fromKey = GlobalKey<FormState>();
   TimeOfDay pickedTime = TimeOfDay(hour: 8, minute: 30);
   String hospitalname = "";
-
+  String lat = '';
+  String long = "";
   String district = "";
   String location = "";
   String phone = "";
@@ -437,7 +438,71 @@ class _AddHospitalState extends State<AddHospital> {
                               }
                             },
                             icon: Icons.location_on),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 15),
+                        Container(
+                          padding: const EdgeInsets.only(
+                              top: 20, left: 10, right: 10),
+                          width: double.infinity,
+                          height: 280,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Theme.of(context).cardColor),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                      child: Text(
+                                    'Latitude & Longitude',
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  )),
+                                ],
+                              ),
+                              const SizedBox(height: 15),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                      child: TextFormFieldOvalWidget(
+                                          labelText: 'Latitude',
+                                          onChange: (value) {
+                                            lat = value;
+                                          },
+                                          validator: (val) {
+                                            if (val!.isEmpty) {
+                                              return "Enter Latitude";
+                                            } else {}
+                                          },
+                                          icon: Icons.place_outlined))
+                                ],
+                              ),
+                              const SizedBox(height: 15),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                      child: TextFormFieldOvalWidget(
+                                          labelText: 'Longitude',
+                                          onChange: (value) {
+                                            long = value;
+                                          },
+                                          validator: (val) {
+                                            if (val!.isEmpty) {
+                                              return "Enter Latitude";
+                                            } else {}
+                                          },
+                                          icon: Icons.place_outlined))
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 15),
                         Container(
                           padding: const EdgeInsets.all(10),
                           width: double.infinity,
@@ -2225,13 +2290,16 @@ class _AddHospitalState extends State<AddHospital> {
             image4Url,
             image5Url,
             widget.username,
-            widget.userphoneno);
+            widget.userphoneno,
+            lat,
+            long);
+        // ignore: use_build_context_synchronously
         newshowSnackbar(context, 'Successfully',
             'successfully upload the hospital details', ContentType.success);
       } else {
         newshowSnackbar(
             context,
-            'Please check above Details',
+            'Check above Details',
             'the hospital details contain a invalid format please check above the form',
             ContentType.failure);
       }

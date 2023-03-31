@@ -5,14 +5,8 @@ import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:carevista_ver05/Theme/theme.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'dart:math' show cos, sqrt, asin;
-import 'dart:async';
-import 'dart:math' show cos, sqrt, asin;
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geolocator/geolocator.dart';
 
 class Favorites extends StatefulWidget {
   @override
@@ -749,7 +743,7 @@ class _HospitalsListState extends State<HospitalsList> {
     final double c = 2 * asin(sqrt(a));
     return radiusOfEarthInMeters * c;
   }
-}*/
+}
 
 class HomePage extends StatefulWidget {
   @override
@@ -855,6 +849,144 @@ class _HospitalListState extends State<HospitalList> {
           subtitle: Text('${distanceToHospital.toStringAsFixed(2)} km away'),
         );
       },
+    );
+  }
+}
+
+class LocationDemo extends StatefulWidget {
+  @override
+  _LocationDemoState createState() => _LocationDemoState();
+}
+
+class _LocationDemoState extends State<LocationDemo> {
+  Location _location = Location();
+  LocationData? _currentLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    _getLocation();
+  }
+
+  Future<void> _getLocation() async {
+    try {
+      final hasPermission = await _location.hasPermission();
+      if (hasPermission == PermissionStatus.denied) {
+        await _location.requestPermission();
+      }
+      final locationData = await _location.getLocation();
+      setState(() {
+        _currentLocation = locationData;
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Location Demo'),
+      ),
+      body: Center(
+        child: _currentLocation == null
+            ? CircularProgressIndicator()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Latitude: ${_currentLocation!.latitude}'),
+                  Text('Longitude: ${_currentLocation!.longitude}'),
+                ],
+              ),
+      ),
+    );
+  }
+}*/
+
+class Hospitallak {
+  final String name;
+  final double lat;
+  final double lng;
+
+  Hospitallak({
+    required this.name,
+    required this.lat,
+    required this.lng,
+  });
+}
+
+class HospitalListPage extends StatefulWidget {
+  final List<Hospitallak> hospitals;
+
+  HospitalListPage({required this.hospitals});
+
+  @override
+  _HospitalListPageState createState() => _HospitalListPageState();
+}
+
+class _HospitalListPageState extends State<HospitalListPage> {
+  LocationData? _currentLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      final location = Location();
+      final currentLocation = await location.getLocation();
+      setState(() {
+        _currentLocation = currentLocation;
+      });
+    } catch (e) {
+      print('Error getting location: $e');
+    }
+  }
+
+  double _calculateDistance(
+      double lat1, double lng1, double lat2, double lng2) {
+    const p = 0.017453292519943295; // 1 degree = 0.017453292519943295 radians
+    final a = 0.5 -
+        cos((lat2 - lat1) * p) / 2 +
+        cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lng2 - lng1) * p)) / 2;
+    return 12742 * asin(sqrt(a)); // 2 * R; R = 6371 km
+  }
+
+  List<Hospitallak> _sortHospitalsByDistance() {
+    if (_currentLocation == null) {
+      return widget.hospitals;
+    }
+    final sortedHospitals = List.of(widget.hospitals);
+    sortedHospitals.sort((a, b) {
+      final distanceA = _calculateDistance(_currentLocation!.latitude!,
+          _currentLocation!.longitude!, a.lat, a.lng);
+      final distanceB = _calculateDistance(_currentLocation!.latitude!,
+          _currentLocation!.longitude!, b.lat, b.lng);
+      return distanceA.compareTo(distanceB);
+    });
+    return sortedHospitals;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Hospitals'),
+      ),
+      body: ListView(
+        children: _sortHospitalsByDistance().map((hospital) {
+          return ListTile(
+            title: Text(hospital.name),
+            subtitle: _currentLocation != null
+                ? Text(
+                    'Distance: ${_calculateDistance(_currentLocation!.latitude!, _currentLocation!.longitude!, hospital.lat, hospital.lng).toStringAsFixed(2)} km')
+                : null,
+          );
+        }).toList(),
+      ),
     );
   }
 }

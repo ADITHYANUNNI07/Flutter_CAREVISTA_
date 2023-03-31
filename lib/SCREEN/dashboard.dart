@@ -17,21 +17,29 @@ import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:humanitarian_icons/humanitarian_icons.dart';
 import 'addons/color.dart' as specialcolor;
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:location/location.dart';
+import 'dart:math';
 
 class Dashboard extends StatefulWidget {
-  Dashboard({
+  const Dashboard({
     super.key,
   });
 
   @override
   State<Dashboard> createState() => _DashboardState();
 }
+
+final hospitals = [
+  Hospitallak(name: 'Hospital A', lat: 8.875765, lng: 76.644053),
+  Hospitallak(name: 'Hospital B', lat: 9.03316, lng: 76.923846),
+  Hospitallak(
+      name: 'Hospital C', lat: 9.077343279371524, lng: 76.80164613881841),
+  Hospitallak(name: 'Hospital D', lat: 12.507304, lng: 74.990760),
+];
 
 class _DashboardState extends State<Dashboard> {
   String userName = "";
@@ -44,10 +52,20 @@ class _DashboardState extends State<Dashboard> {
   AuthService authService = AuthService();
   int selsctedIconIndex = 2;
   bool saveIcon = false;
+  LocationData? _locationData;
+  List<DocumentSnapshot> sortedHospitals = [];
+
   @override
   void initState() {
     super.initState();
     gettingUserData();
+    _getLocation();
+  }
+
+  void _getLocation() async {
+    var locationService = Location();
+    _locationData = await locationService.getLocation();
+    setState(() {});
   }
 
   @override
@@ -89,6 +107,26 @@ class _DashboardState extends State<Dashboard> {
         uid = value!;
       });
     });
+  }
+
+  double _calculateDistance(
+      double lat1, double lon1, LocationData locationData) {
+    final double lat2 = locationData.latitude!;
+    final double lon2 = locationData.longitude!;
+    const int radiusOfEarth = 6371;
+    double dLat = _toRadians(lat2 - lat1);
+    double dLon = _toRadians(lon2 - lon1);
+    double a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRadians(lat1)) *
+            cos(_toRadians(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
+    double c = 2 * asin(sqrt(a));
+    return radiusOfEarth * c;
+  }
+
+  double _toRadians(double degree) {
+    return degree * pi / 180;
   }
 
   @override
@@ -208,7 +246,7 @@ class _DashboardState extends State<Dashboard> {
                 const Divider(),
                 ListTile(
                   onTap: () {
-                    nextScreen(context, HomePage());
+                    nextScreen(context, HospitalListPage(hospitals: hospitals));
                   },
                   leading: Container(
                       width: 40,
@@ -380,110 +418,228 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
-                      height: 300,
-                      child: SizedBox(
-                        width: 340,
-                        height: 300,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: MyApp.themeNotifier.value ==
-                                            ThemeMode.light
-                                        ? Colors.white
-                                        : Colors.black,
-                                    borderRadius: const BorderRadius.only(
-                                        bottomLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
-                                        topLeft: Radius.circular(10),
-                                        topRight: Radius.circular(10)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        offset: const Offset(5, 10),
-                                        blurRadius: 28,
-                                        color: MyApp.themeNotifier.value ==
-                                                ThemeMode.light
-                                            ? specialcolor
-                                                .AppColor.gradientSecond
-                                                .withOpacity(0.5)
-                                            : Colors.black87,
-                                      )
-                                    ]),
-                                padding: const EdgeInsets.only(
-                                    top: 38, left: 10, right: 10, bottom: 38),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        LargeContainerOptionsWidget(
-                                          icon: LineAwesomeIcons.first_aid,
-                                          title: 'First AID Treatement',
-                                          onPress: () {
-                                            nextScreen(
-                                                context, const FirstAID());
-                                          },
-                                        ),
-                                        LargeContainerOptionsWidget(
-                                          icon: Icons.note_add,
-                                          title: 'Diary',
-                                          onPress: () {
-                                            nextScreen(context, Diary());
-                                          },
-                                        ),
-                                        LargeContainerOptionsWidget(
-                                          icon: Icons.alarm_add,
-                                          title: 'Medicine Reminder',
-                                          onPress: () {},
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        LargeContainerOptionsWidget(
-                                          icon: Icons.library_books_outlined,
-                                          title: 'Patient Record',
-                                          onPress: () {
-                                            nextScreen(
-                                                context, PatientRecord());
-                                          },
-                                        ),
-                                        LargeContainerOptionsWidget(
-                                          icon: LineAwesomeIcons.heartbeat,
-                                          title: 'Disease Complication',
-                                          onPress: () {
-                                            nextScreen(context,
-                                                const DiseaseComplication());
-                                          },
-                                        ),
-                                        LargeContainerOptionsWidget(
-                                          icon: Icons.favorite,
-                                          title: 'Favorites',
-                                          onPress: () {},
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                    height: size.height - 500,
+                    child: SizedBox(
+                      width: size.width,
+                      height: size.height,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: MyApp.themeNotifier.value ==
+                                          ThemeMode.light
+                                      ? Colors.white
+                                      : Colors.black,
+                                  borderRadius: const BorderRadius.only(
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: const Offset(5, 10),
+                                      blurRadius: 28,
+                                      color: MyApp.themeNotifier.value ==
+                                              ThemeMode.light
+                                          ? specialcolor.AppColor.gradientSecond
+                                              .withOpacity(0.5)
+                                          : Colors.black87,
+                                    )
+                                  ]),
+                              padding: const EdgeInsets.only(
+                                  top: 38, left: 5, right: 5, bottom: 38),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      LargeContainerOptionsWidget(
+                                        icon: LineAwesomeIcons.first_aid,
+                                        title: 'First AID Treatement',
+                                        onPress: () {
+                                          nextScreen(context, const FirstAID());
+                                        },
+                                      ),
+                                      LargeContainerOptionsWidget(
+                                        icon: Icons.note_add,
+                                        title: 'Diary',
+                                        onPress: () {
+                                          nextScreen(context, Diary());
+                                        },
+                                      ),
+                                      LargeContainerOptionsWidget(
+                                        icon: Icons.alarm_add,
+                                        title: 'Medicine Reminder',
+                                        onPress: () {},
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      LargeContainerOptionsWidget(
+                                        icon: Icons.library_books_outlined,
+                                        title: 'Patient Record',
+                                        onPress: () {
+                                          nextScreen(context, PatientRecord());
+                                        },
+                                      ),
+                                      LargeContainerOptionsWidget(
+                                        icon: LineAwesomeIcons.heartbeat,
+                                        title: 'Disease Complication',
+                                        onPress: () {
+                                          nextScreen(context,
+                                              const DiseaseComplication());
+                                        },
+                                      ),
+                                      LargeContainerOptionsWidget(
+                                        icon: Icons.favorite,
+                                        title: 'Favorites',
+                                        onPress: () {},
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
                   const SizedBox(height: 20),
                   Text(
-                    'Top Hospitals',
+                    'Nearest Hospitals',
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
-                    height: 240,
+                    height: size.height / 3.5,
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('hospitals')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData || _locationData == null) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+
+                        final List<DocumentSnapshot> hospitals =
+                            snapshot.data!.docs;
+                        hospitals.sort((a, b) {
+                          final double distanceA = _calculateDistance(
+                              double.parse(a['Latitude']),
+                              double.parse(a['Longitude']),
+                              _locationData!);
+                          final double distanceB = _calculateDistance(
+                              double.parse(b['Latitude']),
+                              double.parse(b['Longitude']),
+                              _locationData!);
+                          return distanceA.compareTo(distanceB);
+                        });
+                        sortedHospitals = hospitals;
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: sortedHospitals.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            DocumentSnapshot data = sortedHospitals[index];
+                            final double distance = _calculateDistance(
+                                double.parse(data['Latitude']),
+                                double.parse(data['Longitude']),
+                                _locationData!);
+                            return Row(
+                              children: [
+                                TopHospitalListScroll(
+                                  hospitalName: data['hospitalName'],
+                                  district: data['district'],
+                                  imageSrc: data['Logo'],
+                                  onPressIcon: () {
+                                    setState(() {
+                                      if (saveIcon == true) {
+                                        saveIcon = false;
+                                      } else {
+                                        saveIcon = true;
+                                      }
+                                    });
+                                  },
+                                  Adkey: adKey,
+                                  uploaderName:
+                                      '${distance.toStringAsFixed(2).toString()} Km',
+                                  sIcon: saveIcon,
+                                  txttheme: txttheme,
+                                  onPress: () {
+                                    nextScreen(
+                                        context,
+                                        HospitalPage(
+                                          hospitalName: data['hospitalName'],
+                                          district: data['district'],
+                                          logo: data['Logo'],
+                                          address: data['address'],
+                                          affiliatted:
+                                              data['affiliateduniversity'],
+                                          ambulanceNo: data['ambulanceNo'],
+                                          bedNo: data['bedNo'],
+                                          doctorsNo: data['doctorsNo'],
+                                          emergencydpt:
+                                              data['emergencydepartment'],
+                                          sitlink: data['sitLink'],
+                                          govtprivate: data['GovtorPrivate'],
+                                          highlight: data['highlight'],
+                                          hospital1: data['hospital1'],
+                                          hospital2: data['hospital2'],
+                                          hospital3: data['hospital3'],
+                                          image1url: data['image1'],
+                                          image2url: data['image2'],
+                                          image3url: data['image3'],
+                                          image4url: data['image4'],
+                                          image5url: data['image5'],
+                                          length: data['uploadDocternumber'],
+                                          location: data['location'],
+                                          overview: data['overview'],
+                                          phoneno: data['phoneno'],
+                                          sdistance1:
+                                              data['surroundingdistance1'],
+                                          sdistance2:
+                                              data['surroundingdistance2'],
+                                          service: data['services'],
+                                          splace1: data['surroundingplace1'],
+                                          splace2: data['surroundingplace2'],
+                                          stime1: data['surroundingtime1'],
+                                          stime2: data['surroundingtime2'],
+                                          time: data['time'],
+                                          type: data['type'],
+                                          year: data['establishedYear'],
+                                          doctorSpeciality: List.from(
+                                              data['doctorName&Specialist']),
+                                          doctordetails: _buildDoctorList(data),
+                                        ));
+                                  },
+                                ),
+                                const SizedBox(width: 20),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'All Hospitals',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: size.height / 3.5,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('hospitals')
@@ -773,9 +929,112 @@ class TopHospitalListScroll extends StatefulWidget {
 class _TopHospitalListScrollState extends State<TopHospitalListScroll> {
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return SizedBox(
-      width: 325,
-      height: 229,
+      width: size.width - 30,
+      height: size.height / 2,
+      child: InkWell(
+        onTap: widget.onPress,
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              gradient: purpleGradient,
+              borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10)),
+              boxShadow: [
+                BoxShadow(
+                  offset: const Offset(5, 10),
+                  blurRadius: 28,
+                  color: MyApp.themeNotifier.value == ThemeMode.light
+                      ? specialcolor.AppColor.gradientSecond.withOpacity(0.5)
+                      : Colors.black87,
+                )
+              ]),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // ignore: prefer_const_literals_to_create_immutables
+                children: [
+                  Flexible(child: Container()),
+                  SizedBox(
+                    width: 120,
+                    height: 120,
+                    child: CircleAvatar(
+                      backgroundImage: Image.network(widget.imageSrc).image,
+                      radius: 50,
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 15),
+              Text(
+                widget.hospitalName,
+                style: GoogleFonts.montserrat(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    color: specialcolor.AppColor.homePageContainerTextSmall),
+                textAlign: TextAlign.center,
+              ),
+              Text(widget.district,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: specialcolor.AppColor.homePageContainerTextSmall)),
+              const SizedBox(height: 5),
+              widget.Adkey == true
+                  ? Text(widget.uploaderName,
+                      style: TextStyle(
+                          fontSize: 10,
+                          color:
+                              specialcolor.AppColor.homePageContainerTextSmall))
+                  : SizedBox(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class NearestHospitalListScroll extends StatefulWidget {
+  const NearestHospitalListScroll({
+    Key? key,
+    required this.txttheme,
+    required this.onPress,
+    required this.onPressIcon,
+    required this.sIcon,
+    required this.hospitalName,
+    required this.district,
+    required this.imageSrc,
+    required this.uploaderName,
+    required this.Adkey,
+  }) : super(key: key);
+  final VoidCallback onPress;
+  final VoidCallback onPressIcon;
+  final bool sIcon;
+  final bool Adkey;
+  final TextTheme txttheme;
+  final String hospitalName;
+  final String district;
+  final String uploaderName;
+  final String imageSrc;
+  @override
+  State<NearestHospitalListScroll> createState() =>
+      _NearestHospitalListScrollState();
+}
+
+class _NearestHospitalListScrollState extends State<NearestHospitalListScroll> {
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return SizedBox(
+      width: size.width - 30,
+      height: size.height / 2,
       child: InkWell(
         onTap: widget.onPress,
         child: Container(
@@ -916,11 +1175,12 @@ class LargeContainerOptionsWidget extends StatelessWidget {
   final VoidCallback onPress;
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: onPress,
       child: Container(
         height: 100,
-        width: 100,
+        width: 105,
         padding: const EdgeInsets.only(top: 10, left: 10),
         child: Column(
           //crossAxisAlignment: CrossAxisAlignment.center,

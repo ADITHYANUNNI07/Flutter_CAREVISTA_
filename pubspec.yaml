@@ -61,7 +61,8 @@ dependencies:
   maps_launcher: ^2.2.0
   uuid: ^3.0.7
   file_picker: ^5.2.6
-  geolocator: ^9.0.2
+  location: ^4.4.0
+
  
 
 dev_dependencies:

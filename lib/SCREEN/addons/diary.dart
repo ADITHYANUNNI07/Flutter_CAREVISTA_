@@ -252,7 +252,7 @@ class _DiaryState extends State<Diary> with SingleTickerProviderStateMixin {
                           },
                           child: Container(
                             padding: const EdgeInsets.only(left: 20, right: 20),
-                            height: createDiary == false ? 49 : 400 + 215,
+                            height: createDiary == false ? 49 : 400 + 215 + 90,
                             width: double.infinity,
                             decoration: const BoxDecoration(
                                 color: Color(0XFF407BFF),
@@ -295,6 +295,7 @@ class _DiaryState extends State<Diary> with SingleTickerProviderStateMixin {
                                 ),
                                 createDiary == true
                                     ? Container(
+                                        height: 255 + 88 + 222+10,
                                         padding: const EdgeInsets.all(10),
                                         decoration: const BoxDecoration(
                                             color: Colors.white,

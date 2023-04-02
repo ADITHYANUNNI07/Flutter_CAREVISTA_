@@ -444,46 +444,37 @@ class _HospitalPageState extends State<HospitalPage> {
                             "1. ${widget.hospital1}\n \n2. ${widget.hospital2}\n \n3. ${widget.hospital3}"),
                     const SizedBox(height: 15),
                     const HeadingWidget(title: 'Photos'),
-                    SizedBox(
-                        width: 350,
-                        height: 250,
-                        child: Image(
-                          image: Image.network(
-                            widget.image1url,
-                          ).image,
-                        )),
-                    SizedBox(
-                        width: 350,
-                        height: 250,
-                        child: Image(
-                          image: Image.network(
-                            widget.image2url,
-                          ).image,
-                        )),
-                    SizedBox(
-                        width: 350,
-                        height: 250,
-                        child: Image(
-                          image: Image.network(
-                            widget.image3url,
-                          ).image,
-                        )),
-                    SizedBox(
-                        width: 350,
-                        height: 250,
-                        child: Image(
-                          image: Image.network(
-                            widget.image4url,
-                          ).image,
-                        )),
-                    SizedBox(
-                        width: 350,
-                        height: 250,
-                        child: Image(
-                          image: Image.network(
-                            widget.image5url,
-                          ).image,
-                        )),
+                    const SizedBox(height: 10),
+                    Image(
+                      image: Image.network(
+                        widget.image1url,
+                      ).image,
+                    ),
+                    const SizedBox(height: 10),
+                    Image(
+                      image: Image.network(
+                        widget.image2url,
+                      ).image,
+                    ),
+                    const SizedBox(height: 10),
+                    Image(
+                      image: Image.network(
+                        widget.image3url,
+                      ).image,
+                    ),
+                    const SizedBox(height: 10),
+                    Image(
+                      image: Image.network(
+                        widget.image4url,
+                      ).image,
+                    ),
+                    const SizedBox(height: 10),
+
+                    Image(
+                      image: Image.network(
+                        widget.image5url,
+                      ).image,
+                    ),
                   ],
                 ),
               ],

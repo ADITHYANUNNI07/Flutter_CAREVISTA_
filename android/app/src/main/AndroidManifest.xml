@@ -2,7 +2,7 @@
     package="com.example.carevista_ver05">
 
    <application
-        android:label="carevista_ver05"
+        android:label="CareVista"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

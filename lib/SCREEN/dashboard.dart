@@ -2,16 +2,14 @@ import 'package:carevista_ver05/Helper/helper_function.dart';
 import 'package:carevista_ver05/SCREEN/addons/diary.dart';
 import 'package:carevista_ver05/SCREEN/addons/diseasecomplication.dart';
 import 'package:carevista_ver05/SCREEN/addons/firstAID.dart';
-import 'package:carevista_ver05/SCREEN/addons/fitness.dart';
 import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
 import 'package:carevista_ver05/SCREEN/home/favorites.dart';
 import 'package:carevista_ver05/SCREEN/home/hospital.dart';
+import 'package:carevista_ver05/SCREEN/home/search.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
-import 'package:carevista_ver05/SCREEN/login_signup.dart';
 import 'package:carevista_ver05/SCREEN/profile.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Theme/theme.dart';
-import 'package:carevista_ver05/admin/addDoctor.dart';
 import 'package:carevista_ver05/admin/addHospital.dart';
 import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/widget/widget.dart';
@@ -32,14 +30,6 @@ class Dashboard extends StatefulWidget {
   @override
   State<Dashboard> createState() => _DashboardState();
 }
-
-final hospitals = [
-  Hospitallak(name: 'Hospital A', lat: 8.875765, lng: 76.644053),
-  Hospitallak(name: 'Hospital B', lat: 9.03316, lng: 76.923846),
-  Hospitallak(
-      name: 'Hospital C', lat: 9.077343279371524, lng: 76.80164613881841),
-  Hospitallak(name: 'Hospital D', lat: 12.507304, lng: 74.990760),
-];
 
 class _DashboardState extends State<Dashboard> {
   String userName = "";
@@ -171,12 +161,6 @@ class _DashboardState extends State<Dashboard> {
                                 ? ThemeMode.dark
                                 : ThemeMode.light;
                       })),
-              Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.search),
-                  ))
             ],
           ),
           drawer: Drawer(
@@ -224,15 +208,6 @@ class _DashboardState extends State<Dashboard> {
                     }),
                 adKey
                     ? MenuWidget(
-                        title: "Add Doctor Details",
-                        icon: LineAwesomeIcons.doctor,
-                        onPress: () {
-                          nextScreen(context, const AddDoctor());
-                        },
-                      )
-                    : const SizedBox(),
-                adKey
-                    ? MenuWidget(
                         title: "Add Hospital",
                         icon: LineAwesomeIcons.hospital_symbol,
                         onPress: () {
@@ -243,37 +218,6 @@ class _DashboardState extends State<Dashboard> {
                         },
                       )
                     : const SizedBox(),
-                const Divider(),
-                ListTile(
-                  onTap: () {
-                    nextScreen(context, HospitalListPage(hospitals: hospitals));
-                  },
-                  leading: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: const Color(0xFF00008F).withOpacity(0.2),
-                      ),
-                      child: const Icon(LineAwesomeIcons
-                          .heartbeat) //Image.asset('Assets/images/running.png'),
-                      ),
-                  title: Text(
-                    'Fitness',
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  trailing: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: Colors.grey.withOpacity(0.1)),
-                    child: const Icon(
-                      LineAwesomeIcons.angle_right,
-                      size: 18,
-                    ),
-                  ),
-                ),
                 const Divider(),
                 MenuWidget(
                   title: "Logout",
@@ -448,7 +392,7 @@ class _DashboardState extends State<Dashboard> {
                                     )
                                   ]),
                               padding: const EdgeInsets.only(
-                                  top: 38, left: 5, right: 5, bottom: 38),
+                                  top: 20, left: 5, right: 5, bottom: 20),
                               child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -549,7 +493,7 @@ class _DashboardState extends State<Dashboard> {
                         return ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          itemCount: sortedHospitals.length,
+                          itemCount: 10,
                           itemBuilder: (BuildContext context, int index) {
                             DocumentSnapshot data = sortedHospitals[index];
                             final double distance = _calculateDistance(
@@ -558,7 +502,7 @@ class _DashboardState extends State<Dashboard> {
                                 _locationData!);
                             return Row(
                               children: [
-                                TopHospitalListScroll(
+                                NearestHospitalListScroll(
                                   hospitalName: data['hospitalName'],
                                   district: data['district'],
                                   imageSrc: data['Logo'],
@@ -573,7 +517,7 @@ class _DashboardState extends State<Dashboard> {
                                   },
                                   Adkey: adKey,
                                   uploaderName:
-                                      '${distance.toStringAsFixed(2).toString()} Km',
+                                      '${distance.toStringAsFixed(0).toString()} Km',
                                   sIcon: saveIcon,
                                   txttheme: txttheme,
                                   onPress: () {
@@ -836,7 +780,9 @@ class _DashboardState extends State<Dashboard> {
                         : Colors.black,
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  nextScreen(context, const Search());
+                },
                 icon: const Icon(Icons.search, size: 30),
                 color: selsctedIconIndex == 1
                     ? Colors.white
@@ -844,14 +790,17 @@ class _DashboardState extends State<Dashboard> {
                         ? Colors.white
                         : Colors.black,
               ),
-              Icon(
-                Icons.home_outlined,
-                size: 30,
-                color: selsctedIconIndex == 2
-                    ? Colors.white
-                    : MyApp.themeNotifier.value == ThemeMode.dark
-                        ? Colors.white
-                        : Colors.black,
+              GestureDetector(
+                onTap: () {},
+                child: Icon(
+                  Icons.home_outlined,
+                  size: 30,
+                  color: selsctedIconIndex == 2
+                      ? Colors.white
+                      : MyApp.themeNotifier.value == ThemeMode.dark
+                          ? Colors.white
+                          : Colors.black,
+                ),
               ),
               IconButton(
                 onPressed: () {
@@ -1088,13 +1037,10 @@ class _NearestHospitalListScrollState extends State<NearestHospitalListScroll> {
                       fontSize: 16,
                       color: specialcolor.AppColor.homePageContainerTextSmall)),
               const SizedBox(height: 5),
-              widget.Adkey == true
-                  ? Text(widget.uploaderName,
-                      style: TextStyle(
-                          fontSize: 10,
-                          color:
-                              specialcolor.AppColor.homePageContainerTextSmall))
-                  : SizedBox(),
+              Text(widget.uploaderName,
+                  style: TextStyle(
+                      fontSize: 10,
+                      color: specialcolor.AppColor.homePageContainerTextSmall))
             ],
           ),
         ),
@@ -1179,7 +1125,7 @@ class LargeContainerOptionsWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onPress,
       child: Container(
-        height: 100,
+        height: (size.height - 500 - 40) / 2,
         width: 105,
         padding: const EdgeInsets.only(top: 10, left: 10),
         child: Column(

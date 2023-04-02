@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:carevista_ver05/Helper/helper_function.dart';
 import 'package:carevista_ver05/SCREEN/editprofile.dart';
+import 'package:carevista_ver05/SCREEN/home/favorites.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
 import 'package:carevista_ver05/SCREEN/profile/additionaldetail.dart';
 import 'package:carevista_ver05/SCREEN/profile/medicalrecord.dart';
 import 'package:carevista_ver05/SCREEN/profile/settingsnofifavorites.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
+import 'package:carevista_ver05/admin/addHospital.dart';
 import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:flutter/material.dart';
@@ -28,9 +31,36 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
+bool adKey = false;
+String adminKey = "";
 File? image;
 
 class _ProfilePageState extends State<ProfilePage> {
+  @override
+  void initState() {
+    super.initState();
+    gettingUserData();
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    gettingUserData();
+  }
+
+  gettingUserData() async {
+    await HelperFunction.getUserAdkeyFromSF().then((value) {
+      setState(() {
+        adminKey = value!;
+      });
+      if (adminKey == 'false') {
+        adKey = false;
+      } else {
+        adKey = true;
+      }
+    });
+  }
+
   AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
@@ -182,8 +212,20 @@ class _ProfilePageState extends State<ProfilePage> {
                       title: "Favorites",
                       icon: Icons.star_border_rounded,
                       onPress: () {
-                        nextScreen(context, const FavoriterSrn());
+                        nextScreen(context, Favorites());
                       }),
+                  adKey == true
+                      ? ProfileMenuWidget(
+                          title: "Add Hospital Information",
+                          icon: Icons.local_hospital,
+                          onPress: () {
+                            nextScreen(
+                                context,
+                                AddHospital(
+                                    username: widget.userName,
+                                    userphoneno: widget.phoneNo));
+                          })
+                      : Container(),
                   const Divider(),
                   ProfileMenuWidget(
                     title: "Logout",
@@ -213,8 +255,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                   onPressed: () async {
                                     authService.signOut().whenComplete(
                                           () => {
-                                            nextScreenReplace(
-                                                context, LoginScreen())
+                                            Navigator.of(context)
+                                                .pushAndRemoveUntil(
+                                              // the new route
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        LoginScreen(),
+                                              ),
+
+                                              // this function should return true when we're done removing routes
+                                              // but because we want to remove all other screens, we make it
+                                              // always return false
+                                              (Route route) => false,
+                                            )
                                           },
                                         );
                                   },

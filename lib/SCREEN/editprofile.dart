@@ -325,7 +325,6 @@ class _EditProfileState extends State<EditProfile> {
     image = await pickImage(context);
     setState(() {
       imagebool = true;
-      print(image);
     });
   }
 

@@ -1,6 +1,7 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
 import 'package:carevista_ver05/Service/database_service.dart';
+import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -102,9 +103,12 @@ class _DiaryState extends State<Diary> with SingleTickerProviderStateMixin {
                             children: [
                               Container(
                                 padding: const EdgeInsets.all(10),
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
+                                decoration: BoxDecoration(
+                                    color: MyApp.themeNotifier.value ==
+                                            ThemeMode.light
+                                        ? Colors.white
+                                        : Colors.black.withOpacity(1),
+                                    borderRadius: const BorderRadius.only(
                                         bottomLeft: Radius.circular(10),
                                         bottomRight: Radius.circular(10),
                                         topLeft: Radius.circular(10),
@@ -295,11 +299,15 @@ class _DiaryState extends State<Diary> with SingleTickerProviderStateMixin {
                                 ),
                                 createDiary == true
                                     ? Container(
-                                        height: 255 + 88 + 222+10,
+                                        height: 255 + 88 + 222 + 10,
                                         padding: const EdgeInsets.all(10),
-                                        decoration: const BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.only(
+                                        decoration: BoxDecoration(
+                                            color: MyApp.themeNotifier.value ==
+                                                    ThemeMode.light
+                                                ? Colors.white
+                                                : Colors.black.withOpacity(1),
+                                            borderRadius: const BorderRadius
+                                                    .only(
                                                 bottomLeft: Radius.circular(10),
                                                 bottomRight:
                                                     Radius.circular(10),

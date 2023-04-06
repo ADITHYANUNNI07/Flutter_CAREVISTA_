@@ -3,6 +3,7 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carevista_ver05/Helper/helper_function.dart';
 import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
 import 'package:carevista_ver05/Service/database_service.dart';
+import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -193,12 +194,18 @@ class _RecordDetailsState extends State<RecordDetails> {
                                           ? Container(
                                               height: 280,
                                               padding: const EdgeInsets.all(10),
-                                              decoration: const BoxDecoration(
-                                                  color: Colors.white,
+                                              decoration: BoxDecoration(
+                                                  color: MyApp.themeNotifier
+                                                              .value ==
+                                                          ThemeMode.light
+                                                      ? Colors.white
+                                                      : Colors.black
+                                                          .withOpacity(1),
                                                   borderRadius:
-                                                      BorderRadius.only(
-                                                          bottomLeft: Radius
-                                                              .circular(10),
+                                                      const BorderRadius.only(
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  10),
                                                           bottomRight:
                                                               Radius.circular(
                                                                   10),
@@ -265,9 +272,13 @@ class _RecordDetailsState extends State<RecordDetails> {
                                                                     borderRadius:
                                                                         BorderRadius.circular(
                                                                             10),
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade200),
+                                                                    color: MyApp.themeNotifier.value ==
+                                                                            ThemeMode
+                                                                                .light
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .cyan),
                                                                 child: Row(
                                                                   // ignore: prefer_const_literals_to_create_immutables
                                                                   children: [
@@ -401,9 +412,13 @@ class _RecordDetailsState extends State<RecordDetails> {
                                                                     borderRadius:
                                                                         BorderRadius.circular(
                                                                             10),
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade200),
+                                                                    color: MyApp.themeNotifier.value ==
+                                                                            ThemeMode
+                                                                                .light
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .cyan),
                                                                 child: Row(
                                                                   // ignore: prefer_const_literals_to_create_immutables
                                                                   children: [

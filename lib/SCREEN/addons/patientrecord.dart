@@ -162,9 +162,12 @@ class _PatientRecordState extends State<PatientRecord> {
                         createfolder == true
                             ? Container(
                                 padding: const EdgeInsets.all(34),
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
+                                decoration: BoxDecoration(
+                                    color: MyApp.themeNotifier.value ==
+                                            ThemeMode.light
+                                        ? Colors.white
+                                        : Colors.black.withOpacity(1),
+                                    borderRadius: const BorderRadius.only(
                                         bottomLeft: Radius.circular(10),
                                         bottomRight: Radius.circular(10),
                                         topLeft: Radius.circular(10),

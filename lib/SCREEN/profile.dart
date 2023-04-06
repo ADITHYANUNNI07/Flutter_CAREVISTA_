@@ -242,16 +242,17 @@ class _ProfilePageState extends State<ProfilePage> {
                               content: const Text(
                                   "Are you sure you want to logout?"),
                               actions: [
-                                IconButton(
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.black),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  icon: const Icon(
-                                    Icons.cancel,
-                                    color: Colors.red,
-                                  ),
+                                  child: const Text("cancel"),
                                 ),
-                                IconButton(
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.black),
                                   onPressed: () async {
                                     authService.signOut().whenComplete(
                                           () => {
@@ -272,10 +273,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           },
                                         );
                                   },
-                                  icon: const Icon(
-                                    Icons.done,
-                                    color: Colors.green,
-                                  ),
+                                  child: const Text("Yes"),
                                 )
                               ],
                             );

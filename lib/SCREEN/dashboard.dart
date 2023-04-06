@@ -5,6 +5,7 @@ import 'package:carevista_ver05/SCREEN/addons/firstAID.dart';
 import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
 import 'package:carevista_ver05/SCREEN/home/favorites.dart';
 import 'package:carevista_ver05/SCREEN/home/hospital.dart';
+import 'package:carevista_ver05/SCREEN/home/medicinereminder.dart';
 import 'package:carevista_ver05/SCREEN/home/search.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
 import 'package:carevista_ver05/SCREEN/profile.dart';
@@ -226,51 +227,50 @@ class _DashboardState extends State<Dashboard> {
                   textColor: Colors.red,
                   onPress: () async {
                     showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text("Logout"),
-                            content:
-                                const Text("Are you sure you want to logout?"),
-                            actions: [
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(
-                                  Icons.cancel,
-                                  color: Colors.red,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () async {
-                                  authService.signOut().whenComplete(
-                                        () => {
-                                          Navigator.of(context)
-                                              .pushAndRemoveUntil(
-                                            // the new route
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  LoginScreen(),
-                                            ),
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Logout"),
+                          content:
+                              const Text("Are you sure you want to logout?"),
+                          actions: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("cancel"),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black),
+                              onPressed: () async {
+                                authService.signOut().whenComplete(
+                                      () => {
+                                        Navigator.of(context)
+                                            .pushAndRemoveUntil(
+                                          // the new route
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                LoginScreen(),
+                                          ),
 
-                                            // this function should return true when we're done removing routes
-                                            // but because we want to remove all other screens, we make it
-                                            // always return false
-                                            (Route route) => false,
-                                          )
-                                        },
-                                      );
-                                },
-                                icon: const Icon(
-                                  Icons.done,
-                                  color: Colors.green,
-                                ),
-                              )
-                            ],
-                          );
-                        });
+                                          // this function should return true when we're done removing routes
+                                          // but because we want to remove all other screens, we make it
+                                          // always return false
+                                          (Route route) => false,
+                                        )
+                                      },
+                                    );
+                              },
+                              child: const Text("Yes"),
+                            )
+                          ],
+                        );
+                      },
+                    );
                   },
                 )
               ],
@@ -352,11 +352,12 @@ class _DashboardState extends State<Dashboard> {
                             imageicon: 'Assets/images/spine.png',
                             onPress: () {}),
                         DiseaseHospitalListScroll(
-                            txttheme: txttheme,
-                            title: 'Skin',
-                            hospitalno: '10 Hospital',
-                            imageicon: 'Assets/images/skin.png',
-                            onPress: () {}),
+                          txttheme: txttheme,
+                          title: 'Skin',
+                          hospitalno: '10 Hospital',
+                          imageicon: 'Assets/images/skin.png',
+                          onPress: () {},
+                        ),
                       ],
                     ),
                   ),
@@ -402,7 +403,7 @@ class _DashboardState extends State<Dashboard> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       LargeContainerOptionsWidget(
-                                        icon: LineAwesomeIcons.first_aid,
+                                        icon: Icons.local_hospital,
                                         title: 'First AID Treatement',
                                         onPress: () {
                                           nextScreen(context, const FirstAID());
@@ -412,13 +413,16 @@ class _DashboardState extends State<Dashboard> {
                                         icon: Icons.note_add,
                                         title: 'Diary',
                                         onPress: () {
-                                          nextScreen(context, Diary());
+                                          nextScreen(context, const Diary());
                                         },
                                       ),
                                       LargeContainerOptionsWidget(
                                         icon: Icons.alarm_add,
                                         title: 'Medicine Reminder',
-                                        onPress: () {},
+                                        onPress: () {
+                                          nextScreen(context,
+                                              const MedicineReminder());
+                                        },
                                       ),
                                     ],
                                   ),
@@ -430,7 +434,8 @@ class _DashboardState extends State<Dashboard> {
                                         icon: Icons.library_books_outlined,
                                         title: 'Patient Record',
                                         onPress: () {
-                                          nextScreen(context, PatientRecord());
+                                          nextScreen(
+                                              context, const PatientRecord());
                                         },
                                       ),
                                       LargeContainerOptionsWidget(
@@ -444,7 +449,9 @@ class _DashboardState extends State<Dashboard> {
                                       LargeContainerOptionsWidget(
                                         icon: Icons.favorite,
                                         title: 'Favorites',
-                                        onPress: () {},
+                                        onPress: () {
+                                          nextScreen(context, Favorites());
+                                        },
                                       ),
                                     ],
                                   ),
@@ -472,7 +479,8 @@ class _DashboardState extends State<Dashboard> {
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (!snapshot.hasData || _locationData == null) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }
 
                         final List<DocumentSnapshot> hospitals =
@@ -591,7 +599,8 @@ class _DashboardState extends State<Dashboard> {
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (!snapshot.hasData) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }
                         List<DocumentSnapshot> hospitals = snapshot.data!.docs;
                         List<DocumentSnapshot> thiruvananthapuramHospitals =

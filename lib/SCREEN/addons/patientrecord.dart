@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:carevista_ver05/SCREEN/home/search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
@@ -634,18 +635,23 @@ class _PatientRecordState extends State<PatientRecord> {
                       ? Colors.white
                       : Colors.black,
             ),
-            Icon(
-              Icons.search,
-              size: 30,
-              color: selsctedIconIndex == 1
-                  ? Colors.white
-                  : MyApp.themeNotifier.value == ThemeMode.dark
-                      ? Colors.white
-                      : Colors.black,
+            GestureDetector(
+              onTap: () {
+                nextScreen(context, const Search());
+              },
+              child: Icon(
+                Icons.search,
+                size: 30,
+                color: selsctedIconIndex == 1
+                    ? Colors.white
+                    : MyApp.themeNotifier.value == ThemeMode.dark
+                        ? Colors.white
+                        : Colors.black,
+              ),
             ),
             IconButton(
               onPressed: () {
-                nextScreenReplace(context, Dashboard());
+                nextScreenReplace(context, const Dashboard());
               },
               icon: const Icon(Icons.home_outlined, size: 30),
               color: selsctedIconIndex == 2

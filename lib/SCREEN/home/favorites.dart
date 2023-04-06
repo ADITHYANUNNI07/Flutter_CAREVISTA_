@@ -1,5 +1,6 @@
 import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
 import 'package:carevista_ver05/SCREEN/dashboard.dart';
+import 'package:carevista_ver05/SCREEN/home/search.dart';
 import 'package:carevista_ver05/SCREEN/profile.dart';
 import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/widget/widget.dart';
@@ -73,14 +74,19 @@ class _FavoritesState extends State<Favorites> {
                     ? Colors.white
                     : Colors.black,
           ),
-          Icon(
-            Icons.search,
-            size: 30,
-            color: selsctedIconIndex == 1
-                ? Colors.white
-                : MyApp.themeNotifier.value == ThemeMode.dark
-                    ? Colors.white
-                    : Colors.black,
+          GestureDetector(
+            onTap: () {
+              nextScreen(context, const Search());
+            },
+            child: Icon(
+              Icons.search,
+              size: 30,
+              color: selsctedIconIndex == 1
+                  ? Colors.white
+                  : MyApp.themeNotifier.value == ThemeMode.dark
+                      ? Colors.white
+                      : Colors.black,
+            ),
           ),
           IconButton(
             onPressed: () {

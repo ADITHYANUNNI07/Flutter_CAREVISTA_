@@ -69,6 +69,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   gettingUserData() async {
+    imageUrl = await getImageURLFromUserId(Uid);
     await HelperFunction.getUserNameFromSF().then((value) {
       setState(() {
         userName = value!;
@@ -101,7 +102,6 @@ class _DashboardState extends State<Dashboard> {
         uid = value!;
       });
     });
-    imageUrl = await getImageURLFromUserId(Uid);
   }
 
   double _calculateDistance(
@@ -176,7 +176,7 @@ class _DashboardState extends State<Dashboard> {
                     width: 150,
                     height: 150,
                     child: CircleAvatar(
-                      backgroundImage: imageUrl!.isEmpty
+                      backgroundImage: imageUrl == ''
                           ? const AssetImage('Assets/images/profile-user.jpg')
                           : Image.network(
                               imageUrl!,
@@ -186,10 +186,10 @@ class _DashboardState extends State<Dashboard> {
                 Text(
                   userName,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontFamily: 'brandon_H',
-                  ),
+                  style:
+                      const TextStyle(fontSize: 22, fontWeight: FontWeight.bold
+                          // fontFamily: 'brandon_H',
+                          ),
                 ),
                 const SizedBox(height: 5),
                 Text(

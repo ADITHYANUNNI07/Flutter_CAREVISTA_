@@ -398,9 +398,6 @@ class _EditProfileState extends State<EditProfile> {
                                             Theme.of(context).backgroundColor,
                                       ),
                                       onPressed: () {
-                                        setState(() {
-                                          _isLoding = true;
-                                        });
                                         if (gender.isEmpty) {
                                           gender = widget.gender!;
                                         }

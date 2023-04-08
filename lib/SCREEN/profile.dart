@@ -130,7 +130,7 @@ class _ProfilePageState extends State<ProfilePage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 25,
-                  fontFamily: 'brandon_H',
+                  //fontFamily: 'brandon_H',
                   color: Theme.of(context).primaryColorDark),
             ),
             actions: [

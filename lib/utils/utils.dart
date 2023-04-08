@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -24,4 +25,43 @@ Future<File?> pickImage(BuildContext context) async {
   }
 
   return image;
+}
+
+Future<String?> getDOBFromUserId(String uid) async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  QuerySnapshot querySnapshot =
+      await firestore.collection('users').where('uid', isEqualTo: uid).get();
+  if (querySnapshot.docs.isNotEmpty) {
+    Map<String, dynamic> data =
+        querySnapshot.docs.first.data() as Map<String, dynamic>;
+    String? dob = data['DOB'];
+    return dob;
+  }
+  return null;
+}
+
+Future<String?> getGenderFromUserId(String uid) async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  QuerySnapshot querySnapshot =
+      await firestore.collection('users').where('uid', isEqualTo: uid).get();
+  if (querySnapshot.docs.isNotEmpty) {
+    Map<String, dynamic> data =
+        querySnapshot.docs.first.data() as Map<String, dynamic>;
+    String? dob = data['Gender'];
+    return dob;
+  }
+  return null;
+}
+
+Future<String?> getImageURLFromUserId(String uid) async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  QuerySnapshot querySnapshot =
+      await firestore.collection('users').where('uid', isEqualTo: uid).get();
+  if (querySnapshot.docs.isNotEmpty) {
+    Map<String, dynamic> data =
+        querySnapshot.docs.first.data() as Map<String, dynamic>;
+    String? dob = data['profilepic'];
+    return dob;
+  }
+  return null;
 }

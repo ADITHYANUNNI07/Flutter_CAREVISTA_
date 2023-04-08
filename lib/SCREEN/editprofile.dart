@@ -1,10 +1,14 @@
 import 'dart:io';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:carevista_ver05/Helper/helper_function.dart';
+import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Service/database_service.dart';
 import 'package:carevista_ver05/utils/utils.dart';
 import 'package:carevista_ver05/widget/widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -13,13 +17,19 @@ class EditProfile extends StatefulWidget {
   String userName;
   String email;
   String phoneNo;
-
-  EditProfile({
-    super.key,
-    required this.phoneNo,
-    required this.email,
-    required this.userName,
-  });
+  String adKey;
+  String? dob;
+  String? gender;
+  String? imageUrl;
+  EditProfile(
+      {super.key,
+      required this.phoneNo,
+      required this.email,
+      required this.userName,
+      required this.adKey,
+      required this.dob,
+      required this.gender,
+      required this.imageUrl});
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -27,298 +37,403 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   final fromKey = GlobalKey<FormState>();
-  final dateController = TextEditingController();
+  late TextEditingController dateController;
   String fullname = "";
-
+  final Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
   String phone = "";
   String uid = "";
   String email = "";
   String _gender = "";
   String gender = "";
   File? image;
-  String dob = "";
   bool imagebool = false;
-
+  String imageUrl = '';
+  bool newEmailbool = false;
+  String newEmailPassword = '';
+  bool passVisible = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
+  void initState() {
+    super.initState();
+    dateController = TextEditingController(text: widget.dob);
+  }
+
+  bool _isLoding = false;
   Widget build(BuildContext context) {
-    return Container(
-        color: const Color(0xFF04FBC3),
-        child: SafeArea(
-          child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-              centerTitle: true,
-              elevation: 0,
-              leading: IconButton(
-                icon: Icon(
-                  LineAwesomeIcons.angle_double_left,
-                  color: Theme.of(context).iconTheme.color,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              title: Text(
-                'Edit Profile',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 25,
-                    fontFamily: 'brandon_H',
-                    color: Theme.of(context).primaryColorDark),
-              ),
+    return _isLoding
+        ? Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
             ),
-            body: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.all(25),
-                child: Column(
-                  children: [
-                    Stack(
+          )
+        : Container(
+            color: const Color(0xFF04FBC3),
+            child: SafeArea(
+              child: Scaffold(
+                appBar: AppBar(
+                  backgroundColor:
+                      Theme.of(context).appBarTheme.backgroundColor,
+                  centerTitle: true,
+                  elevation: 0,
+                  leading: IconButton(
+                    icon: Icon(
+                      LineAwesomeIcons.angle_double_left,
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  title: Text(
+                    'Edit Profile',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'brandon_H',
+                        color: Theme.of(context).primaryColorDark),
+                  ),
+                ),
+                body: SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
                       children: [
-                        InkWell(
-                          onTap: () {
-                            SelectImage();
-                          },
-                          child: SizedBox(
-                              width: 150,
-                              height: 150,
-                              child: imagebool == false
-                                  ? ClipRRect(
+                        Stack(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                SelectImage();
+                              },
+                              child: SizedBox(
+                                  width: 150,
+                                  height: 150,
+                                  child: imagebool == false
+                                      ? ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          child: widget.imageUrl == ""
+                                              ? Image.asset(
+                                                  'Assets/images/profile-user.jpg')
+                                              : Image(
+                                                  image: Image.network(
+                                                    widget.imageUrl!,
+                                                  ).image,
+                                                ),
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage: FileImage(image!),
+                                          radius: 50,
+                                        )),
+                            ),
+                            Positioned(
+                                bottom: 0,
+                                right: 10,
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(100),
-                                      child: Image.asset(
-                                          'Assets/images/profile-user.jpg'),
-                                    )
-                                  : CircleAvatar(
-                                      backgroundImage: FileImage(image!),
-                                      radius: 50,
-                                    )),
+                                      color: Theme.of(context).backgroundColor),
+                                  child: const Icon(
+                                    LineAwesomeIcons.camera,
+                                    color: Colors.white,
+                                  ),
+                                ))
+                          ],
                         ),
-                        Positioned(
-                            bottom: 0,
-                            right: 10,
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  color: Theme.of(context).backgroundColor),
-                              child: const Icon(
-                                LineAwesomeIcons.camera,
-                                color: Colors.white,
-                              ),
+                        const SizedBox(height: 50),
+                        Form(
+                            key: fromKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextFormField(
+                                    initialValue: widget.userName,
+                                    decoration: InputDecoration(
+                                        prefixIcon: const Icon(
+                                            Icons.person_outline_outlined),
+                                        labelText: 'Full Name',
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(100))),
+                                    onChanged: (val) {
+                                      fullname = val;
+                                    },
+                                    validator: (val) {
+                                      if (val!.isEmpty) {
+                                        return "Enter Your Name";
+                                      } else {
+                                        return RegExp(
+                                                    r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
+                                                .hasMatch(val)
+                                            ? "Please enter valid name"
+                                            : null;
+                                      }
+                                    }),
+                                const SizedBox(height: 10),
+                                TextFormField(
+                                    initialValue: widget.phoneNo,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                        prefixIcon:
+                                            const Icon(Icons.phone_outlined),
+                                        labelText: 'Phone No',
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(100))),
+                                    onChanged: (val) {
+                                      phone = val;
+                                    },
+                                    validator: (val) {
+                                      return RegExp(
+                                                  r"(^(?:[+0]9)?[0-9]{10,12}$)")
+                                              .hasMatch(val!)
+                                          ? null
+                                          : "Please enter valid mobile number";
+                                    }),
+                                const SizedBox(height: 10),
+                                TextFormField(
+                                  initialValue: widget.email,
+                                  decoration: InputDecoration(
+                                      prefixIcon:
+                                          const Icon(Icons.email_outlined),
+                                      labelText: 'E-Mail',
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(100))),
+                                  onChanged: (val) {
+                                    email = val;
+                                  },
+                                  // check tha validation
+                                  validator: (val) {
+                                    return RegExp(r"^[a-z0-9]+@gmail+\.com+")
+                                            .hasMatch(val!)
+                                        ? null
+                                        : "Please enter a valid email";
+                                  },
+                                ),
+                                const SizedBox(height: 10),
+                                newEmailbool == false
+                                    ? Container()
+                                    : TextFormField(
+                                        obscureText: passVisible ? false : true,
+                                        decoration: InputDecoration(
+                                          prefixIcon: const Icon(
+                                              Icons.fingerprint_outlined),
+                                          labelText: 'Password',
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(100)),
+                                          suffixIcon: IconButton(
+                                            onPressed: () {
+                                              if (passVisible) {
+                                                setState(() {
+                                                  passVisible = false;
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  passVisible = true;
+                                                });
+                                              }
+                                            },
+                                            icon: passVisible
+                                                ? const Icon(
+                                                    LineAwesomeIcons.eye)
+                                                : const Icon(
+                                                    LineAwesomeIcons.eye_slash),
+                                          ),
+                                        ),
+                                        onChanged: (val) {
+                                          newEmailPassword = val;
+                                        },
+                                        validator: (val) {
+                                          if (val!.length < 6) {
+                                            return "Password must be at least 6 characters";
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                      ),
+                                const SizedBox(height: 10),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  width: double.infinity,
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Theme.of(context).cardColor),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Gender',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5,
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 10),
+                                      widget.gender == ''
+                                          ? Container(
+                                              padding: const EdgeInsets.all(1),
+                                              child: SizedBox(
+                                                height: 50,
+                                                child: ListView(
+                                                  shrinkWrap: true,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  children: [
+                                                    ContainerWidget(
+                                                      title: 'Male',
+                                                      radioBtn: Radio(
+                                                        value: 'Male',
+                                                        groupValue: _gender,
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            _gender = value!;
+                                                            gender = "Male";
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 5),
+                                                    ContainerWidget(
+                                                        title: 'Female',
+                                                        radioBtn: Radio(
+                                                          value: 'Female',
+                                                          groupValue: _gender,
+                                                          onChanged: (value) {
+                                                            setState(() {
+                                                              _gender = value!;
+                                                              gender = "Female";
+                                                            });
+                                                          },
+                                                        )),
+                                                    const SizedBox(width: 5),
+                                                    ContainerWidget(
+                                                        title: 'Other',
+                                                        radioBtn: Radio(
+                                                          value: 'other',
+                                                          groupValue: _gender,
+                                                          onChanged: (value) {
+                                                            setState(() {
+                                                              _gender = value!;
+                                                              gender = "Other";
+                                                            });
+                                                          },
+                                                        )),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          : Container(
+                                              padding: const EdgeInsets.all(1),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                width: double.infinity,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Theme.of(context)
+                                                      .highlightColor,
+                                                ),
+                                                child: Text(
+                                                  widget.gender!,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                TextFormField(
+                                  initialValue: null,
+                                  readOnly: true,
+                                  controller: dateController,
+                                  decoration: InputDecoration(
+                                    hintText: 'DOB',
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(100)),
+                                  ),
+                                  onTap: () async {
+                                    var date = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(1900),
+                                        lastDate: DateTime(2100));
+                                    if (date != null) {
+                                      dateController.text =
+                                          DateFormat('MM/dd/yyyy').format(date);
+                                    }
+                                  },
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "Please Select DOB";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                                const SizedBox(height: 5),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        side: BorderSide.none,
+                                        shape: const StadiumBorder(),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 13),
+                                        foregroundColor: Colors.white,
+                                        backgroundColor:
+                                            Theme.of(context).backgroundColor,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _isLoding = true;
+                                        });
+                                        if (gender.isEmpty) {
+                                          gender = widget.gender!;
+                                        }
+                                        print(dateController.text);
+                                        if (gender.isEmpty) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  elevation: 0,
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  content: AwesomeSnackbarContent(
+                                                      inMaterialBanner: true,
+                                                      title: 'Oh Snap..!',
+                                                      message:
+                                                          'Gender field is Empty',
+                                                      contentType: ContentType
+                                                          .warning)));
+                                        } else {
+                                          updateProfile();
+                                        }
+                                      },
+                                      child: const Text('SAVE')),
+                                )
+                              ],
                             ))
                       ],
                     ),
-                    const SizedBox(height: 50),
-                    Form(
-                        key: fromKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextFormField(
-                                initialValue: widget.userName,
-                                decoration: InputDecoration(
-                                    prefixIcon: const Icon(
-                                        Icons.person_outline_outlined),
-                                    labelText: 'Full Name',
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(100))),
-                                onChanged: (val) {
-                                  fullname = val;
-                                },
-                                validator: (val) {
-                                  if (val!.isEmpty) {
-                                    return "Enter Your Name";
-                                  } else {
-                                    return RegExp(
-                                                r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                            .hasMatch(val)
-                                        ? "Please enter valid name"
-                                        : null;
-                                  }
-                                }),
-                            const SizedBox(height: 10),
-                            TextFormField(
-                                initialValue: widget.phoneNo,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                    prefixIcon:
-                                        const Icon(Icons.phone_outlined),
-                                    labelText: 'Phone No',
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(100))),
-                                onChanged: (val) {
-                                  phone = val;
-                                },
-                                validator: (val) {
-                                  return RegExp(r"(^(?:[+0]9)?[0-9]{10,12}$)")
-                                          .hasMatch(val!)
-                                      ? null
-                                      : "Please enter valid mobile number";
-                                }),
-                            const SizedBox(height: 10),
-                            TextFormField(
-                              initialValue: widget.email,
-                              decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.email_outlined),
-                                  labelText: 'E-Mail',
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(100))),
-                              onChanged: (val) {
-                                email = val;
-                              },
-                              // check tha validation
-                              validator: (val) {
-                                return RegExp(r"^[a-z0-9]+@gmail+\.com+")
-                                        .hasMatch(val!)
-                                    ? null
-                                    : "Please enter a valid email";
-                              },
-                            ),
-                            const SizedBox(height: 10),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              width: double.infinity,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Theme.of(context).cardColor),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Gender',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Container(
-                                    padding: const EdgeInsets.all(1),
-                                    child: SizedBox(
-                                      height: 50,
-                                      child: ListView(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.horizontal,
-                                        children: [
-                                          ContainerWidget(
-                                              title: 'Male',
-                                              radioBtn: Radio(
-                                                value: 'Male',
-                                                groupValue: _gender,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _gender = value!;
-                                                    gender = "Male";
-                                                  });
-                                                },
-                                              )),
-                                          const SizedBox(width: 5),
-                                          ContainerWidget(
-                                              title: 'Female',
-                                              radioBtn: Radio(
-                                                value: 'Female',
-                                                groupValue: _gender,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _gender = value!;
-                                                    gender = "Female";
-                                                  });
-                                                },
-                                              )),
-                                          const SizedBox(width: 5),
-                                          ContainerWidget(
-                                              title: 'Other',
-                                              radioBtn: Radio(
-                                                value: 'other',
-                                                groupValue: _gender,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _gender = value!;
-                                                    gender = "Other";
-                                                  });
-                                                },
-                                              )),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            TextField(
-                              readOnly: true,
-                              controller: dateController,
-                              decoration: InputDecoration(
-                                hintText: 'Pick your Date',
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(100)),
-                              ),
-                              onTap: () async {
-                                var date = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1900),
-                                    lastDate: DateTime(2100));
-                                if (date != null) {
-                                  dateController.text =
-                                      DateFormat('MM/dd/yyyy').format(date);
-                                }
-                              },
-                            ),
-                            const SizedBox(height: 5),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    side: BorderSide.none,
-                                    shape: const StadiumBorder(),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 13),
-                                    foregroundColor: Colors.white,
-                                    backgroundColor:
-                                        Theme.of(context).backgroundColor,
-                                  ),
-                                  onPressed: () {
-                                    print(dateController.text);
-                                    if (gender.isEmpty) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              elevation: 0,
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              content: AwesomeSnackbarContent(
-                                                  inMaterialBanner: true,
-                                                  title: 'Oh Snap..!',
-                                                  message:
-                                                      'Gender field is Empty',
-                                                  contentType:
-                                                      ContentType.warning)));
-                                    } else {
-                                      updateProfile();
-                                    }
-                                  },
-                                  child: const Text('SAVE')),
-                            )
-                          ],
-                        ))
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        ));
+            ));
   }
 
   void SelectImage() async {
@@ -328,34 +443,102 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-  updateProfile() async {
-    print(email);
-    if (phone.isEmpty) {
-      phone = widget.phoneNo;
-    }
-    if (email.isEmpty) {
-      email = widget.email;
-    }
-    if (fullname.isEmpty) {
-      fullname = widget.userName;
-    }
-    String dob = dateController.text;
-    if (fromKey.currentState!.validate()) {
-      //print(widget.password);
-      String userid = FirebaseAuth.instance.currentUser!.uid;
-      print(userid);
-      // uploading image to firebase storage.UserCredential userCredential = await auth.signInWithEmailAndPassword(
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: '123456',
-      ); // Upload image to Firebase Storage
+  uploadImage() async {
+    if (image == null) return;
+    print(Uid);
+    Reference referenceRoot = FirebaseStorage.instance.ref();
+    Reference referenceDirImages =
+        referenceRoot.child('user/$Uid/profilephoto');
 
-      await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
-          .updateUserData(fullname, email, phone, gender, dob);
-      // ignore: use_build_context_synchronously
-      newshowSnackbar(context, 'Update Profile',
-          'your profile update successfully', ContentType.success);
+    //Create a reference for the image to be stored
+    Reference referenceImageToUpload = referenceDirImages.child('profilephoto');
+
+    //Handle errors/success
+    try {
+      //Store the file
+      await referenceImageToUpload.putFile(File(image!.path));
+      imageUrl = await referenceImageToUpload.getDownloadURL();
+    } catch (error) {
+      //Some error occurred
+    }
+    if (imageUrl.isEmpty) {
+      newshowSnackbar(context, 'Failed',
+          'Please try again...That logo is not upload..', ContentType.failure);
+    }
+  }
+
+  updateProfile() async {
+    if (fromKey.currentState!.validate()) {
+      print(email);
+      if (phone.isEmpty) {
+        phone = widget.phoneNo;
+      }
+      if (fullname.isEmpty) {
+        fullname = widget.userName;
+      }
+      print(gender);
+      uploadImage();
+      String dob = dateController.text;
+      if (email.isEmpty) {
+        email = widget.email;
+      } else if (email != widget.email) {
+        setState(() {
+          newEmailbool = true;
+        });
+        if (newEmailPassword.isEmpty) {
+          newshowSnackbar(
+              context,
+              'New Email Password',
+              'Please enter new email password.Then to SAVE',
+              ContentType.warning);
+          return false;
+        } else {
+          await AuthService()
+              .exchangeUserAccount(fullname, phone, email, newEmailPassword,
+                  widget.adKey, gender, dob, imageUrl)
+              .then((value) async {
+            if (value == true) {
+              //saving the shared preference state
+              await HelperFunction.saveUserLoggedInStatus(true);
+              await HelperFunction.saveUserNameSF(fullname);
+              await HelperFunction.saveUserEmailSF(email);
+              await HelperFunction.saveUserPhoneSF(phone);
+              await HelperFunction.saveUserAdkeyFromSF(widget.adKey);
+              QuerySnapshot snapshot = await DatabaseService(
+                      uid: FirebaseAuth.instance.currentUser!.uid)
+                  .gettingUserData(email);
+              await HelperFunction.saveUserUIDFromSF(snapshot.docs[0]['uid']);
+              // ignore: use_build_context_synchronously
+              setState(() {
+                _isLoding = false;
+              });
+              newshowSnackbar(context, 'Successfully change Email',
+                  'your Email Change Successfully...', ContentType.success);
+            } else {
+              setState(() {
+                setState(() {
+                  _isLoding = false;
+                });
+                showSnackbar(context, Colors.red, value);
+              });
+            }
+          });
+        }
+      } else {
+        await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+            .updateUserData(
+                fullname, email, phone, widget.adKey, gender, dob, imageUrl);
+        // ignore: use_build_context_synchronously
+        setState(() {
+          _isLoding = false;
+        });
+        newshowSnackbar(context, 'Update Profile',
+            'your profile update successfully', ContentType.success);
+      }
+    } else {
+      setState(() {
+        _isLoding = false;
+      });
     }
   }
 }

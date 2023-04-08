@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:carevista_ver05/SCREEN/home/search.dart';
+import 'package:carevista_ver05/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
@@ -672,11 +673,14 @@ class _PatientRecordState extends State<PatientRecord> {
                       : Colors.black,
             ),
             IconButton(
-              onPressed: () {
+              onPressed: () async {
                 nextScreenReplace(
                     context,
                     ProfilePage(
-                        phoneNo: phoneNo, email: email, userName: userName));
+                        imageUrl: await getImageURLFromUserId(Uid),
+                        phoneNo: phoneNo,
+                        email: email,
+                        userName: userName));
               },
               icon: const Icon(Icons.person_outline, size: 30),
               color: selsctedIconIndex == 4

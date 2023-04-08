@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:carevista_ver05/Helper/helper_function.dart';
+import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
 import 'package:carevista_ver05/SCREEN/editprofile.dart';
 import 'package:carevista_ver05/SCREEN/home/favorites.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
@@ -11,6 +12,8 @@ import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/admin/addHospital.dart';
 import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/widget/widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -19,12 +22,13 @@ class ProfilePage extends StatefulWidget {
   String userName;
   String email;
   String phoneNo;
-
+  String? imageUrl;
   ProfilePage({
     Key? key,
     required this.phoneNo,
     required this.email,
     required this.userName,
+    required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -61,6 +65,46 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  Future<String?> getDOBFromUserId(String uid) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot querySnapshot =
+        await firestore.collection('users').where('uid', isEqualTo: uid).get();
+    if (querySnapshot.docs.isNotEmpty) {
+      Map<String, dynamic> data =
+          querySnapshot.docs.first.data() as Map<String, dynamic>;
+      String? dob = data['DOB'];
+      return dob;
+    }
+    return null;
+  }
+
+  Future<String?> getGenderFromUserId(String uid) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot querySnapshot =
+        await firestore.collection('users').where('uid', isEqualTo: uid).get();
+    if (querySnapshot.docs.isNotEmpty) {
+      Map<String, dynamic> data =
+          querySnapshot.docs.first.data() as Map<String, dynamic>;
+      String? dob = data['Gender'];
+      return dob;
+    }
+    return null;
+  }
+
+  Future<String?> getImageURLFromUserId(String uid) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot querySnapshot =
+        await firestore.collection('users').where('uid', isEqualTo: uid).get();
+    if (querySnapshot.docs.isNotEmpty) {
+      Map<String, dynamic> data =
+          querySnapshot.docs.first.data() as Map<String, dynamic>;
+      String? dob = data['profilepic'];
+      return dob;
+    }
+    return null;
+  }
+
+  final Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
   AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
@@ -119,8 +163,14 @@ class _ProfilePageState extends State<ProfilePage> {
                               )
                             : ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
-                                child: Image.asset(
-                                    'Assets/images/profile-user.jpg'),
+                                child: widget.imageUrl == ''
+                                    ? Image.asset(
+                                        'Assets/images/profile-user.jpg')
+                                    : Image(
+                                        image: Image.network(
+                                          widget.imageUrl!,
+                                        ).image,
+                                      ),
                               ),
                       ),
                       Positioned(
@@ -133,13 +183,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                 borderRadius: BorderRadius.circular(100),
                                 color: Theme.of(context).backgroundColor),
                             child: IconButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 nextScreen(
                                     context,
                                     EditProfile(
+                                        imageUrl:
+                                            await getImageURLFromUserId(Uid),
+                                        gender: await getGenderFromUserId(Uid),
+                                        dob: await getDOBFromUserId(Uid),
+                                        adKey: adminKey,
                                         phoneNo: widget.phoneNo,
                                         email: widget.email,
                                         userName: widget.userName));
+                                print(Uid);
                               },
                               icon: const Icon(
                                 LineAwesomeIcons.alternate_pencil,
@@ -162,14 +218,19 @@ class _ProfilePageState extends State<ProfilePage> {
                   SizedBox(
                     width: 200,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         nextScreen(
                             context,
                             EditProfile(
+                              imageUrl: await getImageURLFromUserId(Uid),
+                              gender: await getGenderFromUserId(Uid),
+                              dob: await getDOBFromUserId(Uid),
+                              adKey: adminKey,
                               phoneNo: widget.phoneNo,
                               email: widget.email,
                               userName: widget.userName,
                             ));
+                        print(Uid);
                       },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 13),

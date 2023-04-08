@@ -4,9 +4,11 @@ import 'package:carevista_ver05/SCREEN/home/favorites.dart';
 import 'package:carevista_ver05/SCREEN/home/hospital.dart';
 import 'package:carevista_ver05/SCREEN/profile.dart';
 import 'package:carevista_ver05/main.dart';
+import 'package:carevista_ver05/utils/utils.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carevista_ver05/SCREEN/addons/color.dart' as specialcolor;
 
@@ -20,6 +22,7 @@ class Search extends StatefulWidget {
 TextEditingController _searchController = TextEditingController();
 int selsctedIconIndex = 1;
 String _searchQuery = '';
+final Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
 class _SearchState extends State<Search> {
   @override
@@ -270,11 +273,14 @@ class _SearchState extends State<Search> {
                       : Colors.black,
             ),
             IconButton(
-              onPressed: () {
+              onPressed: () async {
                 nextScreen(
                     context,
                     ProfilePage(
-                        phoneNo: phoneNo, email: email, userName: userName));
+                        imageUrl: await getImageURLFromUserId(Uid),
+                        phoneNo: phoneNo,
+                        email: email,
+                        userName: userName));
               },
               icon: const Icon(Icons.person_outline, size: 30),
               color: selsctedIconIndex == 4

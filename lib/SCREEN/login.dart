@@ -12,6 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
@@ -21,6 +22,8 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
+
+bool passVisible = false;
 
 class _LoginScreenState extends State<LoginScreen> {
   AuthService authService = AuthService();
@@ -94,15 +97,28 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 const SizedBox(height: 10),
                                 TextFormField(
-                                  obscureText: true,
-                                  decoration: const InputDecoration(
+                                  obscureText: passVisible ? false : true,
+                                  decoration: InputDecoration(
                                     prefixIcon:
-                                        Icon(Icons.fingerprint_outlined),
+                                        const Icon(Icons.fingerprint_outlined),
                                     labelText: 'Password',
-                                    border: OutlineInputBorder(),
+                                    border: const OutlineInputBorder(),
                                     suffixIcon: IconButton(
-                                      onPressed: null,
-                                      icon: Icon(Icons.remove_red_eye_outlined),
+                                      onPressed: () {
+                                        if (passVisible) {
+                                          setState(() {
+                                            passVisible = false;
+                                          });
+                                        } else {
+                                          setState(() {
+                                            passVisible = true;
+                                          });
+                                        }
+                                      },
+                                      icon: passVisible
+                                          ? const Icon(LineAwesomeIcons.eye)
+                                          : const Icon(
+                                              LineAwesomeIcons.eye_slash),
                                     ),
                                   ),
                                   onChanged: (val) {

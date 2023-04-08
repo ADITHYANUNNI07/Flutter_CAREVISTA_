@@ -3,9 +3,11 @@ import 'package:carevista_ver05/SCREEN/dashboard.dart';
 import 'package:carevista_ver05/SCREEN/home/search.dart';
 import 'package:carevista_ver05/SCREEN/profile.dart';
 import 'package:carevista_ver05/main.dart';
+import 'package:carevista_ver05/utils/utils.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'dart:math' show cos, sqrt, asin;
@@ -14,6 +16,8 @@ class Favorites extends StatefulWidget {
   @override
   State<Favorites> createState() => _FavoritesState();
 }
+
+final Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
 class _FavoritesState extends State<Favorites> {
   @override
@@ -109,11 +113,14 @@ class _FavoritesState extends State<Favorites> {
                     : Colors.black,
           ),
           GestureDetector(
-            onTap: () {
+            onTap: () async {
               nextScreen(
                   context,
                   ProfilePage(
-                      phoneNo: phoneNo, email: email, userName: userName));
+                      imageUrl: await getImageURLFromUserId(Uid),
+                      phoneNo: phoneNo,
+                      email: email,
+                      userName: userName));
             },
             child: Icon(
               Icons.person_outline,

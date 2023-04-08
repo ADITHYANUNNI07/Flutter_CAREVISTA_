@@ -41,6 +41,31 @@ class AuthService {
     }
   }
 
+  Future exchangeUserAccount(
+      String fullname,
+      String phone,
+      String email,
+      String password,
+      String adKey,
+      String gender,
+      String dob,
+      String imageUrl) async {
+    try {
+      User user = (await firebaseAuth.createUserWithEmailAndPassword(
+              email: email, password: password))
+          .user!;
+      // ignore: unnecessary_null_comparison
+      if (user != null) {
+        //call our database service to update the user data
+        await DatabaseService(uid: user.uid).updateUserData(
+            fullname, email, phone, adKey, gender, dob, imageUrl);
+        return true;
+      }
+    } on FirebaseAuthException catch (e) {
+      return e.message;
+    }
+  }
+
 //
 //signout
   Future signOut() async {

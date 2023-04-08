@@ -13,9 +13,11 @@ import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Theme/theme.dart';
 import 'package:carevista_ver05/admin/addHospital.dart';
 import 'package:carevista_ver05/main.dart';
+import 'package:carevista_ver05/utils/utils.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'addons/color.dart' as specialcolor;
 import 'package:flutter/material.dart';
@@ -45,7 +47,8 @@ class _DashboardState extends State<Dashboard> {
   bool saveIcon = false;
   LocationData? _locationData;
   List<DocumentSnapshot> sortedHospitals = [];
-
+  final Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+  String? imageUrl = '';
   @override
   void initState() {
     super.initState();
@@ -98,6 +101,7 @@ class _DashboardState extends State<Dashboard> {
         uid = value!;
       });
     });
+    imageUrl = await getImageURLFromUserId(Uid);
   }
 
   double _calculateDistance(
@@ -168,11 +172,16 @@ class _DashboardState extends State<Dashboard> {
             child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 30),
               children: <Widget>[
-                Icon(
-                  Icons.account_circle,
-                  size: 150,
-                  color: Colors.grey.shade500,
-                ),
+                SizedBox(
+                    width: 150,
+                    height: 150,
+                    child: CircleAvatar(
+                      backgroundImage: imageUrl!.isEmpty
+                          ? const AssetImage('Assets/images/profile-user.jpg')
+                          : Image.network(
+                              imageUrl!,
+                            ).image,
+                    )),
                 const SizedBox(height: 15),
                 Text(
                   userName,
@@ -193,10 +202,11 @@ class _DashboardState extends State<Dashboard> {
                 MenuWidget(
                     title: "Profile",
                     icon: Icons.person,
-                    onPress: () {
+                    onPress: () async {
                       nextScreen(
                           context,
                           ProfilePage(
+                              imageUrl: await getImageURLFromUserId(Uid),
                               email: email,
                               userName: userName,
                               phoneNo: phoneNo));
@@ -823,11 +833,14 @@ class _DashboardState extends State<Dashboard> {
                         : Colors.black,
               ),
               IconButton(
-                onPressed: () {
+                onPressed: () async {
                   nextScreen(
                       context,
                       ProfilePage(
-                          phoneNo: phoneNo, email: email, userName: userName));
+                          imageUrl: await getImageURLFromUserId(Uid),
+                          phoneNo: phoneNo,
+                          email: email,
+                          userName: userName));
                 },
                 icon: const Icon(Icons.person_outline, size: 30),
                 color: selsctedIconIndex == 4

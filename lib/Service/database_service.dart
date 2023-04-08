@@ -27,15 +27,16 @@ class DatabaseService {
   }
 
   Future updateUserData(String fullname, String email, String phone,
-      String gender, String dob) async {
+      String adKey, String gender, String dob, String imageUrl) async {
     return await userCollection.doc(uid).update({
       "fullName": fullname,
       "phoneNo": phone,
       //"profilepic": profile,
       "uid": uid,
-      "email": email,
+      "email": email, "AdKey": adKey,
       "Gender": gender,
       "DOB": dob,
+      "profilepic": imageUrl,
     });
   }
 

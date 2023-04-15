@@ -35,9 +35,11 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
+String Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 bool adKey = false;
 String adminKey = "";
 File? image;
+String uid = '';
 
 class _ProfilePageState extends State<ProfilePage> {
   @override
@@ -53,6 +55,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   gettingUserData() async {
+    await HelperFunction.getUserPhoneFromSF().then((value) {
+      setState(
+        () {
+          phoneNo = value!;
+        },
+      );
+    });
     await HelperFunction.getUserAdkeyFromSF().then((value) {
       setState(() {
         adminKey = value!;
@@ -63,6 +72,14 @@ class _ProfilePageState extends State<ProfilePage> {
         adKey = true;
       }
     });
+    await HelperFunction.getUserUIDFromSF().then((value) {
+      setState(() {
+        uid = value!;
+      });
+    });
+    if (Uid != uid) {
+      Uid = uid;
+    }
   }
 
   Future<String?> getDOBFromUserId(String uid) async {
@@ -104,7 +121,6 @@ class _ProfilePageState extends State<ProfilePage> {
     return null;
   }
 
-  final Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
   AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
@@ -187,15 +203,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                 nextScreen(
                                     context,
                                     EditProfile(
-                                        imageUrl:
-                                            await getImageURLFromUserId(Uid),
+                                        imageUrl: widget.imageUrl,
                                         gender: await getGenderFromUserId(Uid),
                                         dob: await getDOBFromUserId(Uid),
                                         adKey: adminKey,
                                         phoneNo: widget.phoneNo,
                                         email: widget.email,
                                         userName: widget.userName));
-                                print(Uid);
                               },
                               icon: const Icon(
                                 LineAwesomeIcons.alternate_pencil,
@@ -222,7 +236,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         nextScreen(
                             context,
                             EditProfile(
-                              imageUrl: await getImageURLFromUserId(Uid),
+                              imageUrl: widget.imageUrl,
                               gender: await getGenderFromUserId(Uid),
                               dob: await getDOBFromUserId(Uid),
                               adKey: adminKey,

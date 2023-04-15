@@ -24,6 +24,7 @@ class _FavoritesState extends State<Favorites> {
   Widget build(BuildContext context) {
     int selsctedIconIndex = 3;
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         title: const Text('Favorites', style: TextStyle(color: Colors.black)),
       ),

@@ -26,8 +26,15 @@ class DatabaseService {
     });
   }
 
-  Future updateUserData(String fullname, String email, String phone,
-      String adKey, String gender, String dob, String imageUrl) async {
+  Future updateUserData(
+    String fullname,
+    String email,
+    String phone,
+    String adKey,
+    String gender,
+    String dob,
+    String imageUrl,
+  ) async {
     return await userCollection.doc(uid).update({
       "fullName": fullname,
       "phoneNo": phone,
@@ -62,6 +69,28 @@ class DatabaseService {
       'File8': '',
       'File9': '',
       'File10': '',
+    });
+  }
+
+  Future<void> updateUser(
+      String fullname,
+      String email,
+      String phone,
+      String adKey,
+      String gender,
+      String dob,
+      String imageUrl,
+      String UID) async {
+    final userDoc = await userCollection.doc(UID).get();
+    await userDoc.reference.update({
+      "fullName": fullname,
+      "phoneNo": phone,
+      //"profilepic": profile,
+      "uid": UID,
+      "email": email, "AdKey": adKey,
+      "Gender": gender,
+      "DOB": dob,
+      "profilepic": imageUrl,
     });
   }
 

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carevista_ver05/Helper/helper_function.dart';
+import 'package:carevista_ver05/SCREEN/dashboard.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Service/database_service.dart';
 import 'package:carevista_ver05/utils/utils.dart';
@@ -35,27 +36,46 @@ class EditProfile extends StatefulWidget {
   State<EditProfile> createState() => _EditProfileState();
 }
 
+final fromKey = GlobalKey<FormState>();
+late TextEditingController dateController;
+String fullname = "";
+String Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+String phone = "";
+String uid = "";
+String email = "";
+String _gender = "";
+String gender = "";
+File? image;
+bool imagebool = false;
+String imageUrl = '';
+bool newEmailbool = false;
+String newEmailPassword = '';
+bool passVisible = false;
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
 class _EditProfileState extends State<EditProfile> {
-  final fromKey = GlobalKey<FormState>();
-  late TextEditingController dateController;
-  String fullname = "";
-  final Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
-  String phone = "";
-  String uid = "";
-  String email = "";
-  String _gender = "";
-  String gender = "";
-  File? image;
-  bool imagebool = false;
-  String imageUrl = '';
-  bool newEmailbool = false;
-  String newEmailPassword = '';
-  bool passVisible = false;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
+    gettingUserData();
     dateController = TextEditingController(text: widget.dob);
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    gettingUserData();
+  }
+
+  gettingUserData() async {
+    await HelperFunction.getUserUIDFromSF().then((value) {
+      setState(() {
+        uid = value!;
+      });
+    });
+    if (Uid != uid) {
+      Uid = uid;
+    }
   }
 
   bool _isLoding = false;
@@ -126,19 +146,25 @@ class _EditProfileState extends State<EditProfile> {
                                         )),
                             ),
                             Positioned(
-                                bottom: 0,
-                                right: 10,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: Theme.of(context).backgroundColor),
-                                  child: const Icon(
+                              bottom: 0,
+                              right: 10,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: Theme.of(context).backgroundColor),
+                                child: IconButton(
+                                  onPressed: () {
+                                    SelectImage();
+                                  },
+                                  icon: Icon(
                                     LineAwesomeIcons.camera,
                                     color: Colors.white,
                                   ),
-                                ))
+                                ),
+                              ),
+                            )
                           ],
                         ),
                         const SizedBox(height: 50),
@@ -279,7 +305,7 @@ class _EditProfileState extends State<EditProfile> {
                                         ],
                                       ),
                                       const SizedBox(height: 10),
-                                      widget.gender == ''
+                                      widget.gender!.isEmpty
                                           ? Container(
                                               padding: const EdgeInsets.all(1),
                                               child: SizedBox(
@@ -442,7 +468,6 @@ class _EditProfileState extends State<EditProfile> {
 
   uploadImage() async {
     if (image == null) return;
-    print(Uid);
     Reference referenceRoot = FirebaseStorage.instance.ref();
     Reference referenceDirImages =
         referenceRoot.child('user/$Uid/profilephoto');
@@ -459,6 +484,7 @@ class _EditProfileState extends State<EditProfile> {
       //Some error occurred
     }
     if (imageUrl.isEmpty) {
+      // ignore: use_build_context_synchronously
       newshowSnackbar(context, 'Failed',
           'Please try again...That logo is not upload..', ContentType.failure);
     }
@@ -466,15 +492,16 @@ class _EditProfileState extends State<EditProfile> {
 
   updateProfile() async {
     if (fromKey.currentState!.validate()) {
-      print(email);
       if (phone.isEmpty) {
         phone = widget.phoneNo;
       }
       if (fullname.isEmpty) {
         fullname = widget.userName;
       }
-      print(gender);
       uploadImage();
+      if (imageUrl.isEmpty) {
+        imageUrl = widget.imageUrl!;
+      }
       String dob = dateController.text;
       if (email.isEmpty) {
         email = widget.email;
@@ -505,6 +532,8 @@ class _EditProfileState extends State<EditProfile> {
                       uid: FirebaseAuth.instance.currentUser!.uid)
                   .gettingUserData(email);
               await HelperFunction.saveUserUIDFromSF(snapshot.docs[0]['uid']);
+              await HelperFunction.saveUserImageURLSF(
+                  snapshot.docs[0]['profilepic']);
               // ignore: use_build_context_synchronously
               setState(() {
                 _isLoding = false;
@@ -513,29 +542,39 @@ class _EditProfileState extends State<EditProfile> {
                   'your Email Change Successfully...', ContentType.success);
             } else {
               setState(() {
-                setState(() {
-                  _isLoding = false;
-                });
                 showSnackbar(context, Colors.red, value);
               });
             }
           });
         }
       } else {
-        await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
-            .updateUserData(
-                fullname, email, phone, widget.adKey, gender, dob, imageUrl);
-        // ignore: use_build_context_synchronously
+        print(Uid);
+        await DatabaseService(uid: Uid).updateUser(
+            fullname, email, phone, widget.adKey, gender, dob, imageUrl, Uid);
+        // ignore: use_build_context_synchronously await HelperFunction.saveUserPhoneSF(snapshot.docs[0]['phoneNo']);
+        QuerySnapshot snapshot =
+            await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+                .gettingUserData(email);
+        // saving the values to our shared preferences
+        await HelperFunction.saveUserLoggedInStatus(true);
+        await HelperFunction.saveUserNameSF(snapshot.docs[0]['fullName']);
+        await HelperFunction.saveUserEmailSF(email);
+        await HelperFunction.saveUserPhoneSF(snapshot.docs[0]['phoneNo']);
+        await HelperFunction.saveUserAdkeyFromSF(snapshot.docs[0]['AdKey']);
+        await HelperFunction.saveUserImageURLSF(snapshot.docs[0]['profilepic']);
         setState(() {
           _isLoding = false;
         });
+
+        // ignore: use_build_context_synchronously
+        nextScreen(context, const Dashboard());
+        // ignore: use_build_context_synchronously
         newshowSnackbar(context, 'Update Profile',
             'your profile update successfully', ContentType.success);
       }
     } else {
-      setState(() {
-        _isLoding = false;
-      });
+      newshowSnackbar(context, 'Check above Details',
+          'Invalid format please check above the Details', ContentType.failure);
     }
   }
 }

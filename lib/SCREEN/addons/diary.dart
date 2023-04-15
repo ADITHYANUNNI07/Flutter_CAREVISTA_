@@ -1,4 +1,5 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:carevista_ver05/Helper/helper_function.dart';
 import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
 import 'package:carevista_ver05/Service/database_service.dart';
 import 'package:carevista_ver05/main.dart';
@@ -19,10 +20,22 @@ class Diary extends StatefulWidget {
 
 class _DiaryState extends State<Diary> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
+  String oldtitle = '';
+  String oldNotes = '';
+  String olddiaryTitle = '';
+  String olddiaryNotes = '';
+  bool editDiary = false;
+  String Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+  final fromKey = GlobalKey<FormState>();
+  bool createDiary = false;
+  bool loading = false;
+  String diaryTitle = '';
+  String diaryNotes = '';
+  String uid = '';
   @override
   void initState() {
     super.initState();
+    gettingUserData();
     _controller = AnimationController(vsync: this);
     editDiary = false;
   }
@@ -33,17 +46,40 @@ class _DiaryState extends State<Diary> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  String oldtitle = '';
-  String oldNotes = '';
-  String olddiaryTitle = '';
-  String olddiaryNotes = '';
-  bool editDiary = false;
-  final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
-  final fromKey = GlobalKey<FormState>();
-  bool createDiary = false;
-  bool loading = false;
-  String diaryTitle = '';
-  String diaryNotes = '';
+  @override
+  void didUpdateWidget(oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    gettingUserData();
+  }
+
+  gettingUserData() async {
+    await HelperFunction.getUserUIDFromSF().then((value) {
+      setState(() {
+        uid = value!;
+      });
+    });
+    await HelperFunction.getUserNameFromSF().then((value) {
+      setState(() {
+        userName = value!;
+      });
+    });
+    await HelperFunction.getUserEmailFromSF().then((value) {
+      setState(() {
+        email = value!;
+      });
+    });
+    await HelperFunction.getUserPhoneFromSF().then((value) {
+      setState(
+        () {
+          phoneNo = value!;
+        },
+      );
+    });
+    if (Uid != uid) {
+      Uid = uid;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return loading
@@ -395,7 +431,7 @@ class _DiaryState extends State<Diary> with SingleTickerProviderStateMixin {
                           child: StreamBuilder<QuerySnapshot>(
                             stream: FirebaseFirestore.instance
                                 .collection('users')
-                                .doc(uid)
+                                .doc(Uid)
                                 .collection('Diary')
                                 .snapshots(),
                             builder: (BuildContext context,

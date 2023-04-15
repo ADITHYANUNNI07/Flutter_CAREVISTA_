@@ -1,8 +1,6 @@
 import 'package:carevista_ver05/Helper/helper_function.dart';
 import 'package:carevista_ver05/SCREEN/dashboard.dart';
-import 'package:carevista_ver05/SCREEN/forgotpass.dart';
-import 'package:carevista_ver05/SCREEN/login_with_phone.dart';
-import 'package:carevista_ver05/SCREEN/send_otp.dart';
+import 'package:carevista_ver05/SCREEN/phonelogin.dart';
 import 'package:carevista_ver05/SCREEN/signup.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Service/database_service.dart';
@@ -11,9 +9,7 @@ import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
@@ -137,143 +133,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
                                     onPressed: () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        builder: (context) => Container(
-                                          padding: const EdgeInsets.all(34),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            // ignore: prefer_const_literals_to_create_immutables
-                                            children: [
-                                              const Text(
-                                                'Make Selection!',
-                                                style: TextStyle(
-                                                    fontSize: 40,
-                                                    fontFamily: 'brandon_H'),
-                                              ),
-                                              Text(
-                                                  'Select one of the options given below to reset your password.',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText2),
-                                              const SizedBox(height: 30),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              const Forgot() /*ForgotPwdEmail()*/));
-                                                },
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(20),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      color:
-                                                          Colors.grey.shade200),
-                                                  child: Row(
-                                                    // ignore: prefer_const_literals_to_create_immutables
-                                                    children: [
-                                                      const Icon(
-                                                        Icons
-                                                            .mail_outline_rounded,
-                                                        size: 60,
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        // ignore: prefer_const_literals_to_create_immutables
-
-                                                        children: [
-                                                          const Text(
-                                                            'E-Mail',
-                                                            style: TextStyle(
-                                                                fontSize: 19,
-                                                                fontFamily:
-                                                                    'brandon_H'),
-                                                          ),
-                                                          Text(
-                                                            'Reset via E-Mail Verification.',
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyText1,
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 20),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              LoginWithPhone()
-                                                          //const ForgotPwdPhone()
-                                                          ));
-                                                },
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(20),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      color:
-                                                          Colors.grey.shade200),
-                                                  child: Row(
-                                                    // ignore: prefer_const_literals_to_create_immutables
-                                                    children: [
-                                                      const Icon(
-                                                        Icons.phone_outlined,
-                                                        size: 60,
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        // ignore: prefer_const_literals_to_create_immutables
-
-                                                        children: [
-                                                          const Text(
-                                                            'Phone No',
-                                                            style: TextStyle(
-                                                                fontSize: 19,
-                                                                fontFamily:
-                                                                    'brandon_H'),
-                                                          ),
-                                                          Text(
-                                                            'Reset via Phone Verification.',
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyText1,
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
+                                      nextScreen(context, const LoginPhoneNo());
                                     },
                                     child: Text(
-                                      'Forgot Password?',
+                                      'Other Way To Login?',
                                       style:
                                           Theme.of(context).textTheme.subtitle2,
                                     ),
@@ -372,6 +235,8 @@ class _LoginScreenState extends State<LoginScreen> {
           await HelperFunction.saveUserPhoneSF(snapshot.docs[0]['phoneNo']);
           await HelperFunction.saveUserAdkeyFromSF(snapshot.docs[0]['AdKey']);
           await HelperFunction.saveUserUIDFromSF(snapshot.docs[0]['uid']);
+          await HelperFunction.saveUserImageURLSF(
+              snapshot.docs[0]['profilepic']);
           // ignore: use_build_context_synchronously
           //provide_phoneotp.dart...update..profile
           nextScreenReplace(context, Dashboard());

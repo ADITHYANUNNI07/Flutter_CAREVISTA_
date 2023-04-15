@@ -1,63 +1,53 @@
-import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
-import 'package:carevista_ver05/SCREEN/dashboard.dart';
-import 'package:carevista_ver05/SCREEN/home/favorites.dart';
 import 'package:carevista_ver05/SCREEN/home/hospital.dart';
-import 'package:carevista_ver05/SCREEN/profile.dart';
-import 'package:carevista_ver05/main.dart';
-import 'package:carevista_ver05/utils/utils.dart';
+import 'package:carevista_ver05/SCREEN/home/search.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:carevista_ver05/SCREEN/addons/color.dart' as specialcolor;
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-class Search extends StatefulWidget {
-  const Search({super.key});
-
+class SeparateHospital extends StatefulWidget {
+  SeparateHospital({required this.title, super.key});
+  String title;
   @override
-  State<Search> createState() => _SearchState();
+  State<SeparateHospital> createState() => _SeparateHospitalState();
 }
 
-TextEditingController _searchController = TextEditingController();
-int selsctedIconIndex = 1;
-String _searchQuery = '';
-final Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
-
-class _SearchState extends State<Search> {
+class _SeparateHospitalState extends State<SeparateHospital> {
   @override
-  void initState() {
-    super.initState();
-    _searchQuery = '';
-    _searchController = TextEditingController();
-  }
-
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
       color: const Color(0xFF04FBC3),
       child: SafeArea(
           child: Scaffold(
-        extendBody: true,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          centerTitle: true,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              LineAwesomeIcons.angle_double_left,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            widget.title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 25,
+                //fontFamily: 'brandon_H',
+                color: Theme.of(context).primaryColorDark),
+          ),
+        ),
         body: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+            padding:
+                const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 60),
             child: Column(
               children: [
-                TextField(
-                  controller: _searchController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    labelText: 'Search',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 10),
                 SizedBox(
                   height: size.height,
                   child: StreamBuilder<QuerySnapshot>(
@@ -146,10 +136,13 @@ class _SearchState extends State<Search> {
                         itemCount: sortedHospitals.length,
                         itemBuilder: (BuildContext context, int index) {
                           DocumentSnapshot data = sortedHospitals[index];
-                          if (!_searchQuery.isEmpty &&
-                              !data['hospitalName']
+                          if (!widget.title.isEmpty &&
+                              !data['overview']
                                   .toLowerCase()
-                                  .contains(_searchQuery.toLowerCase())) {
+                                  .contains(widget.title.toLowerCase()) &&
+                              !data['services']
+                                  .toLowerCase()
+                                  .contains(widget.title.toLowerCase())) {
                             // Skip this hospital if it doesn't match the search query
                             return SizedBox.shrink();
                           }
@@ -211,98 +204,14 @@ class _SearchState extends State<Search> {
                             ],
                           );
                         },
+                        padding: EdgeInsets.only(bottom: 100),
                       );
                     },
                   ),
                 ),
-                SizedBox(
-                  child: ListView(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      children: [SizedBox(height: 100)]),
-                ),
               ],
             ),
           ),
-        ),
-        bottomNavigationBar: CurvedNavigationBar(
-          backgroundColor: Colors.transparent,
-          index: selsctedIconIndex,
-          buttonBackgroundColor: const Color(0XFF407BFF),
-          color: Theme.of(context).canvasColor,
-          height: 60.0,
-          onTap: (index) {
-            setState(() {
-              selsctedIconIndex = index;
-            });
-          },
-          animationDuration: const Duration(
-            milliseconds: 200,
-          ),
-          items: <Widget>[
-            IconButton(
-              onPressed: () {
-                nextScreen(context, const PatientRecord());
-              },
-              icon: const Icon(Icons.library_books_outlined, size: 30),
-              color: selsctedIconIndex == 0
-                  ? Colors.white
-                  : MyApp.themeNotifier.value == ThemeMode.dark
-                      ? Colors.white
-                      : Colors.black,
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.search, size: 30),
-              color: selsctedIconIndex == 1
-                  ? Colors.white
-                  : MyApp.themeNotifier.value == ThemeMode.dark
-                      ? Colors.white
-                      : Colors.black,
-            ),
-            GestureDetector(
-              onTap: () {
-                nextScreen(context, const Dashboard());
-              },
-              child: Icon(
-                Icons.home_outlined,
-                size: 30,
-                color: selsctedIconIndex == 2
-                    ? Colors.white
-                    : MyApp.themeNotifier.value == ThemeMode.dark
-                        ? Colors.white
-                        : Colors.black,
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                nextScreen(context, Favorites());
-              },
-              icon: const Icon(Icons.favorite_border_outlined, size: 30),
-              color: selsctedIconIndex == 3
-                  ? Colors.white
-                  : MyApp.themeNotifier.value == ThemeMode.dark
-                      ? Colors.white
-                      : Colors.black,
-            ),
-            IconButton(
-              onPressed: () async {
-                nextScreen(
-                    context,
-                    ProfilePage(
-                        imageUrl: await getImageURLFromUserId(Uid),
-                        phoneNo: phoneNo,
-                        email: email,
-                        userName: userName));
-              },
-              icon: const Icon(Icons.person_outline, size: 30),
-              color: selsctedIconIndex == 4
-                  ? Colors.white
-                  : MyApp.themeNotifier.value == ThemeMode.dark
-                      ? Colors.white
-                      : Colors.black,
-            ),
-          ],
         ),
       )),
     );
@@ -320,84 +229,5 @@ class _SearchState extends State<Search> {
       }
     }
     return doctorList;
-  }
-}
-
-class SearchListContainerWidget extends StatelessWidget {
-  SearchListContainerWidget(
-      {super.key,
-      required this.size,
-      required this.hospitalName,
-      required this.district,
-      required this.imageSrc,
-      required this.onPress});
-  String hospitalName;
-  String district;
-  String imageSrc;
-  final Size size;
-  final VoidCallback onPress;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: onPress,
-          child: Container(
-            padding:
-                const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 10),
-            width: size.width - 30,
-            height: 150,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  specialcolor.AppColor.gradientFirst.withOpacity(0.9),
-                  specialcolor.AppColor.gradientSecond.withOpacity(0.9)
-                ], begin: Alignment.bottomLeft, end: Alignment.centerRight),
-                borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(15),
-                    bottomRight: Radius.circular(15),
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15))),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 100,
-                      height: 100,
-                      child: CircleAvatar(
-                          backgroundImage: Image.network(imageSrc).image),
-                    ),
-                    const SizedBox(width: 10),
-                    Flexible(
-                      child: Text(
-                        hospitalName,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      district,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w200,
-                          fontSize: 10,
-                          color: Colors.white),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 10)
-      ],
-    );
   }
 }

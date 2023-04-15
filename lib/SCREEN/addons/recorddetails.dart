@@ -106,6 +106,9 @@ class _RecordDetailsState extends State<RecordDetails> {
         },
       );
     });
+    if (Uid != uid) {
+      Uid = uid;
+    }
   }
 
   bool _isLoding = false;

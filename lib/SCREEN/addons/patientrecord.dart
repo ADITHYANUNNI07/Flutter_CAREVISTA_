@@ -37,6 +37,7 @@ String email = "";
 String phoneNo = "";
 bool createfolder = false;
 bool menubool = false;
+String Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
 class _PatientRecordState extends State<PatientRecord> {
   @override
@@ -74,10 +75,10 @@ class _PatientRecordState extends State<PatientRecord> {
         },
       );
     });
+    if (Uid != uid) {
+      Uid = uid;
+    }
   }
-
-  // ignore: non_constant_identifier_names
-  final Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
   late File pdfFile;
   Widget build(BuildContext context) {
@@ -85,6 +86,7 @@ class _PatientRecordState extends State<PatientRecord> {
     return Container(
       color: const Color(0xFF04FBC3),
       child: Scaffold(
+        extendBody: true,
         appBar: AppBar(
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           centerTitle: true,

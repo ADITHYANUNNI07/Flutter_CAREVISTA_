@@ -7,6 +7,7 @@ import 'package:carevista_ver05/SCREEN/home/favorites.dart';
 import 'package:carevista_ver05/SCREEN/home/hospital.dart';
 import 'package:carevista_ver05/SCREEN/home/medicinereminder.dart';
 import 'package:carevista_ver05/SCREEN/home/search.dart';
+import 'package:carevista_ver05/SCREEN/home/separatehospital.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
 import 'package:carevista_ver05/SCREEN/profile.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
@@ -47,8 +48,9 @@ class _DashboardState extends State<Dashboard> {
   bool saveIcon = false;
   LocationData? _locationData;
   List<DocumentSnapshot> sortedHospitals = [];
-  final Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
-  String? imageUrl = '';
+  String Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+  String imageUrl = '';
+  bool _isLoding = false;
   @override
   void initState() {
     super.initState();
@@ -69,7 +71,11 @@ class _DashboardState extends State<Dashboard> {
   }
 
   gettingUserData() async {
-    imageUrl = await getImageURLFromUserId(Uid);
+    await HelperFunction.getUserImageURLFromSF().then((value) {
+      setState(() {
+        imageUrl = value!;
+      });
+    });
     await HelperFunction.getUserNameFromSF().then((value) {
       setState(() {
         userName = value!;
@@ -102,6 +108,10 @@ class _DashboardState extends State<Dashboard> {
         uid = value!;
       });
     });
+    if (Uid != uid) {
+      Uid = uid;
+    }
+    //imageUrl = await getImageURLFromUserId(Uid);
   }
 
   double _calculateDistance(
@@ -134,6 +144,7 @@ class _DashboardState extends State<Dashboard> {
       color: const Color(0xFF04FBC3),
       child: SafeArea(
         child: Scaffold(
+          extendBody: true,
           appBar: AppBar(
             iconTheme: IconThemeData(color: Theme.of(context).iconTheme.color),
             elevation: 0,
@@ -154,18 +165,17 @@ class _DashboardState extends State<Dashboard> {
             ),
             centerTitle: true,
             actions: [
-              Container(
-                  margin: const EdgeInsets.only(right: 1),
-                  child: IconButton(
-                      icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
-                          ? LineAwesomeIcons.moon
-                          : LineAwesomeIcons.sun),
-                      onPressed: () {
-                        MyApp.themeNotifier.value =
-                            MyApp.themeNotifier.value == ThemeMode.light
-                                ? ThemeMode.dark
-                                : ThemeMode.light;
-                      })),
+              SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: CircleAvatar(
+                    backgroundImage: imageUrl == ''
+                        ? const AssetImage('Assets/images/profile-user.jpg')
+                        : Image.network(
+                            imageUrl,
+                          ).image,
+                  )),
+              const SizedBox(width: 5),
             ],
           ),
           drawer: Drawer(
@@ -179,7 +189,7 @@ class _DashboardState extends State<Dashboard> {
                       backgroundImage: imageUrl == ''
                           ? const AssetImage('Assets/images/profile-user.jpg')
                           : Image.network(
-                              imageUrl!,
+                              imageUrl,
                             ).image,
                     )),
                 const SizedBox(height: 15),
@@ -206,7 +216,7 @@ class _DashboardState extends State<Dashboard> {
                       nextScreen(
                           context,
                           ProfilePage(
-                              imageUrl: await getImageURLFromUserId(Uid),
+                              imageUrl: imageUrl,
                               email: email,
                               userName: userName,
                               phoneNo: phoneNo));
@@ -311,62 +321,88 @@ class _DashboardState extends State<Dashboard> {
                         DiseaseHospitalListScroll(
                             txttheme: txttheme,
                             title: "Cancer",
-                            hospitalno: "10 Hospital",
+                            hospitalno: "Hospital",
                             imageicon: 'Assets/images/cancer.png',
-                            onPress: () {}),
+                            onPress: () {
+                              nextScreen(
+                                  context, SeparateHospital(title: "Cancer"));
+                            }),
                         DiseaseHospitalListScroll(
                           txttheme: txttheme,
                           title: 'Heart',
-                          hospitalno: '10 Hospital',
+                          hospitalno: 'Hospital',
                           imageicon: 'Assets/images/heart128.png',
-                          onPress: () {},
+                          onPress: () {
+                            nextScreen(
+                                context, SeparateHospital(title: "Heart"));
+                          },
                         ),
                         DiseaseHospitalListScroll(
                           txttheme: txttheme,
                           title: 'Eye',
-                          hospitalno: '10 Hospital',
+                          hospitalno: 'Hospital',
                           imageicon: 'Assets/images/eye.png',
-                          onPress: () {},
+                          onPress: () {
+                            nextScreen(context, SeparateHospital(title: "Eye"));
+                          },
                         ),
                         DiseaseHospitalListScroll(
                           txttheme: txttheme,
                           title: 'Dental',
-                          hospitalno: '10 Hospital',
+                          hospitalno: 'Hospital',
                           imageicon: 'Assets/images/dental.png',
-                          onPress: () {},
+                          onPress: () {
+                            nextScreen(
+                                context, SeparateHospital(title: "Dental"));
+                          },
                         ),
                         DiseaseHospitalListScroll(
                           txttheme: txttheme,
                           title: 'Lungs',
-                          hospitalno: '10 Hospital',
+                          hospitalno: 'Hospital',
                           imageicon: 'Assets/images/lungs.png',
-                          onPress: () {},
+                          onPress: () {
+                            nextScreen(
+                                context, SeparateHospital(title: "Lungs"));
+                          },
                         ),
                         DiseaseHospitalListScroll(
                           txttheme: txttheme,
-                          title: 'Knee-replacement',
-                          hospitalno: '10 Hospital',
+                          title: 'Knee',
+                          hospitalno: 'Hospital',
                           imageicon: 'Assets/images/knee.png',
-                          onPress: () {},
+                          onPress: () {
+                            nextScreen(
+                                context, SeparateHospital(title: "Knee"));
+                          },
                         ),
                         DiseaseHospitalListScroll(
                             txttheme: txttheme,
                             title: 'Kidney',
-                            hospitalno: '10 Hospital',
+                            hospitalno: 'Hospital',
                             imageicon: 'Assets/images/kidney.png',
-                            onPress: () {}),
+                            onPress: () {
+                              nextScreen(
+                                  context, SeparateHospital(title: "Kidney"));
+                            }),
                         DiseaseHospitalListScroll(
                             txttheme: txttheme,
                             title: 'Spine',
-                            hospitalno: '10 Hospital',
+                            hospitalno: 'Hospital',
                             imageicon: 'Assets/images/spine.png',
-                            onPress: () {}),
+                            onPress: () {
+                              nextScreen(
+                                  context, SeparateHospital(title: "Spine"));
+                            }),
                         DiseaseHospitalListScroll(
                           txttheme: txttheme,
                           title: 'Skin',
-                          hospitalno: '10 Hospital',
+                          hospitalno: 'Hospital',
                           imageicon: 'Assets/images/skin.png',
-                          onPress: () {},
+                          onPress: () {
+                            nextScreen(
+                                context, SeparateHospital(title: "Skin"));
+                          },
                         ),
                       ],
                     ),
@@ -385,7 +421,7 @@ class _DashboardState extends State<Dashboard> {
                                   color: MyApp.themeNotifier.value ==
                                           ThemeMode.light
                                       ? Colors.white
-                                      : Colors.black,
+                                      : Theme.of(context).cardColor,
                                   borderRadius: const BorderRadius.only(
                                       bottomLeft: Radius.circular(10),
                                       bottomRight: Radius.circular(10),
@@ -768,6 +804,7 @@ class _DashboardState extends State<Dashboard> {
                       },
                     ),
                   ),
+                  const SizedBox(height: 20)
                 ],
               ),
             ),
@@ -837,7 +874,7 @@ class _DashboardState extends State<Dashboard> {
                   nextScreen(
                       context,
                       ProfilePage(
-                          imageUrl: await getImageURLFromUserId(Uid),
+                          imageUrl: imageUrl,
                           phoneNo: phoneNo,
                           email: email,
                           userName: userName));
@@ -1113,16 +1150,21 @@ class DiseaseHospitalListScroll extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 5),
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(title,
-                    style: txttheme.headline6, overflow: TextOverflow.ellipsis),
-                Text(hospitalno,
-                    style: txttheme.bodyText2, overflow: TextOverflow.ellipsis),
-              ],
+          GestureDetector(
+            onTap: onPress,
+            child: Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(title,
+                      style: txttheme.headline6,
+                      overflow: TextOverflow.ellipsis),
+                  Text(hospitalno,
+                      style: txttheme.bodyText2,
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
             ),
           )
         ],

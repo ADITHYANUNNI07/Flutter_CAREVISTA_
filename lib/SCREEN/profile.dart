@@ -1,6 +1,10 @@
 import 'dart:io';
 
 import 'package:carevista_ver05/Helper/helper_function.dart';
+import 'package:carevista_ver05/SCREEN/addons/diary.dart';
+import 'package:carevista_ver05/SCREEN/addons/diseasecomplication.dart';
+import 'package:carevista_ver05/SCREEN/addons/firstAID.dart';
+import 'package:carevista_ver05/SCREEN/addons/medicinereminder.dart';
 import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
 import 'package:carevista_ver05/SCREEN/editprofile.dart';
 import 'package:carevista_ver05/SCREEN/home/favorites.dart';
@@ -8,6 +12,7 @@ import 'package:carevista_ver05/SCREEN/login.dart';
 import 'package:carevista_ver05/SCREEN/profile/additionaldetail.dart';
 import 'package:carevista_ver05/SCREEN/profile/medicalrecord.dart';
 import 'package:carevista_ver05/SCREEN/profile/settingsnofifavorites.dart';
+import 'package:carevista_ver05/SCREEN/profile/usertoaddhospital.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/admin/addHospital.dart';
 import 'package:carevista_ver05/main.dart';
@@ -266,28 +271,44 @@ class _ProfilePageState extends State<ProfilePage> {
                     },
                   ),
                   ProfileMenuWidget(
-                      title: "Additional Details",
-                      icon: LineAwesomeIcons.newspaper,
-                      onPress: () {
-                        nextScreen(context, const AdditionalDetails());
-                      }),
-                  ProfileMenuWidget(
                       title: "Medical Records",
                       icon: Icons.medical_information_outlined,
                       onPress: () {
-                        nextScreen(context, const MedicalRecordSrn());
-                      }),
-                  ProfileMenuWidget(
-                      title: "Notifications",
-                      icon: Icons.notifications_active_outlined,
-                      onPress: () {
-                        nextScreen(context, const NotificationSrn());
+                        nextScreen(context, const PatientRecord());
                       }),
                   ProfileMenuWidget(
                       title: "Favorites",
                       icon: Icons.star_border_rounded,
                       onPress: () {
                         nextScreen(context, Favorites());
+                      }),
+                  ProfileMenuWidget(
+                      title: "First AID Treatement",
+                      icon: LineAwesomeIcons.first_aid,
+                      onPress: () {
+                        nextScreen(context, const FirstAID());
+                      }),
+                  ProfileMenuWidget(
+                      title: "Diary",
+                      icon: Icons.note_add,
+                      onPress: () {
+                        nextScreen(context, const Diary());
+                      }),
+                  ProfileMenuWidget(
+                      title: "Medicine Reminder",
+                      icon: Icons.alarm_add,
+                      onPress: () {
+                        nextScreen(
+                            context,
+                            MedicineReminder(
+                              uid: uid,
+                            ));
+                      }),
+                  ProfileMenuWidget(
+                      title: "Disease Complication",
+                      icon: LineAwesomeIcons.heartbeat,
+                      onPress: () {
+                        nextScreen(context, const DiseaseComplication());
                       }),
                   adKey == true
                       ? ProfileMenuWidget(
@@ -297,6 +318,18 @@ class _ProfilePageState extends State<ProfilePage> {
                             nextScreen(
                                 context,
                                 AddHospital(
+                                    username: widget.userName,
+                                    userphoneno: widget.phoneNo));
+                          })
+                      : Container(),
+                  adKey == false
+                      ? ProfileMenuWidget(
+                          title: "Add Your Nearest Hospital",
+                          icon: Icons.local_hospital,
+                          onPress: () {
+                            nextScreen(
+                                context,
+                                UserToAddHospital(
                                     username: widget.userName,
                                     userphoneno: widget.phoneNo));
                           })

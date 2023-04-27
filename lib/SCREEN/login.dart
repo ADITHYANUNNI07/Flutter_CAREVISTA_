@@ -4,12 +4,14 @@ import 'package:carevista_ver05/SCREEN/phonelogin.dart';
 import 'package:carevista_ver05/SCREEN/signup.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Service/database_service.dart';
+import 'package:carevista_ver05/main.dart';
 
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:lottie/lottie.dart';
 
 // ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
@@ -30,20 +32,37 @@ class _LoginScreenState extends State<LoginScreen> {
   String password = "";
   bool adkey = false;
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _isLoding = false;
+  }
+
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     final size = MediaQuery.of(context).size;
-    return Container(
-      color: const Color(0xFF04FBC3),
-      child: SafeArea(
-        child: Scaffold(
-          body: _isLoding
-              ? Center(
-                  child: CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                  ),
-                )
-              : Container(
+    return _isLoding
+        ? Container(
+            height: 300, // set the height of the container to 300
+            width: 300, // set the width of the container to 300
+            color: MyApp.themeNotifier.value == ThemeMode.light
+                ? Colors.white
+                : Theme.of(context).canvasColor,
+            child: FractionallySizedBox(
+              widthFactor:
+                  0.4, // set the width factor to 0.8 to take 80% of the container's width
+              heightFactor:
+                  0.4, // set the height factor to 0.8 to take 80% of the container's height
+              child: Lottie.network(
+                'https://assets5.lottiefiles.com/packages/lf20_Qkk8MTZ8T4.json',
+              ),
+            ),
+          )
+        : Container(
+            color: const Color(0xFF04FBC3),
+            child: SafeArea(
+              child: Scaffold(
+                body: Container(
                   padding: const EdgeInsets.all(35),
                   child: SingleChildScrollView(
                     child: Column(
@@ -213,9 +232,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-        ),
-      ),
-    );
+              ),
+            ),
+          );
   }
 
   login() async {

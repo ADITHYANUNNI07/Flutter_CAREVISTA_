@@ -3,11 +3,13 @@ import 'package:carevista_ver05/SCREEN/dashboard.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Service/database_service.dart';
+import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class SignupScreen extends StatefulWidget {
   SignupScreen({super.key});
@@ -43,19 +45,30 @@ class _SignupScreenState extends State<SignupScreen> {
     // ignore: unused_local_variable
 
     final size = MediaQuery.of(context).size;
-    return Container(
-      color: const Color(0xFF04FBC3),
-      child: Container(
-        color: const Color(0xFF04FBC3),
-        child: SafeArea(
-          child: Scaffold(
-            body: _isLoding
-                ? Center(
-                    child: CircularProgressIndicator(
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  )
-                : Container(
+    return _isLoding
+        ? Container(
+            height: 300, // set the height of the container to 300
+            width: 300, // set the width of the container to 300
+            color: MyApp.themeNotifier.value == ThemeMode.light
+                ? Colors.white
+                : Theme.of(context).canvasColor,
+            child: FractionallySizedBox(
+              widthFactor:
+                  0.4, // set the width factor to 0.8 to take 80% of the container's width
+              heightFactor:
+                  0.4, // set the height factor to 0.8 to take 80% of the container's height
+              child: Lottie.network(
+                'https://assets5.lottiefiles.com/packages/lf20_Qkk8MTZ8T4.json',
+              ),
+            ),
+          )
+        : Container(
+            color: const Color(0xFF04FBC3),
+            child: Container(
+              color: const Color(0xFF04FBC3),
+              child: SafeArea(
+                child: Scaffold(
+                  body: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 48),
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -268,10 +281,10 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                   ),
-          ),
-        ),
-      ),
-    );
+                ),
+              ),
+            ),
+          );
   }
 
   signup() async {

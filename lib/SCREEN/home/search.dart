@@ -11,6 +11,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carevista_ver05/SCREEN/addons/color.dart' as specialcolor;
+import 'package:lottie/lottie.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -67,7 +68,10 @@ class _SearchState extends State<Search> {
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (!snapshot.hasData) {
-                        return Center(child: CircularProgressIndicator());
+                        return Center(
+                            child: Lottie.asset(
+                                'animation/96949-loading-animation.json',
+                                height: 100));
                       }
                       List<DocumentSnapshot> hospitals = snapshot.data!.docs;
                       List<DocumentSnapshot> thiruvananthapuramHospitals =
@@ -149,6 +153,18 @@ class _SearchState extends State<Search> {
                           if (!_searchQuery.isEmpty &&
                               !data['hospitalName']
                                   .toLowerCase()
+                                  .contains(_searchQuery.toLowerCase()) &&
+                              !data['district']
+                                  .toLowerCase()
+                                  .contains(_searchQuery.toLowerCase()) &&
+                              !data['location']
+                                  .toLowerCase()
+                                  .contains(_searchQuery.toLowerCase()) &&
+                              !data['overview']
+                                  .toLowerCase()
+                                  .contains(_searchQuery.toLowerCase()) &&
+                              !data['services']
+                                  .toLowerCase()
                                   .contains(_searchQuery.toLowerCase())) {
                             // Skip this hospital if it doesn't match the search query
                             return SizedBox.shrink();
@@ -160,6 +176,7 @@ class _SearchState extends State<Search> {
                                 hospitalName: data['hospitalName'],
                                 district: data['district'],
                                 imageSrc: data['Logo'],
+                                location: data['location'],
                                 onPress: () {
                                   nextScreen(
                                       context,
@@ -211,15 +228,10 @@ class _SearchState extends State<Search> {
                             ],
                           );
                         },
+                        padding: const EdgeInsets.only(bottom: 200),
                       );
                     },
                   ),
-                ),
-                SizedBox(
-                  child: ListView(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      children: [SizedBox(height: 100)]),
                 ),
               ],
             ),
@@ -330,12 +342,14 @@ class SearchListContainerWidget extends StatelessWidget {
       required this.hospitalName,
       required this.district,
       required this.imageSrc,
-      required this.onPress});
+      required this.onPress,
+      required this.location});
   String hospitalName;
   String district;
   String imageSrc;
   final Size size;
   final VoidCallback onPress;
+  final String location;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -385,6 +399,18 @@ class SearchListContainerWidget extends StatelessWidget {
                   children: [
                     Text(
                       district,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w200,
+                          fontSize: 10,
+                          color: Colors.white),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      location,
                       style: const TextStyle(
                           fontWeight: FontWeight.w200,
                           fontSize: 10,

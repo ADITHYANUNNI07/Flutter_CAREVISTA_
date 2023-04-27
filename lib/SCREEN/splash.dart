@@ -5,6 +5,7 @@ import 'package:carevista_ver05/SCREEN/login.dart';
 import 'package:carevista_ver05/SCREEN/welcome.dart';
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class ScreenSplash extends StatefulWidget {
@@ -41,11 +42,44 @@ class _ScreenSplashState extends State<ScreenSplash> {
     return Scaffold(
       body: Stack(
         children: [
-          Center(
-            child: Image.asset(
-              'Assets/images/LOGO.png',
-              height: 210,
-            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'Assets/images/LOGO.png',
+                    height: 210,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              SizedBox(
+                height: 430,
+                child: Container(
+                  width: double.infinity,
+                  height: 430,
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                child: Lottie.asset(
+                  'animation/17169-smooth-healthy-animation (1).json',
+
+                  //'animation/9573-analytics.json',
+                  // path to your Lottie animation file
+                  repeat: true, // whether the animation should loop
+                  reverse:
+                      false, // whether the animation should play in reverse
+                  animate:
+                      true, // whether the animation should start playing automatically
+                ),
+              ),
+            ],
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 1600),
@@ -77,9 +111,9 @@ class _ScreenSplashState extends State<ScreenSplash> {
   }
 
   Future animatedShape() async {
-    await Future.delayed(const Duration(milliseconds: 950));
+    await Future.delayed(const Duration(milliseconds: 2000));
     setState(() => animate = true);
-    await Future.delayed(const Duration(milliseconds: 1000));
+    await Future.delayed(const Duration(milliseconds: 5000));
 
     // ignore: use_build_context_synchronously
     Navigator.of(context).pushReplacement(

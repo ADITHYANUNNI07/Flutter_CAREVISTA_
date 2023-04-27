@@ -3,18 +3,16 @@ import 'package:carevista_ver05/SCREEN/home/search.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 
-class SeparateHospital extends StatefulWidget {
-  SeparateHospital({required this.title, required this.disease, super.key});
-  String title;
-  String disease;
+class UploadAdmin extends StatefulWidget {
+  UploadAdmin({required this.name, super.key});
+  String name;
   @override
-  State<SeparateHospital> createState() => _SeparateHospitalState();
+  State<UploadAdmin> createState() => _UploadAdminState();
 }
 
-class _SeparateHospitalState extends State<SeparateHospital> {
+class _UploadAdminState extends State<UploadAdmin> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -22,32 +20,10 @@ class _SeparateHospitalState extends State<SeparateHospital> {
       color: const Color(0xFF04FBC3),
       child: SafeArea(
           child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          centerTitle: true,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              LineAwesomeIcons.angle_double_left,
-              color: Theme.of(context).iconTheme.color,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: Text(
-            widget.title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 25,
-                //fontFamily: 'brandon_H',
-                color: Theme.of(context).primaryColorDark),
-          ),
-        ),
+        extendBody: true,
         body: SingleChildScrollView(
           child: Container(
-            padding:
-                const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 60),
+            padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
             child: Column(
               children: [
                 SizedBox(
@@ -141,18 +117,9 @@ class _SeparateHospitalState extends State<SeparateHospital> {
                         itemCount: sortedHospitals.length,
                         itemBuilder: (BuildContext context, int index) {
                           DocumentSnapshot data = sortedHospitals[index];
-                          if (!data['overview']
-                                  .toLowerCase()
-                                  .contains(widget.title.toLowerCase()) &&
-                              !data['services']
-                                  .toLowerCase()
-                                  .contains(widget.title.toLowerCase()) &&
-                              !data['overview']
-                                  .toLowerCase()
-                                  .contains(widget.disease.toLowerCase()) &&
-                              !data['services']
-                                  .toLowerCase()
-                                  .contains(widget.disease.toLowerCase())) {
+                          if (!data['uploaderName']
+                              .toLowerCase()
+                              .contains(widget.name.toLowerCase())) {
                             // Skip this hospital if it doesn't match the search query
                             return SizedBox.shrink();
                           }
@@ -215,7 +182,7 @@ class _SeparateHospitalState extends State<SeparateHospital> {
                             ],
                           );
                         },
-                        padding: const EdgeInsets.only(bottom: 100),
+                        padding: const EdgeInsets.only(bottom: 200),
                       );
                     },
                   ),

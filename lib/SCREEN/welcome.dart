@@ -162,7 +162,7 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
             child: TextButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => LoginSignUpScreen()));
+                    builder: (context) => const LoginSignUpScreen()));
               },
               child: const Text(
                 'Skip',

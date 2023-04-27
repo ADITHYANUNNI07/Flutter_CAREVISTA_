@@ -1,26 +1,31 @@
 import 'dart:io';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:carevista_ver05/SCREEN/addons/recorddetails.dart';
 import 'package:carevista_ver05/admin/addHospital.dart';
 import 'package:carevista_ver05/main.dart';
+import 'package:carevista_ver05/utils/utils.dart';
+import 'package:carevista_ver05/widget/widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:carevista_ver05/utils/utils.dart';
 
 class MedicineReminder extends StatefulWidget {
-  const MedicineReminder({super.key});
-
+  MedicineReminder({super.key, required this.uid});
+  String uid;
   @override
   State<MedicineReminder> createState() => _MedicineReminderState();
 }
 
 bool addMedicine = false;
-final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 final fromKey = GlobalKey<FormState>();
 bool loading = false;
 bool imagebool = false;
 File? image;
+String medicineName = "";
 String medicineType = "";
 // ignore: unused_element
 String _medicinetype = "";
@@ -180,7 +185,9 @@ class _MedicineReminderState extends State<MedicineReminder> {
                                                   Icons.medication_outlined),
                                               labelText: 'Medicine Name',
                                               border: OutlineInputBorder()),
-                                          onChanged: (val) {},
+                                          onChanged: (val) {
+                                            medicineName = val;
+                                          },
                                           // check tha validation
                                           validator: (val) {
                                             if (val!.isEmpty) {
@@ -260,7 +267,13 @@ class _MedicineReminderState extends State<MedicineReminder> {
                                                           const Color(
                                                               0XFF407BFF),
                                                     ),
-                                                    onPressed: () async {},
+                                                    onPressed: () async {
+                                                      image = await pickImage(
+                                                          context);
+                                                      setState(() {
+                                                        imagebool = true;
+                                                      });
+                                                    },
                                                     child: Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
@@ -295,7 +308,66 @@ class _MedicineReminderState extends State<MedicineReminder> {
                                                             const Color(
                                                                 0XFF407BFF),
                                                       ),
-                                                      onPressed: () async {},
+                                                      onPressed: () async {
+                                                        if (imagebool == true) {
+                                                          if (image == null)
+                                                            return;
+
+                                                          Reference
+                                                              referenceRoot =
+                                                              FirebaseStorage
+                                                                  .instance
+                                                                  .ref();
+                                                          Reference
+                                                              referenceDirImages =
+                                                              referenceRoot.child(
+                                                                  'user/${widget.uid}/medicinephoto');
+
+                                                          //Create a reference for the image to be stored
+                                                          Reference
+                                                              referenceImageToUpload =
+                                                              referenceDirImages.child(
+                                                                  'medicinephoto' +
+                                                                      medicineName);
+
+                                                          //Handle errors/success
+                                                          try {
+                                                            //Store the file
+                                                            await referenceImageToUpload
+                                                                .putFile(File(
+                                                                    image!
+                                                                        .path));
+                                                            imageUrl =
+                                                                await referenceImageToUpload
+                                                                    .getDownloadURL();
+                                                          } catch (error) {
+                                                            //Some error occurred
+                                                          }
+                                                          if (imageUrl
+                                                              .isEmpty) {
+                                                            newshowSnackbar(
+                                                                context,
+                                                                'Failed',
+                                                                'Please try again...That image 5 is not upload..',
+                                                                ContentType
+                                                                    .failure);
+                                                          } else {
+                                                            newshowSnackbar(
+                                                                context,
+                                                                'Upload Successfully',
+                                                                'Hospital image 5 Upload Successfully',
+                                                                ContentType
+                                                                    .success);
+                                                          }
+                                                        } else {
+                                                          newshowSnackbar(
+                                                              context,
+                                                              'Warning',
+                                                              'please select image',
+                                                              ContentType
+                                                                  .warning);
+                                                        }
+                                                      },
                                                       child: const Icon(
                                                         Icons.cloud_upload,
                                                         size: 30,
@@ -868,4 +940,15 @@ class _MedicineReminderState extends State<MedicineReminder> {
   }
 
   createNewReminder() async {}
+  void newshowSnackbar(context, title, message, contentType) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        behavior: SnackBarBehavior.floating,
+        content: AwesomeSnackbarContent(
+            inMaterialBanner: true,
+            title: title,
+            message: message,
+            contentType: contentType)));
+  }
 }

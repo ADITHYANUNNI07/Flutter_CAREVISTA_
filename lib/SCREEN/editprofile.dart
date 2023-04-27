@@ -158,7 +158,7 @@ class _EditProfileState extends State<EditProfile> {
                                   onPressed: () {
                                     SelectImage();
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     LineAwesomeIcons.camera,
                                     color: Colors.white,
                                   ),

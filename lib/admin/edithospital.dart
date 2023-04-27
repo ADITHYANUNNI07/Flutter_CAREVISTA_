@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:carevista_ver05/Service/database_service.dart';
+import 'package:carevista_ver05/admin/addHospital.dart';
 import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/utils/utils.dart';
 import 'package:carevista_ver05/widget/widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:humanitarian_icons/humanitarian_icons.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 enum DistrictEnum {
@@ -28,15 +28,90 @@ enum DistrictEnum {
   kasa
 }
 
-class AddHospital extends StatefulWidget {
-  AddHospital({super.key, required this.username, required this.userphoneno});
-  String username;
-  String userphoneno;
+class EditHospital extends StatefulWidget {
+  const EditHospital(
+      {super.key,
+      required this.hospitalname,
+      required this.govtorprivate,
+      required this.type,
+      required this.establisedyear,
+      required this.affilicated,
+      required this.emergency,
+      required this.location,
+      required this.latitude,
+      required this.longitude,
+      required this.district,
+      required this.address,
+      required this.highlight,
+      required this.phonenumber,
+      required this.time,
+      required this.surround1,
+      required this.surroundDistance1,
+      required this.surroundTime1,
+      required this.surround2,
+      required this.surroundDistance2,
+      required this.surroundTime2,
+      required this.doctorname,
+      required this.specialist,
+      required this.nearhospital1,
+      required this.nearhospital2,
+      required this.nearhospital3,
+      required this.nodoctor,
+      required this.noambulance,
+      required this.nobed,
+      required this.hospitallink,
+      required this.overview,
+      required this.service,
+      required this.logo,
+      required this.image1,
+      required this.image2,
+      required this.image3,
+      required this.image4,
+      required this.image5,
+      required this.doctorspecialistno});
+  final String hospitalname;
+  final String govtorprivate;
+  final String type;
+  final int doctorspecialistno;
+  final String establisedyear;
+  final String affilicated;
+  final String emergency;
+  final String location;
+  final String latitude;
+  final String longitude;
+  final String district;
+  final String address;
+  final String highlight;
+  final String phonenumber;
+  final String time;
+  final String surround1;
+  final String surroundDistance1;
+  final String surroundTime1;
+  final String surround2;
+  final String surroundDistance2;
+  final String surroundTime2;
+  final List<String> doctorname;
+  final List<String> specialist;
+  final String nearhospital1;
+  final String nearhospital2;
+  final String nearhospital3;
+  final String nodoctor;
+  final String noambulance;
+  final String nobed;
+  final String hospitallink;
+  final String overview;
+  final String service;
+  final String logo;
+  final String image1;
+  final String image2;
+  final String image3;
+  final String image4;
+  final String image5;
   @override
-  State<AddHospital> createState() => _AddHospitalState();
+  State<EditHospital> createState() => _EditHospitalState();
 }
 
-class _AddHospitalState extends State<AddHospital> {
+class _EditHospitalState extends State<EditHospital> {
   final List<TextEditingController> _DoctorName = [];
   final List<TextEditingController> _Specialist = [];
   final List<TextEditingController> _DoctorPhoto = [];
@@ -47,6 +122,7 @@ class _AddHospitalState extends State<AddHospital> {
   String long = "";
   String district = "";
   String location = "";
+  DistrictEnum? _districtEnum;
   String phone = "";
   String highlight = "";
   double addtimeSize = 0;
@@ -58,12 +134,11 @@ class _AddHospitalState extends State<AddHospital> {
   bool isVisible = false;
   bool addTime = false;
   String time = "";
-  String locationMap = "";
+  String hospitalsite = "";
   String quali = "";
   String noambulance = "";
   String establisedYr = "";
   String bed = "";
-  DistrictEnum? _districtEnum;
   String _time = "";
   String gp = "";
   String _gp = "";
@@ -101,11 +176,30 @@ class _AddHospitalState extends State<AddHospital> {
   File? hospitalimage5;
   File? file;
   String services = '';
+
   TextEditingController timeinput = TextEditingController();
   TextEditingController timeinputlast = TextEditingController();
   void initState() {
-    timeinput.text = ""; //set the initial value of text field
+    timeinput.text = ""; // set the initial value of text field
     super.initState();
+    int listLength = widget.doctorname.length; // get the length of the lists
+    for (int i = 0; i < listLength; i++) {
+      if (i < widget.doctorspecialistno) {
+        _DoctorName.add(TextEditingController(
+            text: widget
+                .doctorname[i])); // Set initial value from widget.doctorname
+        _Specialist.add(TextEditingController(
+            text: widget
+                .specialist[i])); // Set initial value from widget.specialist
+        count = (listLength.toDouble() - 1);
+        print(count);
+      } else {
+        // If the index is greater than or equal to widget.doctorspecialistno,
+        // add empty controllers to _DoctorName and _Specialist lists
+        _DoctorName.add(TextEditingController());
+        _Specialist.add(TextEditingController());
+      }
+    }
   }
 
   addDoctorDetails() {
@@ -121,7 +215,7 @@ class _AddHospitalState extends State<AddHospital> {
     setState(() {
       _DoctorName.removeAt(i);
       _Specialist.removeAt(i);
-      _DoctorPhoto.removeAt(i);
+
       count--;
     });
   }
@@ -166,12 +260,10 @@ class _AddHospitalState extends State<AddHospital> {
                       child: imagebool == false
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(100),
-                              child: Image.asset(
-                                  'Assets/images/Hospital building-cuate.jpg'),
+                              child: Image.network(widget.logo),
                             )
                           : CircleAvatar(
-                              backgroundImage:
-                                  file != null ? FileImage(file!) : null,
+                              backgroundImage: FileImage(file!),
                               radius: 50,
                             ),
                     ),
@@ -249,6 +341,7 @@ class _AddHospitalState extends State<AddHospital> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextFormField(
+                            initialValue: widget.hospitalname,
                             decoration: InputDecoration(
                                 prefixIcon: const Icon(
                                     LineAwesomeIcons.hospital_symbol),
@@ -327,7 +420,8 @@ class _AddHospitalState extends State<AddHospital> {
                                           ]))),
                             ])),
                         const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
+                        TextFormFieldOvalEditWidget(
+                            intialvalue: widget.type,
                             labelText: "Type",
                             onChange: (value) {
                               type = value;
@@ -341,7 +435,8 @@ class _AddHospitalState extends State<AddHospital> {
                             },
                             icon: Icons.type_specimen_outlined),
                         const SizedBox(height: 10),
-                        TextFormFieldOvalNumberWidget(
+                        TextFormFieldOvalNumberEditWidget(
+                            intialvalue: widget.establisedyear,
                             labelText: 'Established Year',
                             onChange: (value) {
                               establisedYr = value;
@@ -355,7 +450,8 @@ class _AddHospitalState extends State<AddHospital> {
                             },
                             icon: LineAwesomeIcons.hospital_1),
                         const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
+                        TextFormFieldOvalEditWidget(
+                            intialvalue: widget.affilicated,
                             labelText: "Affiliated university",
                             onChange: (value) {
                               affUniversity = value;
@@ -426,7 +522,8 @@ class _AddHospitalState extends State<AddHospital> {
                                           ]))),
                             ])),
                         const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
+                        TextFormFieldOvalEditWidget(
+                            intialvalue: widget.location,
                             labelText: 'Location',
                             onChange: (value) {
                               location = value;
@@ -468,7 +565,8 @@ class _AddHospitalState extends State<AddHospital> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                      child: TextFormFieldOvalWidget(
+                                      child: TextFormFieldOvalEditWidget(
+                                          intialvalue: widget.latitude,
                                           labelText: 'Latitude',
                                           onChange: (value) {
                                             lat = value;
@@ -487,7 +585,8 @@ class _AddHospitalState extends State<AddHospital> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                      child: TextFormFieldOvalWidget(
+                                      child: TextFormFieldOvalEditWidget(
+                                          intialvalue: widget.longitude,
                                           labelText: 'Longitude',
                                           onChange: (value) {
                                             long = value;
@@ -723,7 +822,8 @@ class _AddHospitalState extends State<AddHospital> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
+                        TextFormFieldOvalEditWidget(
+                            intialvalue: widget.address,
                             labelText: 'Address',
                             onChange: (value) {
                               address = value;
@@ -737,7 +837,8 @@ class _AddHospitalState extends State<AddHospital> {
                             },
                             icon: LineAwesomeIcons.address_card),
                         const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
+                        TextFormFieldOvalEditWidget(
+                            intialvalue: widget.highlight,
                             labelText: 'Highlight',
                             onChange: (value) {
                               highlight = value;
@@ -751,7 +852,8 @@ class _AddHospitalState extends State<AddHospital> {
                             },
                             icon: Icons.highlight_alt),
                         const SizedBox(height: 10),
-                        TextFormFieldOvalNumberWidget(
+                        TextFormFieldOvalNumberEditWidget(
+                            intialvalue: widget.phonenumber,
                             onChange: (val) {
                               phone = val;
                             },
@@ -904,7 +1006,8 @@ class _AddHospitalState extends State<AddHospital> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                      child: TextFormFieldOvalWidget(
+                                      child: TextFormFieldOvalEditWidget(
+                                          intialvalue: widget.surround1,
                                           labelText: 'Surrounding Place 1',
                                           onChange: (value) {
                                             surround1 = value;
@@ -929,7 +1032,8 @@ class _AddHospitalState extends State<AddHospital> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                      child: TextFormFieldOvalWidget(
+                                      child: TextFormFieldOvalEditWidget(
+                                          intialvalue: widget.surroundDistance1,
                                           labelText: 'Distance',
                                           onChange: (value) {
                                             surroundDistance1 = value;
@@ -944,7 +1048,8 @@ class _AddHospitalState extends State<AddHospital> {
                                           icon: Icons.place_outlined)),
                                   const SizedBox(width: 5),
                                   Flexible(
-                                      child: TextFormFieldOvalWidget(
+                                      child: TextFormFieldOvalEditWidget(
+                                          intialvalue: widget.surroundTime1,
                                           labelText: 'Time',
                                           onChange: (value) {
                                             surroundTime1 = value;
@@ -965,7 +1070,8 @@ class _AddHospitalState extends State<AddHospital> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                      child: TextFormFieldOvalWidget(
+                                      child: TextFormFieldOvalEditWidget(
+                                          intialvalue: widget.surround2,
                                           labelText: 'Surrounding Place 2',
                                           onChange: (value) {
                                             surround2 = value;
@@ -986,7 +1092,8 @@ class _AddHospitalState extends State<AddHospital> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                      child: TextFormFieldOvalWidget(
+                                      child: TextFormFieldOvalEditWidget(
+                                          intialvalue: widget.surroundDistance2,
                                           labelText: 'Distance',
                                           onChange: (value) {
                                             surroundDistance2 = value;
@@ -1001,7 +1108,8 @@ class _AddHospitalState extends State<AddHospital> {
                                           icon: Icons.place_outlined)),
                                   const SizedBox(width: 5),
                                   Flexible(
-                                      child: TextFormFieldOvalWidget(
+                                      child: TextFormFieldOvalEditWidget(
+                                          intialvalue: widget.surroundTime2,
                                           labelText: 'Time',
                                           onChange: (value) {
                                             surroundTime2 = value;
@@ -1073,43 +1181,45 @@ class _AddHospitalState extends State<AddHospital> {
                                             MainAxisAlignment.start,
                                         children: [
                                           Flexible(
-                                              child: Row(
-                                            children: [
-                                              Expanded(child: Container()),
-                                              IconButton(
+                                            child: Row(
+                                              children: [
+                                                Expanded(child: Container()),
+                                                IconButton(
                                                   onPressed: () {
                                                     removeDoctorDetails(i);
                                                   },
                                                   icon: const Icon(
-                                                      color: Colors.redAccent,
-                                                      Icons.remove_circle)),
-                                            ],
-                                          )),
+                                                    color: Colors.redAccent,
+                                                    Icons.remove_circle,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                           Flexible(
                                             child: Row(
                                               children: [
                                                 Flexible(
-                                                    child:
-                                                        TextFormFieldOvalControllerWidget(
-                                                            labelText:
-                                                                'Doctor Name',
-                                                            controller:
-                                                                _DoctorName[i],
-                                                            validator: (val) {
-                                                              if (val!
-                                                                  .isEmpty) {
-                                                                return "Enter Doctor Name";
-                                                              } else {
-                                                                return RegExp(
-                                                                            r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                                        .hasMatch(
-                                                                            val)
-                                                                    ? "Please enter Doctor Name"
-                                                                    : null;
-                                                              }
-                                                            },
-                                                            icon: LineAwesomeIcons
-                                                                .stethoscope)),
+                                                  child:
+                                                      TextFormFieldOvalControllerWidget(
+                                                    // Fix: Access element using index
+                                                    labelText: 'Doctor Name',
+                                                    controller: _DoctorName[i],
+                                                    validator: (val) {
+                                                      if (val!.isEmpty) {
+                                                        return "Enter Doctor Name";
+                                                      } else {
+                                                        return RegExp(
+                                                                    r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
+                                                                .hasMatch(val)
+                                                            ? "Please enter Doctor Name"
+                                                            : null;
+                                                      }
+                                                    },
+                                                    icon: LineAwesomeIcons
+                                                        .stethoscope,
+                                                  ),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -1118,27 +1228,25 @@ class _AddHospitalState extends State<AddHospital> {
                                             child: Column(
                                               children: [
                                                 Flexible(
-                                                    child:
-                                                        TextFormFieldOvalControllerWidget(
-                                                            controller:
-                                                                _Specialist[i],
-                                                            labelText:
-                                                                'Specialist',
-                                                            validator: (val) {
-                                                              if (val!
-                                                                  .isEmpty) {
-                                                                return "Enter Specialist";
-                                                              } else {
-                                                                return RegExp(
-                                                                            r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                                        .hasMatch(
-                                                                            val)
-                                                                    ? "Please enter Specialist"
-                                                                    : null;
-                                                              }
-                                                            },
-                                                            icon: Icons
-                                                                .folder_special)),
+                                                  child:
+                                                      TextFormFieldOvalControllerWidget(
+                                                    // Fix: Access element using index
+                                                    controller: _Specialist[i],
+                                                    labelText: 'Specialist',
+                                                    validator: (val) {
+                                                      if (val!.isEmpty) {
+                                                        return "Enter Specialist";
+                                                      } else {
+                                                        return RegExp(
+                                                                    r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
+                                                                .hasMatch(val)
+                                                            ? "Please enter Specialist"
+                                                            : null;
+                                                      }
+                                                    },
+                                                    icon: Icons.folder_special,
+                                                  ),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -1146,7 +1254,7 @@ class _AddHospitalState extends State<AddHospital> {
                                       ),
                                     ),
                                   ],
-                                ),
+                                )
                             ])),
                         const SizedBox(height: 10),
                         Container(
@@ -1175,7 +1283,8 @@ class _AddHospitalState extends State<AddHospital> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                      child: TextFormFieldOvalWidget(
+                                      child: TextFormFieldOvalEditWidget(
+                                          intialvalue: widget.nearhospital1,
                                           labelText: 'Hospital 1',
                                           onChange: (value) {
                                             nearhospital1 = value;
@@ -1194,7 +1303,8 @@ class _AddHospitalState extends State<AddHospital> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                      child: TextFormFieldOvalWidget(
+                                      child: TextFormFieldOvalEditWidget(
+                                          intialvalue: widget.nearhospital2,
                                           labelText: 'Hospital 2',
                                           onChange: (value) {
                                             nearhospital2 = value;
@@ -1213,7 +1323,8 @@ class _AddHospitalState extends State<AddHospital> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                      child: TextFormFieldOvalWidget(
+                                      child: TextFormFieldOvalEditWidget(
+                                          intialvalue: widget.nearhospital3,
                                           labelText: 'Hospital 3',
                                           onChange: (value) {
                                             nearhospital3 = value;
@@ -1228,7 +1339,8 @@ class _AddHospitalState extends State<AddHospital> {
                               ),
                             ])),
                         const SizedBox(height: 15),
-                        TextFormFieldOvalNumberWidget(
+                        TextFormFieldOvalNumberEditWidget(
+                            intialvalue: widget.nodoctor,
                             labelText: 'No of Doctors',
                             onChange: (value) {
                               noDoctors = value;
@@ -1236,7 +1348,8 @@ class _AddHospitalState extends State<AddHospital> {
                             validator: (p0) {},
                             icon: LineAwesomeIcons.stethoscope),
                         const SizedBox(height: 10),
-                        TextFormFieldOvalNumberWidget(
+                        TextFormFieldOvalNumberEditWidget(
+                            intialvalue: widget.nobed,
                             labelText: 'No of Bed',
                             onChange: (value) {
                               bed = value;
@@ -1244,7 +1357,8 @@ class _AddHospitalState extends State<AddHospital> {
                             validator: (p0) {},
                             icon: LineAwesomeIcons.bed),
                         const SizedBox(height: 10),
-                        TextFormFieldOvalNumberWidget(
+                        TextFormFieldOvalNumberEditWidget(
+                            intialvalue: widget.noambulance,
                             labelText: "Ambulances",
                             onChange: (value) {
                               noambulance = value;
@@ -1252,15 +1366,17 @@ class _AddHospitalState extends State<AddHospital> {
                             validator: (p0) {},
                             icon: LineAwesomeIcons.ambulance),
                         const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
+                        TextFormFieldOvalEditWidget(
+                            intialvalue: widget.hospitallink,
                             labelText: "Hospital Site Link",
                             onChange: (value) {
-                              locationMap = value;
+                              hospitalsite = value;
                             },
                             validator: (p0) {},
                             icon: LineAwesomeIcons.hospital),
                         const SizedBox(height: 10),
-                        TextFormFieldAreaWidget(
+                        TextFormFieldAreaEditWidget(
+                            intialvalue: widget.overview,
                             labelText: "Overview",
                             onChange: (value) {
                               overview = value;
@@ -1274,7 +1390,8 @@ class _AddHospitalState extends State<AddHospital> {
                             },
                             icon: Icons.view_compact_alt_outlined),
                         const SizedBox(height: 10),
-                        TextFormFieldAreaWidget(
+                        TextFormFieldAreaEditWidget(
+                            intialvalue: widget.service,
                             labelText: "Services",
                             onChange: (value) {
                               services = value;
@@ -1346,9 +1463,8 @@ class _AddHospitalState extends State<AddHospital> {
                                                               BorderRadius
                                                                   .circular(
                                                                       100),
-                                                          child: const Icon(
-                                                            Icons.photo,
-                                                          ))
+                                                          child: Image.network(
+                                                              widget.image1))
                                                       : CircleAvatar(
                                                           backgroundImage:
                                                               FileImage(
@@ -1524,9 +1640,8 @@ class _AddHospitalState extends State<AddHospital> {
                                                               BorderRadius
                                                                   .circular(
                                                                       100),
-                                                          child: const Icon(
-                                                            Icons.photo,
-                                                          ))
+                                                          child: Image.network(
+                                                              widget.image2))
                                                       : CircleAvatar(
                                                           backgroundImage:
                                                               FileImage(
@@ -1535,7 +1650,7 @@ class _AddHospitalState extends State<AddHospital> {
                                                         ),
                                                 ),
                                               ),
-                                              SizedBox(width: 10),
+                                              const SizedBox(width: 10),
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                   side: BorderSide.none,
@@ -1702,9 +1817,8 @@ class _AddHospitalState extends State<AddHospital> {
                                                               BorderRadius
                                                                   .circular(
                                                                       100),
-                                                          child: const Icon(
-                                                            Icons.photo,
-                                                          ))
+                                                          child: Image.network(
+                                                              widget.image3))
                                                       : CircleAvatar(
                                                           backgroundImage:
                                                               FileImage(
@@ -1880,9 +1994,8 @@ class _AddHospitalState extends State<AddHospital> {
                                                               BorderRadius
                                                                   .circular(
                                                                       100),
-                                                          child: const Icon(
-                                                            Icons.photo,
-                                                          ))
+                                                          child: Image.network(
+                                                              widget.image4))
                                                       : CircleAvatar(
                                                           backgroundImage:
                                                               FileImage(
@@ -2058,9 +2171,8 @@ class _AddHospitalState extends State<AddHospital> {
                                                               BorderRadius
                                                                   .circular(
                                                                       100),
-                                                          child: const Icon(
-                                                            Icons.photo,
-                                                          ))
+                                                          child: Image.network(
+                                                              widget.image5))
                                                       : CircleAvatar(
                                                           backgroundImage:
                                                               FileImage(
@@ -2216,10 +2328,9 @@ class _AddHospitalState extends State<AddHospital> {
                                     Theme.of(context).backgroundColor,
                               ),
                               onPressed: () {
-                                //upload();
-                                save();
+                                update();
                               },
-                              child: const Text('SAVE')),
+                              child: const Text('UPDATE')),
                         )
                       ],
                     ))
@@ -2231,179 +2342,226 @@ class _AddHospitalState extends State<AddHospital> {
     );
   }
 
-  /*upload() {
-    print(_DoctorName);
-    print(_Specialist);
-    List ak = _DoctorName;
-    print(ak);
-    for (int i = 0; i < _DoctorName.length; i++) {
-      print(ak.toList()[i].text);
-      print(ak.toList()[i].text);
-    }
-  }*/
-
-  save() async {
-    if (logoUrl.isEmpty ||
-        image1Url.isEmpty ||
-        image2Url.isEmpty ||
-        image3Url.isEmpty ||
-        image4Url.isEmpty ||
-        image5Url.isEmpty) {
-      newshowSnackbar(context, 'Hospital Logo', 'please upload hospital logo',
-          ContentType.failure);
-    } else {
-      if (fromKey.currentState!.validate()) {
-        await DatabaseServiceHospital().savingHospitaldetails(
-            hospitalname,
-            establisedYr,
-            location,
-            district,
-            address,
-            highlight,
-            phone,
-            time,
-            noDoctors,
-            bed,
-            noambulance,
-            locationMap,
-            logoUrl,
-            gp,
-            type,
-            affUniversity,
-            emergency,
-            surround1,
-            surroundDistance1,
-            surroundTime1,
-            surround2,
-            surroundDistance2,
-            surroundTime2,
-            _DoctorName.length,
-            _DoctorName,
-            _Specialist,
-            nearhospital1,
-            nearhospital2,
-            nearhospital3,
-            overview,
-            services,
-            image1Url,
-            image2Url,
-            image3Url,
-            image4Url,
-            image5Url,
-            widget.username,
-            widget.userphoneno,
-            lat,
-            long);
-        // ignore: use_build_context_synchronously
-        newshowSnackbar(context, 'Successfully',
-            'successfully upload the hospital details', ContentType.success);
+  update() {
+    if (fromKey.currentState!.validate()) {
+      if (establisedYr.isEmpty) {
+        establisedYr = widget.establisedyear;
       } else {
-        newshowSnackbar(
-            context,
-            'Check above Details',
-            'the hospital details contain a invalid format please check above the form',
-            ContentType.failure);
+        updateTheFieldCondition(
+            widget.hospitalname, 'establishedYear', establisedYr);
+      }
+      if (location.isEmpty) {
+        location = widget.location;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'location', location);
+      }
+      if (district.isEmpty) {
+        district = widget.district;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'district', district);
+      }
+      if (address.isEmpty) {
+        address = widget.address;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'address', address);
+      }
+      if (highlight.isEmpty) {
+        highlight = widget.highlight;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'highlight', highlight);
+      }
+      if (phone.isEmpty) {
+        phone = widget.phonenumber;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'phoneno', phone);
+      }
+      if (time.isEmpty) {
+        time = widget.time;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'time', time);
+      }
+      if (noDoctors.isEmpty) {
+        noDoctors = widget.nodoctor;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'doctorsNo', noDoctors);
+      }
+      if (bed.isEmpty) {
+        bed = widget.nobed;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'bedNo', bed);
+      }
+      if (noambulance.isEmpty) {
+        noambulance = widget.noambulance;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'ambulanceNo', noambulance);
+      }
+      if (hospitalsite.isEmpty) {
+        hospitalsite = widget.hospitallink;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'sitLink', hospitalsite);
+      }
+      if (logoUrl.isEmpty) {
+        logoUrl = widget.logo;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'Logo', logoUrl);
+      }
+      if (gp.isEmpty) {
+        gp = widget.govtorprivate;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'GovtorPrivate', gp);
+      }
+      if (type.isEmpty) {
+        type = widget.type;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'type', type);
+      }
+      if (affUniversity.isEmpty) {
+        affUniversity = widget.affilicated;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'affiliateduniversity', affUniversity);
+      }
+      if (emergency.isEmpty) {
+        emergency = widget.emergency;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'emergencydepartment', emergency);
+      }
+      if (surround1.isEmpty) {
+        surround1 = widget.surround1;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'surroundingplace1', surround1);
+      }
+      if (surroundDistance1.isEmpty) {
+        surroundDistance1 = widget.surroundDistance1;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'surroundingdistance1', surroundDistance1);
+      }
+      if (surroundTime1.isEmpty) {
+        surroundTime1 = widget.surroundTime1;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'surroundingtime1', surroundTime1);
+      }
+      if (surround2.isEmpty) {
+        surround2 = widget.surround2;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'surroundingplace2', surround2);
+      }
+      if (surroundDistance2.isEmpty) {
+        surroundDistance2 = widget.surroundDistance2;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'surroundingdistance2', surroundDistance2);
+      }
+      if (surroundTime2.isEmpty) {
+        surroundTime2 = widget.surroundTime2;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'surroundingtime2', surroundTime2);
+      }
+      if (nearhospital1.isEmpty) {
+        nearhospital1 = widget.nearhospital1;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'hospital1', nearhospital1);
+      }
+      if (nearhospital2.isEmpty) {
+        nearhospital2 = widget.nearhospital2;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'hospital2', nearhospital2);
+      }
+      if (nearhospital3.isEmpty) {
+        nearhospital3 = widget.nearhospital3;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'hospital3', nearhospital3);
+      }
+      if (overview.isEmpty) {
+        overview = widget.overview;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'overview', overview);
+      }
+      if (services.isEmpty) {
+        services = widget.service;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'services', services);
+      }
+      if (image1Url.isEmpty) {
+        image1Url = widget.image1;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'image1', image1Url);
+      }
+      if (image2Url.isEmpty) {
+        image2Url = widget.image2;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'image2', image2Url);
+      }
+      if (image3Url.isEmpty) {
+        image3Url = widget.image3;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'image3', image3Url);
+      }
+      if (image4Url.isEmpty) {
+        image4Url = widget.image4;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'image4', image4Url);
+      }
+      if (image5Url.isEmpty) {
+        image5Url = widget.image5;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'image5', image5Url);
+      }
+      if (lat.isEmpty) {
+        lat = widget.latitude;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'Latitude', lat);
+      }
+      if (long.isEmpty) {
+        long = widget.longitude;
+      } else {
+        updateTheFieldCondition(widget.hospitalname, 'Longitude', long);
+      }
+      if (hospitalname.isEmpty) {
+        hospitalname = widget.hospitalname;
+      } else {
+        updateTheFieldCondition(
+            widget.hospitalname, 'hospitalName', hospitalname);
       }
     }
   }
-}
 
-class DistrictWidget extends StatelessWidget {
-  const DistrictWidget({
-    Key? key,
-    required this.districtName,
-    required this.radioBtn,
-  }) : super(key: key);
-  final String districtName;
-  final Widget radioBtn;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      width: 179,
-      height: 50,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Theme.of(context).highlightColor,
-      ),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              width: 25,
-              height: 25,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  color: Theme.of(context).cardColor),
-              child: radioBtn,
-            ),
-          ),
-          const SizedBox(width: 5),
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(districtName,
-                    style: Theme.of(context).textTheme.bodyText2,
-                    overflow: TextOverflow.ellipsis),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+  Future<void> updateTheFieldCondition(
+      String hospitalName, String field, String changeValue) async {
+    try {
+      // Fetch the documents that match the condition (e.g. phonenumber)
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('hospitals')
+          .where('hospitalName', isEqualTo: hospitalName)
+          .get();
 
-class TimeWidget extends StatelessWidget {
-  const TimeWidget({
-    Key? key,
-    required this.time,
-    required this.radioBtn,
-  }) : super(key: key);
-  final String time;
-  final Widget radioBtn;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      width: 150,
-      height: 50,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Theme.of(context).highlightColor,
-      ),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              width: 25,
-              height: 25,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  color: Theme.of(context).cardColor),
-              child: radioBtn,
-            ),
-          ),
-          const SizedBox(width: 5),
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(time,
-                    style: Theme.of(context).textTheme.bodyText2,
-                    overflow: TextOverflow.ellipsis),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+      // Update the AdKey field value for each document
+      List<Future<void>> updateFutures = querySnapshot.docs.map((doc) {
+        return doc.reference.update({field: changeValue});
+      }).toList();
+
+      // Wait for all updates to complete
+      await Future.wait(updateFutures);
+
+      // ignore: use_build_context_synchronously
+      newshowSnackbar(context, 'Successfully Update',
+          'updated the Hospital details: $hospitalname', ContentType.success);
+    } catch (e) {
+      newshowSnackbar(
+          context,
+          'Failed to Update',
+          'Failed to updated the Hospital details: $hospitalname',
+          ContentType.failure);
+    }
   }
 }

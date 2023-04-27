@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 
@@ -86,6 +84,36 @@ class TextFormFieldOvalNumberWidget extends StatelessWidget {
   }
 }
 
+class TextFormFieldOvalNumberEditWidget extends StatelessWidget {
+  const TextFormFieldOvalNumberEditWidget({
+    Key? key,
+    required this.labelText,
+    required this.onChange,
+    required this.validator,
+    required this.icon,
+    required this.intialvalue,
+  }) : super(key: key);
+  final String labelText;
+  final ValueChanged<String>? onChange;
+  final String? Function(String?)? validator;
+  final IconData icon;
+  final String intialvalue;
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      initialValue: intialvalue,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon),
+        labelText: labelText,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(100)),
+      ),
+      onChanged: onChange,
+      validator: validator,
+    );
+  }
+}
+
 class TextFormFieldOvalWidget extends StatelessWidget {
   const TextFormFieldOvalWidget({
     Key? key,
@@ -101,6 +129,35 @@ class TextFormFieldOvalWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon),
+        labelText: labelText,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(100)),
+      ),
+      onChanged: onChange,
+      validator: validator,
+    );
+  }
+}
+
+class TextFormFieldOvalEditWidget extends StatelessWidget {
+  const TextFormFieldOvalEditWidget({
+    Key? key,
+    required this.labelText,
+    this.onChange,
+    required this.validator,
+    required this.icon,
+    required this.intialvalue,
+  }) : super(key: key);
+  final String labelText;
+  final ValueChanged<String>? onChange;
+  final String? Function(String?)? validator;
+  final IconData icon;
+  final String intialvalue;
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      initialValue: intialvalue,
       decoration: InputDecoration(
         prefixIcon: Icon(icon),
         labelText: labelText,
@@ -139,6 +196,36 @@ class TextFormFieldAreaWidget extends StatelessWidget {
   }
 }
 
+class TextFormFieldAreaEditWidget extends StatelessWidget {
+  const TextFormFieldAreaEditWidget({
+    Key? key,
+    required this.labelText,
+    required this.onChange,
+    required this.validator,
+    required this.icon,
+    required this.intialvalue,
+  }) : super(key: key);
+  final String labelText;
+  final ValueChanged<String>? onChange;
+  final String? Function(String?)? validator;
+  final IconData icon;
+  final String intialvalue;
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      initialValue: intialvalue,
+      maxLines: 20,
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon),
+        labelText: labelText,
+        border: const OutlineInputBorder(),
+      ),
+      onChanged: onChange,
+      validator: validator,
+    );
+  }
+}
+
 class TextFormFieldOvalControllerWidget extends StatelessWidget {
   const TextFormFieldOvalControllerWidget({
     Key? key,
@@ -154,6 +241,35 @@ class TextFormFieldOvalControllerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon),
+        labelText: labelText,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(100)),
+      ),
+      validator: validator,
+      controller: controller,
+    );
+  }
+}
+
+class TextFormFieldOvalControllerEditWidget extends StatelessWidget {
+  const TextFormFieldOvalControllerEditWidget({
+    Key? key,
+    required this.labelText,
+    required this.validator,
+    required this.icon,
+    required this.controller,
+    required this.intialvalue,
+  }) : super(key: key);
+  final String labelText;
+  final String? Function(String?)? validator;
+  final IconData icon;
+  final TextEditingController controller;
+  final String intialvalue;
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      initialValue: intialvalue,
       decoration: InputDecoration(
         prefixIcon: Icon(icon),
         labelText: labelText,

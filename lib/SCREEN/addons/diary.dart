@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'color.dart' as specialcolor;
 
@@ -441,7 +442,10 @@ class _DiaryState extends State<Diary> with SingleTickerProviderStateMixin {
                               }
                               switch (snapshot.connectionState) {
                                 case ConnectionState.waiting:
-                                  return const Text('Loading...');
+                                  return Center(
+                                      child: Lottie.asset(
+                                          'animation/96949-loading-animation.json',
+                                          height: 100));
                                 default:
                                   return ListView(
                                     //shrinkWrap: false,

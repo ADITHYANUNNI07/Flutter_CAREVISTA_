@@ -1,15 +1,15 @@
 import 'package:carevista_ver05/SCREEN/splash.dart';
-import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Shared/web.dart';
 import 'package:carevista_ver05/Theme/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Disable screen rotation
+  WidgetsFlutterBinding.ensureInitialized();
+  // Disable screen rotation
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, // Allow only portrait orientation
   ]);
@@ -24,6 +24,8 @@ void main() async {
   } else {
     //Android or Ios Platfrom work this code
     await Firebase.initializeApp();
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    print(fcmToken);
   }
   runApp(const MyApp());
 }

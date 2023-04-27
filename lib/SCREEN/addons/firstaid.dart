@@ -28,7 +28,7 @@ class FirstAID extends StatelessWidget {
               },
             ),
             title: Text(
-              'First AID Treatement',
+              'First AID Treatment',
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 25,

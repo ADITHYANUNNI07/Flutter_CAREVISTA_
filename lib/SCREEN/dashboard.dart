@@ -5,7 +5,7 @@ import 'package:carevista_ver05/SCREEN/addons/firstAID.dart';
 import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
 import 'package:carevista_ver05/SCREEN/home/favorites.dart';
 import 'package:carevista_ver05/SCREEN/home/hospital.dart';
-import 'package:carevista_ver05/SCREEN/home/medicinereminder.dart';
+import 'package:carevista_ver05/SCREEN/addons/medicinereminder.dart';
 import 'package:carevista_ver05/SCREEN/home/search.dart';
 import 'package:carevista_ver05/SCREEN/home/separatehospital.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
@@ -13,6 +13,7 @@ import 'package:carevista_ver05/SCREEN/profile.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Theme/theme.dart';
 import 'package:carevista_ver05/admin/addHospital.dart';
+import 'package:carevista_ver05/admin/admin.dart';
 import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/utils/utils.dart';
 import 'package:carevista_ver05/widget/widget.dart';
@@ -20,6 +21,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'addons/color.dart' as specialcolor;
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -50,7 +52,8 @@ class _DashboardState extends State<Dashboard> {
   List<DocumentSnapshot> sortedHospitals = [];
   String Uid = FirebaseAuth.instance.currentUser?.uid ?? '';
   String imageUrl = '';
-  bool _isLoding = false;
+  bool adminstration = false;
+  String? adminPhone;
   @override
   void initState() {
     super.initState();
@@ -86,12 +89,25 @@ class _DashboardState extends State<Dashboard> {
         email = value!;
       });
     });
+    adminPhone = await getAdministration(email);
+    print(adminPhone);
+
     await HelperFunction.getUserPhoneFromSF().then((value) {
       setState(
         () {
           phoneNo = value!;
         },
       );
+      if (adminPhone == phoneNo) {
+        setState(() {
+          adminstration = true;
+        });
+      } else {
+        setState(() {
+          adminstration = false;
+        });
+      }
+      print(adminstration);
     });
     await HelperFunction.getUserAdkeyFromSF().then((value) {
       setState(() {
@@ -146,24 +162,49 @@ class _DashboardState extends State<Dashboard> {
         child: Scaffold(
           extendBody: true,
           appBar: AppBar(
+            backgroundColor: Theme.of(context).cardColor,
+            centerTitle: true,
             iconTheme: IconThemeData(color: Theme.of(context).iconTheme.color),
             elevation: 0,
-            title: Text.rich(
-              TextSpan(
-                text: "CARE ",
-                style: TextStyle(
-                    fontSize: 25,
-                    fontFamily: 'brandon_H',
-                    color: Theme.of(context).primaryColorLight),
-                children: [
-                  TextSpan(
-                    text: 'VISTA',
-                    style: TextStyle(color: Theme.of(context).primaryColor),
-                  )
-                ],
-              ),
+            title: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'CARE',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'brandon_H',
+                        color: Color(0xFF00008F),
+                      ),
+                    ),
+                    // ignore: sized_box_for_whitespace
+                    Container(
+                      height: 60, // set the height of the container to 300
+                      width: 40, // set the width of the container to 300
+                      child: FractionallySizedBox(
+                        widthFactor:
+                            1, // set the width factor to 0.8 to take 80% of the container's width
+                        heightFactor:
+                            1, // set the height factor to 0.8 to take 80% of the container's height
+                        child: Lottie.asset(
+                          'animation/17169-smooth-healthy-animation (1).json',
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      'VISTA',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'brandon_H',
+                        color: Color.fromARGB(255, 4, 208, 160),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            centerTitle: true,
             actions: [
               SizedBox(
                   width: 40,
@@ -179,6 +220,13 @@ class _DashboardState extends State<Dashboard> {
             ],
           ),
           drawer: Drawer(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(40),
+                bottomRight: Radius.circular(40),
+              ),
+            ),
+            backgroundColor: Colors.grey.shade900,
             child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 30),
               children: <Widget>[
@@ -196,16 +244,20 @@ class _DashboardState extends State<Dashboard> {
                 Text(
                   userName,
                   textAlign: TextAlign.center,
-                  style:
-                      const TextStyle(fontSize: 22, fontWeight: FontWeight.bold
-                          // fontFamily: 'brandon_H',
-                          ),
+                  style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
+                      // fontFamily: 'brandon_H',
+                      ),
                 ),
                 const SizedBox(height: 5),
                 Text(
                   email,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: const TextStyle(fontSize: 14, color: Colors.white
+                      // fontFamily: 'brandon_H',
+                      ),
                 ),
                 const SizedBox(height: 25),
                 const Divider(height: 2),
@@ -236,6 +288,19 @@ class _DashboardState extends State<Dashboard> {
                               context,
                               AddHospital(
                                   username: userName, userphoneno: phoneNo));
+                        },
+                      )
+                    : const SizedBox(),
+                adminstration
+                    ? MenuWidget(
+                        title: "Admin Verification",
+                        icon: Icons.admin_panel_settings_outlined,
+                        onPress: () {
+                          nextScreen(
+                              context,
+                              AdminKeyEnableScreen(
+                                administrationphoneno: adminPhone!,
+                              ));
                         },
                       )
                     : const SizedBox(),
@@ -325,7 +390,11 @@ class _DashboardState extends State<Dashboard> {
                             imageicon: 'Assets/images/cancer.png',
                             onPress: () {
                               nextScreen(
-                                  context, SeparateHospital(title: "Cancer"));
+                                  context,
+                                  SeparateHospital(
+                                    title: "Cancer",
+                                    disease: '',
+                                  ));
                             }),
                         DiseaseHospitalListScroll(
                           txttheme: txttheme,
@@ -334,7 +403,11 @@ class _DashboardState extends State<Dashboard> {
                           imageicon: 'Assets/images/heart128.png',
                           onPress: () {
                             nextScreen(
-                                context, SeparateHospital(title: "Heart"));
+                                context,
+                                SeparateHospital(
+                                  title: "Heart",
+                                  disease: 'Cardiology',
+                                ));
                           },
                         ),
                         DiseaseHospitalListScroll(
@@ -343,7 +416,26 @@ class _DashboardState extends State<Dashboard> {
                           hospitalno: 'Hospital',
                           imageicon: 'Assets/images/eye.png',
                           onPress: () {
-                            nextScreen(context, SeparateHospital(title: "Eye"));
+                            nextScreen(
+                                context,
+                                SeparateHospital(
+                                  title: "Eye",
+                                  disease: 'Ophthalmology',
+                                ));
+                          },
+                        ),
+                        DiseaseHospitalListScroll(
+                          txttheme: txttheme,
+                          title: 'Ears',
+                          hospitalno: 'Hospital',
+                          imageicon: 'Assets/images/ear.png',
+                          onPress: () {
+                            nextScreen(
+                                context,
+                                SeparateHospital(
+                                  title: "Ears",
+                                  disease: 'Otorhinolaryngology',
+                                ));
                           },
                         ),
                         DiseaseHospitalListScroll(
@@ -353,7 +445,11 @@ class _DashboardState extends State<Dashboard> {
                           imageicon: 'Assets/images/dental.png',
                           onPress: () {
                             nextScreen(
-                                context, SeparateHospital(title: "Dental"));
+                                context,
+                                SeparateHospital(
+                                  title: "Dental",
+                                  disease: 'Dentistry',
+                                ));
                           },
                         ),
                         DiseaseHospitalListScroll(
@@ -363,7 +459,11 @@ class _DashboardState extends State<Dashboard> {
                           imageicon: 'Assets/images/lungs.png',
                           onPress: () {
                             nextScreen(
-                                context, SeparateHospital(title: "Lungs"));
+                                context,
+                                SeparateHospital(
+                                  title: "Lungs",
+                                  disease: 'Pulmonology',
+                                ));
                           },
                         ),
                         DiseaseHospitalListScroll(
@@ -373,7 +473,11 @@ class _DashboardState extends State<Dashboard> {
                           imageicon: 'Assets/images/knee.png',
                           onPress: () {
                             nextScreen(
-                                context, SeparateHospital(title: "Knee"));
+                                context,
+                                SeparateHospital(
+                                  title: "Knee",
+                                  disease: 'Ortho',
+                                ));
                           },
                         ),
                         DiseaseHospitalListScroll(
@@ -383,7 +487,11 @@ class _DashboardState extends State<Dashboard> {
                             imageicon: 'Assets/images/kidney.png',
                             onPress: () {
                               nextScreen(
-                                  context, SeparateHospital(title: "Kidney"));
+                                  context,
+                                  SeparateHospital(
+                                    title: "Kidney",
+                                    disease: 'Nephrology',
+                                  ));
                             }),
                         DiseaseHospitalListScroll(
                             txttheme: txttheme,
@@ -392,7 +500,11 @@ class _DashboardState extends State<Dashboard> {
                             imageicon: 'Assets/images/spine.png',
                             onPress: () {
                               nextScreen(
-                                  context, SeparateHospital(title: "Spine"));
+                                  context,
+                                  SeparateHospital(
+                                    title: "Spine",
+                                    disease: 'Orthopedics',
+                                  ));
                             }),
                         DiseaseHospitalListScroll(
                           txttheme: txttheme,
@@ -401,7 +513,11 @@ class _DashboardState extends State<Dashboard> {
                           imageicon: 'Assets/images/skin.png',
                           onPress: () {
                             nextScreen(
-                                context, SeparateHospital(title: "Skin"));
+                                context,
+                                SeparateHospital(
+                                  title: "Skin",
+                                  disease: 'Dermatology',
+                                ));
                           },
                         ),
                       ],
@@ -450,7 +566,7 @@ class _DashboardState extends State<Dashboard> {
                                     children: [
                                       LargeContainerOptionsWidget(
                                         icon: Icons.local_hospital,
-                                        title: 'First AID Treatement',
+                                        title: 'First AID Treatment',
                                         onPress: () {
                                           nextScreen(context, const FirstAID());
                                         },
@@ -466,8 +582,11 @@ class _DashboardState extends State<Dashboard> {
                                         icon: Icons.alarm_add,
                                         title: 'Medicine Reminder',
                                         onPress: () {
-                                          nextScreen(context,
-                                              const MedicineReminder());
+                                          nextScreen(
+                                              context,
+                                              MedicineReminder(
+                                                uid: uid,
+                                              ));
                                         },
                                       ),
                                     ],
@@ -525,8 +644,10 @@ class _DashboardState extends State<Dashboard> {
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (!snapshot.hasData || _locationData == null) {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return Center(
+                              child: Lottie.asset(
+                                  'animation/96949-loading-animation.json',
+                                  height: 100));
                         }
 
                         final List<DocumentSnapshot> hospitals =
@@ -645,8 +766,10 @@ class _DashboardState extends State<Dashboard> {
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (!snapshot.hasData) {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return Center(
+                              child: Lottie.asset(
+                                  'animation/96949-loading-animation.json',
+                                  height: 100));
                         }
                         List<DocumentSnapshot> hospitals = snapshot.data!.docs;
                         List<DocumentSnapshot> thiruvananthapuramHospitals =
@@ -1241,13 +1364,19 @@ class MenuWidget extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
-          color: const Color(0xFF00008F).withOpacity(0.2),
+          color: const Color(0xFFFB4C5B).withOpacity(0.4),
         ),
-        child: Icon(icon),
+        child: Icon(
+          icon,
+          color: Colors.white.withOpacity(0.6),
+        ),
       ),
       title: Text(
         title,
-        style: Theme.of(context).textTheme.bodyText1?.apply(color: textColor),
+        style: const TextStyle(fontSize: 14, color: Colors.white
+                // fontFamily: 'brandon_H',
+                )
+            .apply(color: textColor),
       ),
       trailing: endIcon
           ? Container(
@@ -1255,7 +1384,7 @@ class MenuWidget extends StatelessWidget {
               height: 30,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  color: Colors.grey.withOpacity(0.1)),
+                  color: Colors.grey.withOpacity(0.4)),
               child: const Icon(
                 LineAwesomeIcons.angle_right,
                 size: 18,

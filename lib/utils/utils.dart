@@ -65,3 +65,18 @@ Future<String?> getImageURLFromUserId(String uid) async {
   }
   return null;
 }
+
+Future<String?> getAdministration(String email) async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  QuerySnapshot querySnapshot = await firestore
+      .collection('Admin')
+      .where('email', isEqualTo: email)
+      .get();
+  if (querySnapshot.docs.isNotEmpty) {
+    Map<String, dynamic> data =
+        querySnapshot.docs.first.data() as Map<String, dynamic>;
+    String? dob = data['phoneNo'];
+    return dob;
+  }
+  return null;
+}

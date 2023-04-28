@@ -1,6 +1,9 @@
 import 'package:carevista_ver05/SCREEN/login_signup.dart';
+import 'package:carevista_ver05/main.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
+import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class ScreenWelcome extends StatefulWidget {
@@ -32,14 +35,26 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
               Container(
                 //FIRST SLIDE PAGE
 
-                padding: const EdgeInsets.all(30.0),
+                padding: const EdgeInsets.all(25.0),
                 color: Colors.white,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Image.asset(
-                      'Assets/images/welcomeScrn1.png',
-                      height: size.height * 0.5,
+                    Container(
+                      height: 400, // set the height of the container to 300
+                      width: 400, // set the width of the container to 300
+                      color: MyApp.themeNotifier.value == ThemeMode.light
+                          ? Colors.white
+                          : Theme.of(context).canvasColor,
+                      child: FractionallySizedBox(
+                        widthFactor:
+                            1, // set the width factor to 0.8 to take 80% of the container's width
+                        heightFactor:
+                            1, // set the height factor to 0.8 to take 80% of the container's height
+                        child: Lottie.asset(
+                          'animation/welcome2.json',
+                        ),
+                      ),
                     ),
                     Column(
                       // ignore: prefer_const_literals_to_create_immutables
@@ -56,6 +71,17 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
                           style:
                               TextStyle(fontSize: 40, fontFamily: 'brandon_H'),
                         ),
+                        Text(
+                          "Say hello to Kerala's top Hospital.",
+                          style: GoogleFonts.monda(
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                        Text(
+                          "Find suitable doctors and hospitals",
+                          style:
+                              GoogleFonts.monda(fontWeight: FontWeight.normal),
+                        ),
                       ],
                     ),
                     const Text('1/3',
@@ -68,24 +94,39 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
               Container(
                 //SEACOND SLIDE PAGE
 
-                padding: const EdgeInsets.all(30.0),
-                color: Color.fromARGB(255, 211, 211, 234),
+                padding: const EdgeInsets.all(25.0),
+                color: const Color(0xFF82bcff),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Image.asset(
-                      'Assets/images/welcomeScrn2.png',
-                      height: size.height * 0.5,
+                    Container(
+                      height: 400, // set the height of the container to 300
+                      width: 400, // set the width of the container to 300
+                      color: MyApp.themeNotifier.value == ThemeMode.light
+                          ? const Color(0xFF82bcff)
+                          : Theme.of(context).canvasColor,
+                      child: FractionallySizedBox(
+                        widthFactor:
+                            1, // set the width factor to 0.8 to take 80% of the container's width
+                        heightFactor:
+                            1, // set the height factor to 0.8 to take 80% of the container's height
+                        child: Lottie.network(
+                          'https://assets8.lottiefiles.com/private_files/lf30_oclvo23h.json',
+                        ),
+                      ),
                     ),
                     Column(
                       children: [
-                        Text(
-                          'Welcome to',
-                          style: Theme.of(context).textTheme.headline5,
+                        const Text(
+                          'ADDONS',
+                          style:
+                              TextStyle(fontSize: 24, fontFamily: 'brandon_H'),
                         ),
+                        const SizedBox(height: 5),
                         Text(
-                          'CARE VISTA',
-                          style: Theme.of(context).textTheme.headline2,
+                          '24 x 7 Service Support.\nMedicine Reminder: Reminds you about your medicines\nPatient Record: Record of your previous treatments.\nDisease compilation: Information about common diseases ',
+                          style:
+                              GoogleFonts.monda(fontWeight: FontWeight.normal),
                         ),
                       ],
                     ),
@@ -101,23 +142,36 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
                 //THIRD SLIDE PAGE
 
                 padding: const EdgeInsets.all(30.0),
-                color: Color.fromARGB(255, 193, 223, 216),
+                color: const Color(0xFF1c7b8f),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Image.asset(
-                      'Assets/images/welcomeScrn3.png',
-                      height: size.height * 0.5,
+                    Container(
+                      height: 400, // set the height of the container to 300
+                      width: 400, // set the width of the container to 300
+                      color: MyApp.themeNotifier.value == ThemeMode.light
+                          ? const Color(0xFF1c7b8f)
+                          : Theme.of(context).canvasColor,
+                      child: FractionallySizedBox(
+                        widthFactor:
+                            1, // set the width factor to 0.8 to take 80% of the container's width
+                        heightFactor:
+                            1, // set the height factor to 0.8 to take 80% of the container's height
+                        child: Lottie.asset(
+                          'animation/welcome3.json',
+                        ),
+                      ),
                     ),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Welcome to',
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                        Text(
-                          'CARE VISTA',
-                          style: Theme.of(context).textTheme.headline2,
+                          'Users can add information about hosptals near them.',
+                          style: GoogleFonts.monda(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 15,
+                          ),
                         ),
                       ],
                     ),
@@ -146,8 +200,13 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
                 ),
               ),
               onPressed: () {
-                int nextPage = LiqController.currentPage + 1;
-                LiqController.animateToPage(page: nextPage);
+                if (CurrentPage != 2) {
+                  int nextPage = LiqController.currentPage + 1;
+                  LiqController.animateToPage(page: nextPage);
+                } else {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const LoginSignUpScreen()));
+                }
               },
               style: ElevatedButton.styleFrom(
                   shadowColor: Colors.black26,

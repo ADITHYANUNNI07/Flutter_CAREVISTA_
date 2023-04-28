@@ -43,7 +43,7 @@ class _UserHospitalApproveState extends State<UserHospitalApprove> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return _isLoding
+    return /*_isLoding
         ? Container(
             height: 300, // set the height of the container to 300
             width: 300, // set the width of the container to 300
@@ -60,401 +60,354 @@ class _UserHospitalApproveState extends State<UserHospitalApprove> {
               ),
             ),
           )
-        : Container(
-            color: const Color(0xFF04FBC3),
-            child: SafeArea(
-                child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-                centerTitle: true,
-                elevation: 0,
-                leading: IconButton(
-                  icon: Icon(
-                    LineAwesomeIcons.angle_double_left,
-                    color: Theme.of(context).iconTheme.color,
+        :*/
+        Container(
+      color: const Color(0xFF04FBC3),
+      child: SafeArea(
+          child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          centerTitle: true,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              LineAwesomeIcons.angle_double_left,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            'Approve Hospital',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 25, color: Theme.of(context).primaryColorDark),
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                TextField(
+                  controller: _searchController,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    labelText: 'Search',
+                    border: OutlineInputBorder(),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
                   },
                 ),
-                title: Text(
-                  'Approve Hospital',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 25, color: Theme.of(context).primaryColorDark),
-                ),
-              ),
-              body: SingleChildScrollView(
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: _searchController,
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.search),
-                          labelText: 'Search',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            _searchQuery = value;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: size.height,
-                        child: StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('Userhospitals')
-                              .snapshots(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (!snapshot.hasData) {
-                              return Center(
-                                  child: Lottie.asset(
-                                      'animation/96949-loading-animation.json',
-                                      height: 100));
-                            }
-                            List<DocumentSnapshot> hospital =
-                                snapshot.data!.docs;
-                            List<DocumentSnapshot> verification = hospital
-                                .where((data) => data['verification'] == 'true')
-                                .toList();
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: size.height,
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('Userhospitals')
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                            child: Lottie.asset(
+                                'animation/96949-loading-animation.json',
+                                height: 100));
+                      }
+                      List<DocumentSnapshot> hospital = snapshot.data!.docs;
+                      List<DocumentSnapshot> verification = hospital
+                          .where((data) => data['verification'] == 'true')
+                          .toList();
 
-                            List<DocumentSnapshot> sortedHospitals = [
-                              ...verification,
-                            ];
+                      List<DocumentSnapshot> sortedHospitals = [
+                        ...verification,
+                      ];
 
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: sortedHospitals.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                DocumentSnapshot data = sortedHospitals[index];
-                                if (!_searchQuery.isEmpty &&
-                                    !data['hospitalName']
-                                        .toLowerCase()
-                                        .contains(_searchQuery.toLowerCase())) {
-                                  // Skip this hospital if it doesn't match the search query
-                                  return SizedBox.shrink();
-                                }
-                                return FutureBuilder<int>(
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<int> countSnapshot) {
-                                    if (countSnapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      // Show a loading indicator while data is being fetched
-                                    }
-                                    if (countSnapshot.hasError) {
-                                      // Handle error if any
-                                      return Text(
-                                          'Error: ${countSnapshot.error}');
-                                    }
-                                    int nohospital = countSnapshot.data ?? 0;
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: sortedHospitals.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          DocumentSnapshot data = sortedHospitals[index];
+                          if (!_searchQuery.isEmpty &&
+                              !data['hospitalName']
+                                  .toLowerCase()
+                                  .contains(_searchQuery.toLowerCase())) {
+                            // Skip this hospital if it doesn't match the search query
+                            return SizedBox.shrink();
+                          }
+                          return FutureBuilder<int>(
+                            builder: (BuildContext context,
+                                AsyncSnapshot<int> countSnapshot) {
+                              if (countSnapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                // Show a loading indicator while data is being fetched
+                              }
+                              if (countSnapshot.hasError) {
+                                // Handle error if any
+                                return Text('Error: ${countSnapshot.error}');
+                              }
+                              int nohospital = countSnapshot.data ?? 0;
 
-                                    return Row(
-                                      children: [
-                                        HospitalApproveListWidget(
-                                          size: size,
-                                          hospitalname: data['hospitalName'],
-                                          location: data['location'],
-                                          district: data['district'],
-                                          imageurl: data['Logo'],
-                                          onPress: () {
-                                            nextScreen(
-                                                context,
-                                                HospitalPage(
-                                                  hospitalName:
-                                                      data['hospitalName'],
-                                                  district: data['district'],
-                                                  logo: data['Logo'],
-                                                  address: data['address'],
-                                                  affiliatted: data[
-                                                      'affiliateduniversity'],
-                                                  ambulanceNo:
-                                                      data['ambulanceNo'],
-                                                  bedNo: data['bedNo'],
-                                                  doctorsNo: data['doctorsNo'],
-                                                  emergencydpt: data[
-                                                      'emergencydepartment'],
-                                                  sitlink: data['sitLink'],
-                                                  govtprivate:
-                                                      data['GovtorPrivate'],
-                                                  highlight: data['highlight'],
-                                                  hospital1: data['hospital1'],
-                                                  hospital2: data['hospital2'],
-                                                  hospital3: data['hospital3'],
-                                                  image1url: data['image1'],
-                                                  image2url: data['image2'],
-                                                  image3url: data['image3'],
-                                                  image4url: data['image4'],
-                                                  image5url: data['image5'],
-                                                  length: data[
-                                                      'uploadDocternumber'],
-                                                  location: data['location'],
-                                                  overview: data['overview'],
-                                                  phoneno: data['phoneno'],
-                                                  sdistance1: data[
-                                                      'surroundingdistance1'],
-                                                  sdistance2: data[
-                                                      'surroundingdistance2'],
-                                                  service: data['services'],
-                                                  splace1:
-                                                      data['surroundingplace1'],
-                                                  splace2:
-                                                      data['surroundingplace2'],
-                                                  stime1:
-                                                      data['surroundingtime1'],
-                                                  stime2:
-                                                      data['surroundingtime2'],
-                                                  time: data['time'],
-                                                  type: data['type'],
-                                                  year: data['establishedYear'],
-                                                  doctorSpeciality: List.from(data[
-                                                      'doctorName&Specialist']),
-                                                  doctordetails:
-                                                      _buildDoctorList(data),
-                                                ));
-                                          },
-                                          btnPress: () async {
-                                            showDialog(
-                                              barrierDismissible: false,
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: const Text(
-                                                      "Approve the hospital"),
-                                                  content: Text(
-                                                      "Are you to approved ${data['hospitalName']} ?"),
-                                                  actions: [
-                                                    const SizedBox(height: 3),
-                                                    Form(
-                                                      key: fromKey,
-                                                      child: TextFormField(
-                                                        obscureText: passVisible
-                                                            ? false
-                                                            : true,
-                                                        decoration:
-                                                            InputDecoration(
-                                                          prefixIcon:
-                                                              const Icon(Icons
-                                                                  .fingerprint_outlined),
-                                                          labelText: 'Password',
-                                                          border:
-                                                              const OutlineInputBorder(),
-                                                          suffixIcon:
-                                                              IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                passVisible =
-                                                                    !passVisible; // Toggle the value of passVisible
-                                                              });
-                                                            },
-                                                            icon: passVisible
-                                                                ? const Icon(
-                                                                    LineAwesomeIcons
-                                                                        .eye)
-                                                                : const Icon(
-                                                                    LineAwesomeIcons
-                                                                        .eye_slash),
-                                                          ),
-                                                        ),
-                                                        onChanged: (val) {
-                                                          password = val;
-                                                        },
-                                                        validator: (val) {
-                                                          if (val!.length < 6) {
-                                                            return "Password must be at least 6 characters";
-                                                          } else {
-                                                            return null;
-                                                          }
-                                                        },
-                                                      ),
+                              return Row(
+                                children: [
+                                  HospitalApproveListWidget(
+                                    size: size,
+                                    hospitalname: data['hospitalName'],
+                                    location: data['location'],
+                                    district: data['district'],
+                                    imageurl: data['Logo'],
+                                    onPress: () {
+                                      nextScreen(
+                                          context,
+                                          HospitalPage(
+                                            hospitalName: data['hospitalName'],
+                                            district: data['district'],
+                                            logo: data['Logo'],
+                                            address: data['address'],
+                                            affiliatted:
+                                                data['affiliateduniversity'],
+                                            ambulanceNo: data['ambulanceNo'],
+                                            bedNo: data['bedNo'],
+                                            doctorsNo: data['doctorsNo'],
+                                            emergencydpt:
+                                                data['emergencydepartment'],
+                                            sitlink: data['sitLink'],
+                                            govtprivate: data['GovtorPrivate'],
+                                            highlight: data['highlight'],
+                                            hospital1: data['hospital1'],
+                                            hospital2: data['hospital2'],
+                                            hospital3: data['hospital3'],
+                                            image1url: data['image1'],
+                                            image2url: data['image2'],
+                                            image3url: data['image3'],
+                                            image4url: data['image4'],
+                                            image5url: data['image5'],
+                                            length: data['uploadDocternumber'],
+                                            location: data['location'],
+                                            overview: data['overview'],
+                                            phoneno: data['phoneno'],
+                                            sdistance1:
+                                                data['surroundingdistance1'],
+                                            sdistance2:
+                                                data['surroundingdistance2'],
+                                            service: data['services'],
+                                            splace1: data['surroundingplace1'],
+                                            splace2: data['surroundingplace2'],
+                                            stime1: data['surroundingtime1'],
+                                            stime2: data['surroundingtime2'],
+                                            time: data['time'],
+                                            type: data['type'],
+                                            year: data['establishedYear'],
+                                            doctorSpeciality: List.from(
+                                                data['doctorName&Specialist']),
+                                            doctordetails:
+                                                _buildDoctorList(data),
+                                          ));
+                                    },
+                                    btnPress: () async {
+                                      showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                                "Approve the hospital"),
+                                            content: Text(
+                                                "Are you to approved ${data['hospitalName']} ?"),
+                                            actions: [
+                                              const SizedBox(height: 3),
+                                              Form(
+                                                key: fromKey,
+                                                child: TextFormField(
+                                                  obscureText: passVisible
+                                                      ? false
+                                                      : true,
+                                                  decoration: InputDecoration(
+                                                    prefixIcon: const Icon(Icons
+                                                        .fingerprint_outlined),
+                                                    labelText: 'Password',
+                                                    border:
+                                                        const OutlineInputBorder(),
+                                                    suffixIcon: IconButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          passVisible =
+                                                              !passVisible; // Toggle the value of passVisible
+                                                        });
+                                                      },
+                                                      icon: passVisible
+                                                          ? const Icon(
+                                                              LineAwesomeIcons
+                                                                  .eye)
+                                                          : const Icon(
+                                                              LineAwesomeIcons
+                                                                  .eye_slash),
                                                     ),
-                                                    const SizedBox(height: 8),
-                                                    Row(
-                                                      children: [
-                                                        ElevatedButton(
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .black),
-                                                          onPressed: () {
+                                                  ),
+                                                  onChanged: (val) {
+                                                    password = val;
+                                                  },
+                                                  validator: (val) {
+                                                    if (val!.length < 6) {
+                                                      return "Password must be at least 6 characters";
+                                                    } else {
+                                                      return null;
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Row(
+                                                children: [
+                                                  ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            backgroundColor:
+                                                                Colors.black),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text("cancel"),
+                                                  ),
+                                                  const SizedBox(width: 18),
+                                                  ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            backgroundColor:
+                                                                Colors.black),
+                                                    child: const Text("Yes"),
+                                                    onPressed: () async {
+                                                      if (fromKey.currentState!
+                                                          .validate()) {
+                                                        setState(() {
+                                                          _isLoding = true;
+                                                        });
+                                                        await authService
+                                                            .loginUserAccount(
+                                                                widget.email,
+                                                                password)
+                                                            .then(
+                                                                (value) async {
+                                                          print('login');
+                                                          if (value == true) {
+                                                            uploadHopital(
+                                                              data[
+                                                                  'hospitalName'],
+                                                              data[
+                                                                  'establishedYear'],
+                                                              data['location'],
+                                                              data['district'],
+                                                              data['address'],
+                                                              data['highlight'],
+                                                              data['phoneno'],
+                                                              data['time'],
+                                                              data['doctorsNo'],
+                                                              data['bedNo'],
+                                                              data[
+                                                                  'ambulanceNo'],
+                                                              data['sitLink'],
+                                                              data['Logo'],
+                                                              data[
+                                                                  'GovtorPrivate'],
+                                                              data['type'],
+                                                              data[
+                                                                  'affiliateduniversity'],
+                                                              data[
+                                                                  'emergencydepartment'],
+                                                              data[
+                                                                  'surroundingplace1'],
+                                                              data[
+                                                                  'surroundingdistance1'],
+                                                              data[
+                                                                  'surroundingtime1'],
+                                                              data[
+                                                                  'surroundingplace2'],
+                                                              data[
+                                                                  'surroundingdistance2'],
+                                                              data[
+                                                                  'surroundingtime2'],
+                                                              getDoctorNames(
+                                                                  data),
+                                                              getDoctorSpecialities(
+                                                                  data),
+                                                              data['hospital1'],
+                                                              data['hospital2'],
+                                                              data['hospital3'],
+                                                              data['overview'],
+                                                              data['services'],
+                                                              data['image1'],
+                                                              data['image2'],
+                                                              data['image3'],
+                                                              data['image4'],
+                                                              data['image5'],
+                                                              data['uploaderName']
+                                                                  .toString(),
+                                                              data[
+                                                                  'uploaderPhoneNo'],
+                                                              data['Latitude'],
+                                                              data['Longitude'],
+                                                            );
                                                             Navigator.pop(
                                                                 context);
-                                                          },
-                                                          child: const Text(
-                                                              "cancel"),
-                                                        ),
-                                                        const SizedBox(
-                                                            width: 18),
-                                                        ElevatedButton(
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .black),
-                                                          child:
-                                                              const Text("Yes"),
-                                                          onPressed: () async {
-                                                            if (fromKey
-                                                                .currentState!
-                                                                .validate()) {
-                                                              setState(() {
-                                                                _isLoding =
-                                                                    true;
-                                                              });
-                                                              await authService
-                                                                  .loginUserAccount(
-                                                                      widget
-                                                                          .email,
-                                                                      password)
-                                                                  .then(
-                                                                      (value) async {
-                                                                print('login');
-                                                                if (value ==
-                                                                    true) {
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                  uploadHopital(
-                                                                    data[
-                                                                        'hospitalName'],
-                                                                    data[
-                                                                        'establishedYear'],
-                                                                    data[
-                                                                        'location'],
-                                                                    data[
-                                                                        'district'],
-                                                                    data[
-                                                                        'address'],
-                                                                    data[
-                                                                        'highlight'],
-                                                                    data[
-                                                                        'phoneno'],
-                                                                    data[
-                                                                        'time'],
-                                                                    data[
-                                                                        'doctorsNo'],
-                                                                    data[
-                                                                        'bedNo'],
-                                                                    data[
-                                                                        'ambulanceNo'],
-                                                                    data[
-                                                                        'sitLink'],
-                                                                    data[
-                                                                        'Logo'],
-                                                                    data[
-                                                                        'GovtorPrivate'],
-                                                                    data[
-                                                                        'type'],
-                                                                    data[
-                                                                        'affiliateduniversity'],
-                                                                    data[
-                                                                        'emergencydepartment'],
-                                                                    data[
-                                                                        'surroundingplace1'],
-                                                                    data[
-                                                                        'surroundingdistance1'],
-                                                                    data[
-                                                                        'surroundingtime1'],
-                                                                    data[
-                                                                        'surroundingplace2'],
-                                                                    data[
-                                                                        'surroundingdistance2'],
-                                                                    data[
-                                                                        'surroundingtime2'],
-                                                                    getDoctorNames(
-                                                                        data),
-                                                                    getDoctorSpecialities(
-                                                                        data),
-                                                                    data[
-                                                                        'hospital1'],
-                                                                    data[
-                                                                        'hospital2'],
-                                                                    data[
-                                                                        'hospital3'],
-                                                                    data[
-                                                                        'overview'],
-                                                                    data[
-                                                                        'services'],
-                                                                    data[
-                                                                        'image1'],
-                                                                    data[
-                                                                        'image2'],
-                                                                    data[
-                                                                        'image3'],
-                                                                    data[
-                                                                        'image4'],
-                                                                    data[
-                                                                        'image5'],
-                                                                    data[
-                                                                        'uploaderName'],
-                                                                    data[
-                                                                        'uploaderPhoneNo'],
-                                                                    data[
-                                                                        'Latitude'],
-                                                                    data[
-                                                                        'Longitude'],
-                                                                  );
-                                                                  setState(() {
-                                                                    _isLoding =
-                                                                        false;
-                                                                  });
-                                                                } else {
-                                                                  setState(() {
-                                                                    showSnackbar(
-                                                                        context,
-                                                                        Colors
-                                                                            .red,
-                                                                        value);
-                                                                    _isLoding =
-                                                                        false;
-                                                                  });
-                                                                }
-                                                              });
-                                                            }
-                                                          },
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          },
-                                          CallbtnPress: () async {
-                                            Uri phoneno = Uri.parse(
-                                                'tel:' + data['phoneno']);
-                                            if (await launchUrl(phoneno)) {
-                                              launchUrl(phoneno);
-                                            } else {
-                                              //dailer is not opened
-                                            }
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              padding: const EdgeInsets.only(bottom: 200),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+
+                                                            setState(() {
+                                                              _isLoding = false;
+                                                            });
+                                                          } else {
+                                                            setState(() {
+                                                              showSnackbar(
+                                                                  context,
+                                                                  Colors.red,
+                                                                  value);
+                                                              _isLoding = false;
+                                                            });
+                                                          }
+                                                        });
+                                                      }
+                                                    },
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    CallbtnPress: () async {
+                                      Uri phoneno =
+                                          Uri.parse('tel:' + data['phoneno']);
+                                      if (await launchUrl(phoneno)) {
+                                        launchUrl(phoneno);
+                                      } else {
+                                        //dailer is not opened
+                                      }
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        padding: const EdgeInsets.only(bottom: 200),
+                      );
+                    },
                   ),
                 ),
-              ),
-            )),
-          );
+              ],
+            ),
+          ),
+        ),
+      )),
+    );
   }
 
-  List<TextEditingController> getDoctorNames(DocumentSnapshot hospital) {
-    List<TextEditingController> doctorNames = [];
+  List getDoctorNames(DocumentSnapshot hospital) {
+    List doctorNames = [];
     if (hospital['doctorName&Specialist'] != null) {
       List doctors = hospital['doctorName&Specialist'];
       for (var doctor in doctors) {
@@ -464,8 +417,8 @@ class _UserHospitalApproveState extends State<UserHospitalApprove> {
     return doctorNames;
   }
 
-  List<TextEditingController> getDoctorSpecialities(DocumentSnapshot hospital) {
-    List<TextEditingController> specialities = [];
+  List getDoctorSpecialities(DocumentSnapshot hospital) {
+    List specialities = [];
     if (hospital['doctorName&Specialist'] != null) {
       List doctors = hospital['doctorName&Specialist'];
       for (var doctor in doctors) {
@@ -513,8 +466,8 @@ class _UserHospitalApproveState extends State<UserHospitalApprove> {
       String surround2,
       String surroundDistance2,
       String surroundTime2,
-      List<TextEditingController> _DoctorName,
-      List<TextEditingController> _Specialist,
+      List _DoctorName,
+      List _Specialist,
       String nearhospital1,
       String nearhospital2,
       String nearhospital3,
@@ -525,11 +478,11 @@ class _UserHospitalApproveState extends State<UserHospitalApprove> {
       String image3Url,
       String image4Url,
       String image5Url,
-      String username,
+      String uname,
       String userphoneno,
       String lat,
       String long) async {
-    await DatabaseServiceHospital().savingHospitaldetails(
+    await DatabaseServiceHospital().savingUserCollectionHospitaldetails(
         hospitalname,
         establisedYr,
         location,
@@ -566,7 +519,7 @@ class _UserHospitalApproveState extends State<UserHospitalApprove> {
         image3Url,
         image4Url,
         image5Url,
-        username,
+        uname,
         userphoneno,
         lat,
         long);

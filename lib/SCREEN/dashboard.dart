@@ -636,7 +636,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
-                    height: size.height / 3.5,
+                    height: size.height / 3.5 + 30,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('hospitals')
@@ -680,6 +680,7 @@ class _DashboardState extends State<Dashboard> {
                                 NearestHospitalListScroll(
                                   hospitalName: data['hospitalName'],
                                   district: data['district'],
+                                  location: data['location'],
                                   imageSrc: data['Logo'],
                                   onPressIcon: () {
                                     setState(() {
@@ -758,7 +759,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
-                    height: size.height / 3.5,
+                    height: size.height / 3.5 + 30,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('hospitals')
@@ -858,6 +859,7 @@ class _DashboardState extends State<Dashboard> {
                                   hospitalName: data['hospitalName'],
                                   district: data['district'],
                                   imageSrc: data['Logo'],
+                                  location: data['location'],
                                   onPressIcon: () {
                                     setState(() {
                                       if (saveIcon == true) {
@@ -927,7 +929,7 @@ class _DashboardState extends State<Dashboard> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 20)
+                  const SizedBox(height: 70)
                 ],
               ),
             ),
@@ -1043,6 +1045,7 @@ class TopHospitalListScroll extends StatefulWidget {
     required this.imageSrc,
     required this.uploaderName,
     required this.Adkey,
+    required this.location,
   }) : super(key: key);
   final VoidCallback onPress;
   final VoidCallback onPressIcon;
@@ -1050,6 +1053,7 @@ class TopHospitalListScroll extends StatefulWidget {
   final bool Adkey;
   final TextTheme txttheme;
   final String hospitalName;
+  final String location;
   final String district;
   final String uploaderName;
   final String imageSrc;
@@ -1063,7 +1067,7 @@ class _TopHospitalListScrollState extends State<TopHospitalListScroll> {
     final size = MediaQuery.of(context).size;
     return SizedBox(
       width: size.width - 30,
-      height: size.height / 2,
+      height: size.height / 2 + 30,
       child: InkWell(
         onTap: widget.onPress,
         child: Container(
@@ -1111,6 +1115,19 @@ class _TopHospitalListScrollState extends State<TopHospitalListScroll> {
                     fontWeight: FontWeight.w600,
                     color: specialcolor.AppColor.homePageContainerTextSmall),
                 textAlign: TextAlign.center,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  HigTagWidget(
+                      title: widget.location,
+                      icon: Icons.location_on,
+                      width: 250 + 20,
+                      height: 30,
+                      tooltapMess: 'Location',
+                      firstColor: const Color.fromARGB(255, 95, 44, 116),
+                      secondColor: const Color.fromARGB(255, 156, 94, 145))
+                ],
               ),
               Text(widget.district,
                   style: TextStyle(
@@ -1144,6 +1161,7 @@ class NearestHospitalListScroll extends StatefulWidget {
     required this.imageSrc,
     required this.uploaderName,
     required this.Adkey,
+    required this.location,
   }) : super(key: key);
   final VoidCallback onPress;
   final VoidCallback onPressIcon;
@@ -1152,6 +1170,7 @@ class NearestHospitalListScroll extends StatefulWidget {
   final TextTheme txttheme;
   final String hospitalName;
   final String district;
+  final String location;
   final String uploaderName;
   final String imageSrc;
   @override
@@ -1165,7 +1184,7 @@ class _NearestHospitalListScrollState extends State<NearestHospitalListScroll> {
     final size = MediaQuery.of(context).size;
     return SizedBox(
       width: size.width - 30,
-      height: size.height / 2,
+      height: size.height / 2 + 30,
       child: InkWell(
         onTap: widget.onPress,
         child: Container(
@@ -1213,6 +1232,19 @@ class _NearestHospitalListScrollState extends State<NearestHospitalListScroll> {
                     fontWeight: FontWeight.w600,
                     color: specialcolor.AppColor.homePageContainerTextSmall),
                 textAlign: TextAlign.center,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  HigTagWidget(
+                      title: widget.location,
+                      icon: Icons.location_on,
+                      width: 250 + 20,
+                      height: 30,
+                      tooltapMess: 'Location',
+                      firstColor: const Color.fromARGB(255, 95, 44, 116),
+                      secondColor: const Color.fromARGB(255, 156, 94, 145))
+                ],
               ),
               Text(widget.district,
                   style: TextStyle(

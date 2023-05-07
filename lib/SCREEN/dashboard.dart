@@ -1,3 +1,4 @@
+import 'package:carevista_ver05/Administration/feedbackview.dart';
 import 'package:carevista_ver05/Helper/helper_function.dart';
 import 'package:carevista_ver05/SCREEN/addons/diary.dart';
 import 'package:carevista_ver05/SCREEN/addons/diseasecomplication.dart';
@@ -10,6 +11,7 @@ import 'package:carevista_ver05/SCREEN/home/search.dart';
 import 'package:carevista_ver05/SCREEN/home/separatehospital.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
 import 'package:carevista_ver05/SCREEN/profile.dart';
+import 'package:carevista_ver05/SCREEN/profile/feedback.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Theme/theme.dart';
 import 'package:carevista_ver05/admin/addHospital.dart';
@@ -113,6 +115,11 @@ class _DashboardState extends State<Dashboard> {
       setState(() {
         adminKey = value!;
       });
+      print(adminKey);
+      print(adminKey);
+      print(adminKey);
+      print(adminKey);
+      print(adminKey);
       if (adminKey == 'false') {
         adKey = false;
       } else {
@@ -304,6 +311,21 @@ class _DashboardState extends State<Dashboard> {
                         },
                       )
                     : const SizedBox(),
+                MenuWidget(
+                    title: "FeedBack",
+                    icon: Icons.feedback,
+                    onPress: () {
+                      nextScreen(
+                          context,
+                          FeedBack(
+                            uid: Uid,
+                            email: email,
+                            name: userName,
+                            phone: phoneNo,
+                            imageUrl: imageUrl,
+                            adkey: adminKey,
+                          ));
+                    }),
                 const Divider(),
                 MenuWidget(
                   title: "Logout",
@@ -605,7 +627,7 @@ class _DashboardState extends State<Dashboard> {
                                       ),
                                       LargeContainerOptionsWidget(
                                         icon: LineAwesomeIcons.heartbeat,
-                                        title: 'Disease Complication',
+                                        title: 'Disease Compilation',
                                         onPress: () {
                                           nextScreen(context,
                                               const DiseaseComplication());

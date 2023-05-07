@@ -1,7 +1,9 @@
 import 'package:carevista_ver05/SCREEN/login.dart';
 import 'package:carevista_ver05/SCREEN/signup.dart';
+import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/widget/widget.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginSignUpScreen extends StatelessWidget {
   const LoginSignUpScreen({super.key});
@@ -13,15 +15,48 @@ class LoginSignUpScreen extends StatelessWidget {
       color: const Color(0xFF04FBC3),
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: MyApp.themeNotifier.value == ThemeMode.light
+              ? Colors.white
+              : Theme.of(context).canvasColor,
           body: Container(
+              color: MyApp.themeNotifier.value == ThemeMode.light
+                  ? Colors.white
+                  : Theme.of(context).canvasColor,
               padding: const EdgeInsets.all(30),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Image.asset(
-                    'Assets/images/Login_SignUp_pic.png',
-                    height: height * 0.6,
-                  ),
+                  MyApp.themeNotifier.value == ThemeMode.light
+                      ? Container(
+                          height: 500, // set the height of the container to 300
+                          width: 500, // set the width of the container to 300
+                          color: MyApp.themeNotifier.value == ThemeMode.light
+                              ? Colors.white
+                              : Theme.of(context).canvasColor,
+                          child: FractionallySizedBox(
+                            widthFactor:
+                                1, // set the width factor to 0.8 to take 80% of the container's width
+                            heightFactor:
+                                1, // set the height factor to 0.8 to take 80% of the container's height
+                            child: Lottie.asset(
+                              'animation/73386-problem-solving-team.json',
+                            ),
+                          ),
+                        )
+                      : Container(
+                          height: 500, // set the height of the container to 300
+                          width: 500, // set the width of the container to 300
+                          color: Theme.of(context).canvasColor,
+                          child: FractionallySizedBox(
+                            widthFactor:
+                                1, // set the width factor to 0.8 to take 80% of the container's width
+                            heightFactor:
+                                1, // set the height factor to 0.8 to take 80% of the container's height
+                            child: Lottie.network(
+                              'https://assets7.lottiefiles.com/packages/lf20_l13zwx3i.json',
+                            ),
+                          ),
+                        ),
                   Column(
                     children: [
                       const Text(

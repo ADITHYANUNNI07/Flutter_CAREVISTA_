@@ -244,1985 +244,1929 @@ class _AddHospitalState extends State<AddHospital> {
                 ),
                 const SizedBox(height: 50),
                 Form(
-                    key: fromKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextFormField(
-                            decoration: InputDecoration(
-                                prefixIcon: const Icon(
-                                    LineAwesomeIcons.hospital_symbol),
-                                labelText: 'Hospital Name',
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(100))),
-                            onChanged: (val) {
-                              hospitalname = val;
-                            },
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return "Enter Hospital Name";
-                              } else {
-                                return RegExp(
-                                            r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                        .hasMatch(val)
-                                    ? "Please enter valid Hospital Name"
-                                    : null;
-                              }
-                            }),
-                        const SizedBox(height: 10),
-                        Container(
-                            padding: const EdgeInsets.all(10),
-                            width: double.infinity,
-                            height: 105,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).cardColor),
-                            child: Column(children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: Text(
-                                    'Govt Or Private',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  )),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Container(
-                                  padding: const EdgeInsets.all(1),
-                                  child: SizedBox(
-                                      height: 50,
-                                      child: ListView(
-                                          shrinkWrap: true,
-                                          scrollDirection: Axis.horizontal,
-                                          children: [
-                                            TimeWidget(
-                                                time: "Private",
-                                                radioBtn: Radio(
-                                                  value: 'Private',
-                                                  groupValue: _gp,
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      _gp = value!;
-                                                      gp = "Private";
-                                                    });
-                                                  },
-                                                )),
-                                            const SizedBox(width: 10),
-                                            TimeWidget(
-                                                time: "Govt",
-                                                radioBtn: Radio(
-                                                  value: 'Govt',
-                                                  groupValue: _gp,
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      _gp = value!;
-                                                      gp = "Govt.";
-                                                    });
-                                                  },
-                                                ))
-                                          ]))),
-                            ])),
-                        const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
-                            labelText: "Type",
-                            onChange: (value) {
-                              type = value;
-                            },
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return "Enter Hospital type";
-                              } else {
-                                return null;
-                              }
-                            },
-                            icon: Icons.type_specimen_outlined),
-                        const SizedBox(height: 10),
-                        TextFormFieldOvalNumberWidget(
-                            labelText: 'Established Year',
-                            onChange: (value) {
-                              establisedYr = value;
-                            },
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return 'Please Established Year';
-                              } else {
-                                return null;
-                              }
-                            },
-                            icon: LineAwesomeIcons.hospital_1),
-                        const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
-                            labelText: "Affiliated university",
-                            onChange: (value) {
-                              affUniversity = value;
-                            },
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return 'Please Affiliated university';
-                              } else {
-                                return null;
-                              }
-                            },
-                            icon: HumanitarianIcons.university),
-                        const SizedBox(height: 10),
-                        Container(
-                            padding: const EdgeInsets.all(10),
-                            width: double.infinity,
-                            height: 105,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).cardColor),
-                            child: Column(children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: Text(
-                                    'Emergency department',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  )),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Container(
-                                  padding: const EdgeInsets.all(1),
-                                  child: SizedBox(
-                                      height: 50,
-                                      child: ListView(
-                                          shrinkWrap: true,
-                                          scrollDirection: Axis.horizontal,
-                                          children: [
-                                            TimeWidget(
-                                                time: "Yes",
-                                                radioBtn: Radio(
-                                                  value: 'yes',
-                                                  groupValue: _emergency,
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      _emergency = value!;
-                                                      emergency = "Yes";
-                                                    });
-                                                  },
-                                                )),
-                                            const SizedBox(width: 10),
-                                            TimeWidget(
-                                                time: "NO",
-                                                radioBtn: Radio(
-                                                  value: 'No',
-                                                  groupValue: _emergency,
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      _emergency = value!;
-                                                      emergency = "No";
-                                                    });
-                                                  },
-                                                ))
-                                          ]))),
-                            ])),
-                        const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
-                            labelText: 'Location',
-                            onChange: (value) {
-                              location = value;
-                            },
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return 'Please Established Year';
-                              } else {
-                                return null;
-                              }
-                            },
-                            icon: Icons.location_on),
-                        const SizedBox(height: 15),
-                        Container(
-                          padding: const EdgeInsets.only(
-                              top: 20, left: 10, right: 10),
-                          width: double.infinity,
-                          height: 280,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Theme.of(context).cardColor),
-                          child: Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: Text(
-                                    'Latitude & Longitude',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  )),
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: TextFormFieldOvalWidget(
-                                          labelText: 'Latitude',
-                                          onChange: (value) {
-                                            lat = value;
-                                          },
-                                          validator: (val) {
-                                            if (val!.isEmpty) {
-                                              return "Enter Latitude";
-                                            } else {}
-                                          },
-                                          icon: Icons.place_outlined))
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: TextFormFieldOvalWidget(
-                                          labelText: 'Longitude',
-                                          onChange: (value) {
-                                            long = value;
-                                          },
-                                          validator: (val) {
-                                            if (val!.isEmpty) {
-                                              return "Enter Latitude";
-                                            } else {}
-                                          },
-                                          icon: Icons.place_outlined))
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        Container(
+                  key: fromKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                          decoration: InputDecoration(
+                              prefixIcon:
+                                  const Icon(LineAwesomeIcons.hospital_symbol),
+                              labelText: 'Hospital Name',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(100))),
+                          onChanged: (val) {
+                            hospitalname = val;
+                          },
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "Enter Hospital Name";
+                            } else {
+                              return RegExp(r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
+                                      .hasMatch(val)
+                                  ? "Please enter valid Hospital Name"
+                                  : null;
+                            }
+                          }),
+                      const SizedBox(height: 10),
+                      Container(
                           padding: const EdgeInsets.all(10),
                           width: double.infinity,
                           height: 105,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Theme.of(context).cardColor),
-                          child: Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: Text(
-                                    'District',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  )),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Container(
+                          child: Column(children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: Text(
+                                  'Govt Or Private',
+                                  style: Theme.of(context).textTheme.headline5,
+                                )),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
                                 padding: const EdgeInsets.all(1),
                                 child: SizedBox(
-                                  height: 50,
-                                  child: ListView(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    children: [
-                                      DistrictWidget(
-                                          districtName: 'TRIVANDRUM',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.tvm,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                district = 'Trivandrum';
-                                                _districtEnum = value;
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'KOLLAM',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.klm,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                district = 'Kollam';
-                                                _districtEnum = value;
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'PATHANAMTHITTA',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.path,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Pathanamthitta';
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'ALAPPUZHA',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.ala,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Alappuzha';
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'KOTTAYAM',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.kott,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Kottayam';
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'IDUKKI',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.iduk,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Idukki';
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'ERNAKULAM',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.erna,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Ernakulam';
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'THRISSUR',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.thri,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Thrissur';
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'PALAKKAD',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.pala,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Palakkad';
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'MALAPPURAM',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.mala,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Malappuram';
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'KOZHIKODE',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.kozhi,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Kozhikode';
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'WAYANAD',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.waya,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Wayanad';
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'KANNUR',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.kann,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Kannur';
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      DistrictWidget(
-                                          districtName: 'KASARAGOD',
-                                          radioBtn: Radio(
-                                            value: DistrictEnum.kasa,
-                                            groupValue: _districtEnum,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _districtEnum = value;
-                                                district = 'Kasaragod';
-                                              });
-                                            },
-                                          ))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
-                            labelText: 'Address',
-                            onChange: (value) {
-                              address = value;
-                            },
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return "Enter hospital Address";
-                              } else {
-                                return null;
-                              }
-                            },
-                            icon: LineAwesomeIcons.address_card),
-                        const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
-                            labelText: 'Highlight',
-                            onChange: (value) {
-                              highlight = value;
-                            },
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return "Enter one hospital Highlight";
-                              } else {
-                                return null;
-                              }
-                            },
-                            icon: Icons.highlight_alt),
-                        const SizedBox(height: 10),
-                        TextFormFieldOvalNumberWidget(
-                            onChange: (val) {
-                              phone = val;
-                            },
-                            validator: (val) {
-                              return RegExp(r"(^(?:[+0]9)?[0-9]{10,12}$)")
-                                      .hasMatch(val!)
-                                  ? null
-                                  : "Please enter valid mobile number";
-                            },
-                            labelText: 'Phone Number',
-                            icon: Icons.phone_enabled_outlined),
-                        const SizedBox(height: 10),
-                        Container(
+                                    height: 50,
+                                    child: ListView(
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        children: [
+                                          TimeWidget(
+                                              time: "Private",
+                                              radioBtn: Radio(
+                                                value: 'Private',
+                                                groupValue: _gp,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _gp = value!;
+                                                    gp = "Private";
+                                                  });
+                                                },
+                                              )),
+                                          const SizedBox(width: 10),
+                                          TimeWidget(
+                                              time: "Govt",
+                                              radioBtn: Radio(
+                                                value: 'Govt',
+                                                groupValue: _gp,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _gp = value!;
+                                                    gp = "Govt.";
+                                                  });
+                                                },
+                                              ))
+                                        ]))),
+                          ])),
+                      const SizedBox(height: 10),
+                      TextFormFieldOvalWidget(
+                          labelText: "Type",
+                          onChange: (value) {
+                            type = value;
+                          },
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "Enter Hospital type";
+                            } else {
+                              return null;
+                            }
+                          },
+                          icon: Icons.type_specimen_outlined),
+                      const SizedBox(height: 10),
+                      TextFormFieldOvalNumberWidget(
+                          labelText: 'Established Year',
+                          onChange: (value) {
+                            establisedYr = value;
+                          },
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return 'Please Established Year';
+                            } else {
+                              return null;
+                            }
+                          },
+                          icon: LineAwesomeIcons.hospital_1),
+                      const SizedBox(height: 10),
+                      TextFormFieldOvalWidget(
+                          labelText: "Affiliated university",
+                          onChange: (value) {
+                            affUniversity = value;
+                          },
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return 'Please Affiliated university';
+                            } else {
+                              return null;
+                            }
+                          },
+                          icon: HumanitarianIcons.university),
+                      const SizedBox(height: 10),
+                      Container(
                           padding: const EdgeInsets.all(10),
                           width: double.infinity,
-                          height: isVisible ? 200 + addtimeSize : 129,
+                          height: 105,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Theme.of(context).cardColor),
-                          child: Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: Text(
-                                    'Time',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  )),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Container(
+                          child: Column(children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: Text(
+                                  'Emergency department',
+                                  style: Theme.of(context).textTheme.headline5,
+                                )),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
                                 padding: const EdgeInsets.all(1),
                                 child: SizedBox(
-                                  height: 50,
-                                  child: ListView(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    children: [
-                                      TimeWidget(
-                                          time: 'Open 24 x 7',
-                                          radioBtn: Radio(
-                                            value: 'Open 24 x 7',
-                                            groupValue: _time,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _time = value!;
-                                                time = _time;
-                                                print(time);
-                                                isVisible = false;
-                                              });
-                                            },
-                                          )),
-                                      const SizedBox(width: 5),
-                                      TimeWidget(
-                                          time: 'Other',
-                                          radioBtn: Radio(
-                                            value: 'other',
-                                            groupValue: _time,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                isVisible = true;
-                                                _time = value!;
-                                                print(_time);
-                                              });
-                                            },
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Container(
-                                margin: const EdgeInsets.only(top: 0, left: 0),
-                                child: Visibility(
-                                  visible: isVisible,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 308,
-                                        child: TextFormField(
-                                          controller: timeinput,
-                                          readOnly: true,
-                                          onTap: () async {
-                                            await showTimePicker(
-                                              initialTime: TimeOfDay.now(),
-                                              context: context,
-                                            ).then((value) {
-                                              setState(() {
-                                                pickedTime = value!;
-                                              });
-                                            });
-
-                                            if (pickedTime != null) {
-                                              setState(() {
-                                                timeinput.text =
-                                                    pickedTime.format(context);
-                                                time = "Open " + timeinput.text;
-                                                print(time);
-                                              });
-                                            } else {
-                                              print("Time is not selected");
-                                            }
-                                          },
-                                          decoration: const InputDecoration(
-                                            prefixIcon:
-                                                Icon(LineAwesomeIcons.clock),
-                                            labelText: 'Open Time',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                          validator: (value) {},
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Container(
-                            padding: const EdgeInsets.all(10),
-                            width: double.infinity,
-                            height: 420,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).cardColor),
-                            child: Column(children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: Text(
-                                    'Surroundings',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  )),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: TextFormFieldOvalWidget(
-                                          labelText: 'Surrounding Place 1',
-                                          onChange: (value) {
-                                            surround1 = value;
-                                          },
-                                          validator: (val) {
-                                            if (val!.isEmpty) {
-                                              return "Enter Surroundings Place ";
-                                            } else {
-                                              return RegExp(
-                                                          r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                      .hasMatch(val)
-                                                  ? "Please enter Surroundings Place"
-                                                  : null;
-                                            }
-                                          },
-                                          icon: Icons.place_outlined))
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: TextFormFieldOvalWidget(
-                                          labelText: 'Distance',
-                                          onChange: (value) {
-                                            surroundDistance1 = value;
-                                          },
-                                          validator: (val) {
-                                            if (val!.isEmpty) {
-                                              return "Enter Distance";
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                          icon: Icons.place_outlined)),
-                                  const SizedBox(width: 5),
-                                  Flexible(
-                                      child: TextFormFieldOvalWidget(
-                                          labelText: 'Time',
-                                          onChange: (value) {
-                                            surroundTime1 = value;
-                                          },
-                                          validator: (val) {
-                                            if (val!.isEmpty) {
-                                              return "Enter time";
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                          icon: Icons.timer_outlined))
-                                ],
-                              ),
-                              const SizedBox(height: 25),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: TextFormFieldOvalWidget(
-                                          labelText: 'Surrounding Place 2',
-                                          onChange: (value) {
-                                            surround2 = value;
-                                          },
-                                          validator: (val) {
-                                            if (val!.isEmpty) {
-                                              return "Enter Surroundings Place";
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                          icon: Icons.place_outlined))
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: TextFormFieldOvalWidget(
-                                          labelText: 'Distance',
-                                          onChange: (value) {
-                                            surroundDistance2 = value;
-                                          },
-                                          validator: (val) {
-                                            if (val!.isEmpty) {
-                                              return "Enter Distance";
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                          icon: Icons.place_outlined)),
-                                  const SizedBox(width: 5),
-                                  Flexible(
-                                      child: TextFormFieldOvalWidget(
-                                          labelText: 'Time',
-                                          onChange: (value) {
-                                            surroundTime2 = value;
-                                          },
-                                          validator: (val) {
-                                            if (val!.isEmpty) {
-                                              return "Enter Time";
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                          icon: Icons.timer_outlined))
-                                ],
-                              ),
-                            ])),
-                        const SizedBox(height: 10),
-                        Container(
-                            padding: const EdgeInsets.all(10),
-                            width: double.infinity,
-                            height: 320 + (230 * count),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).cardColor),
-                            child: Column(children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'Doctors Name & Specialist',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5,
-                                        ),
-                                        IconButton(
-                                            color: Colors.green,
-                                            onPressed: () {
-                                              addDoctorDetails();
-                                            },
-                                            icon: const Icon(Icons.add_circle))
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              for (int i = 0; i < _DoctorName.length; i++)
-                                Column(
-                                  children: [
-                                    const SizedBox(height: 10),
-                                    Container(
-                                      padding: const EdgeInsets.all(10),
-                                      width: double.infinity,
-                                      height: 220,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: MyApp.themeNotifier.value ==
-                                                ThemeMode.light
-                                            ? Colors.white
-                                            : Colors.black45,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                    height: 50,
+                                    child: ListView(
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
                                         children: [
-                                          Flexible(
-                                              child: Row(
-                                            children: [
-                                              Expanded(child: Container()),
-                                              IconButton(
-                                                  onPressed: () {
-                                                    removeDoctorDetails(i);
-                                                  },
-                                                  icon: const Icon(
-                                                      color: Colors.redAccent,
-                                                      Icons.remove_circle)),
-                                            ],
-                                          )),
-                                          Flexible(
-                                            child: Row(
-                                              children: [
-                                                Flexible(
-                                                    child:
-                                                        TextFormFieldOvalControllerWidget(
-                                                            labelText:
-                                                                'Doctor Name',
-                                                            controller:
-                                                                _DoctorName[i],
-                                                            validator: (val) {
-                                                              if (val!
-                                                                  .isEmpty) {
-                                                                return "Enter Doctor Name";
-                                                              } else {
-                                                                return RegExp(
-                                                                            r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                                        .hasMatch(
-                                                                            val)
-                                                                    ? "Please enter Doctor Name"
-                                                                    : null;
-                                                              }
-                                                            },
-                                                            icon: LineAwesomeIcons
-                                                                .stethoscope)),
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Flexible(
-                                            child: Column(
-                                              children: [
-                                                Flexible(
-                                                    child:
-                                                        TextFormFieldOvalControllerWidget(
-                                                            controller:
-                                                                _Specialist[i],
-                                                            labelText:
-                                                                'Specialist',
-                                                            validator: (val) {
-                                                              if (val!
-                                                                  .isEmpty) {
-                                                                return "Enter Specialist";
-                                                              } else {
-                                                                return RegExp(
-                                                                            r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
-                                                                        .hasMatch(
-                                                                            val)
-                                                                    ? "Please enter Specialist"
-                                                                    : null;
-                                                              }
-                                                            },
-                                                            icon: Icons
-                                                                .folder_special)),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
+                                          TimeWidget(
+                                              time: "Yes",
+                                              radioBtn: Radio(
+                                                value: 'yes',
+                                                groupValue: _emergency,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _emergency = value!;
+                                                    emergency = "Yes";
+                                                  });
+                                                },
+                                              )),
+                                          const SizedBox(width: 10),
+                                          TimeWidget(
+                                              time: "NO",
+                                              radioBtn: Radio(
+                                                value: 'No',
+                                                groupValue: _emergency,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _emergency = value!;
+                                                    emergency = "No";
+                                                  });
+                                                },
+                                              ))
+                                        ]))),
+                          ])),
+                      const SizedBox(height: 10),
+                      TextFormFieldOvalWidget(
+                          labelText: 'Location',
+                          onChange: (value) {
+                            location = value;
+                          },
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return 'Please Established Year';
+                            } else {
+                              return null;
+                            }
+                          },
+                          icon: Icons.location_on),
+                      const SizedBox(height: 15),
+                      Container(
+                        padding:
+                            const EdgeInsets.only(top: 20, left: 10, right: 10),
+                        width: double.infinity,
+                        height: 280,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Theme.of(context).cardColor),
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: Text(
+                                  'Latitude & Longitude',
+                                  style: Theme.of(context).textTheme.headline5,
+                                )),
+                              ],
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: TextFormFieldOvalWidget(
+                                        labelText: 'Latitude',
+                                        onChange: (value) {
+                                          lat = value;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Enter Latitude";
+                                          } else {}
+                                        },
+                                        icon: Icons.place_outlined))
+                              ],
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: TextFormFieldOvalWidget(
+                                        labelText: 'Longitude',
+                                        onChange: (value) {
+                                          long = value;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Enter Latitude";
+                                          } else {}
+                                        },
+                                        icon: Icons.place_outlined))
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        width: double.infinity,
+                        height: 105,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Theme.of(context).cardColor),
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: Text(
+                                  'District',
+                                  style: Theme.of(context).textTheme.headline5,
+                                )),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                              padding: const EdgeInsets.all(1),
+                              child: SizedBox(
+                                height: 50,
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  children: [
+                                    DistrictWidget(
+                                        districtName: 'TRIVANDRUM',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.tvm,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              district = 'Trivandrum';
+                                              _districtEnum = value;
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'KOLLAM',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.klm,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              district = 'Kollam';
+                                              _districtEnum = value;
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'PATHANAMTHITTA',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.path,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Pathanamthitta';
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'ALAPPUZHA',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.ala,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Alappuzha';
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'KOTTAYAM',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.kott,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Kottayam';
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'IDUKKI',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.iduk,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Idukki';
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'ERNAKULAM',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.erna,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Ernakulam';
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'THRISSUR',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.thri,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Thrissur';
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'PALAKKAD',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.pala,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Palakkad';
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'MALAPPURAM',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.mala,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Malappuram';
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'KOZHIKODE',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.kozhi,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Kozhikode';
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'WAYANAD',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.waya,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Wayanad';
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'KANNUR',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.kann,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Kannur';
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    DistrictWidget(
+                                        districtName: 'KASARAGOD',
+                                        radioBtn: Radio(
+                                          value: DistrictEnum.kasa,
+                                          groupValue: _districtEnum,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _districtEnum = value;
+                                              district = 'Kasaragod';
+                                            });
+                                          },
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormFieldOvalWidget(
+                          labelText: 'Address',
+                          onChange: (value) {
+                            address = value;
+                          },
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "Enter hospital Address";
+                            } else {
+                              return null;
+                            }
+                          },
+                          icon: LineAwesomeIcons.address_card),
+                      const SizedBox(height: 10),
+                      TextFormFieldOvalWidget(
+                          labelText: 'Highlight',
+                          onChange: (value) {
+                            highlight = value;
+                          },
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "Enter one hospital Highlight";
+                            } else {
+                              return null;
+                            }
+                          },
+                          icon: Icons.highlight_alt),
+                      const SizedBox(height: 10),
+                      TextFormFieldOvalNumberWidget(
+                          onChange: (val) {
+                            phone = val;
+                          },
+                          validator: (val) {
+                            return RegExp(r"(^(?:[+0]9)?[0-9]{10,12}$)")
+                                    .hasMatch(val!)
+                                ? null
+                                : "Please enter valid mobile number";
+                          },
+                          labelText: 'Phone Number',
+                          icon: Icons.phone_enabled_outlined),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        width: double.infinity,
+                        height: isVisible ? 200 + addtimeSize : 129,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Theme.of(context).cardColor),
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: Text(
+                                  'Time',
+                                  style: Theme.of(context).textTheme.headline5,
+                                )),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                              padding: const EdgeInsets.all(1),
+                              child: SizedBox(
+                                height: 50,
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  children: [
+                                    TimeWidget(
+                                        time: 'Open 24 x 7',
+                                        radioBtn: Radio(
+                                          value: 'Open 24 x 7',
+                                          groupValue: _time,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _time = value!;
+                                              time = _time;
+                                              print(time);
+                                              isVisible = false;
+                                            });
+                                          },
+                                        )),
+                                    const SizedBox(width: 5),
+                                    TimeWidget(
+                                        time: 'Other',
+                                        radioBtn: Radio(
+                                          value: 'other',
+                                          groupValue: _time,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              isVisible = true;
+                                              _time = value!;
+                                              print(_time);
+                                            });
+                                          },
+                                        )),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                              margin: const EdgeInsets.only(top: 0, left: 0),
+                              child: Visibility(
+                                visible: isVisible,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 308,
+                                      child: TextFormField(
+                                        controller: timeinput,
+                                        readOnly: true,
+                                        onTap: () async {
+                                          await showTimePicker(
+                                            initialTime: TimeOfDay.now(),
+                                            context: context,
+                                          ).then((value) {
+                                            setState(() {
+                                              pickedTime = value!;
+                                            });
+                                          });
+
+                                          if (pickedTime != null) {
+                                            setState(() {
+                                              timeinput.text =
+                                                  pickedTime.format(context);
+                                              time = "Open " + timeinput.text;
+                                              print(time);
+                                            });
+                                          } else {
+                                            print("Time is not selected");
+                                          }
+                                        },
+                                        decoration: const InputDecoration(
+                                          prefixIcon:
+                                              Icon(LineAwesomeIcons.clock),
+                                          labelText: 'Open Time',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        validator: (value) {},
                                       ),
                                     ),
                                   ],
                                 ),
-                            ])),
-                        const SizedBox(height: 10),
-                        Container(
-                            padding: const EdgeInsets.all(10),
-                            width: double.infinity,
-                            height: 327,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).cardColor),
-                            child: Column(children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: Text(
-                                    'Nearby Hospitals',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  )),
-                                ],
                               ),
-                              const SizedBox(height: 10),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: TextFormFieldOvalWidget(
-                                          labelText: 'Hospital 1',
-                                          onChange: (value) {
-                                            nearhospital1 = value;
-                                          },
-                                          validator: (val) {
-                                            if (val!.isEmpty) {
-                                              return "Enter Hospital name";
-                                            } else {}
-                                          },
-                                          icon: Icons.place_outlined))
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: TextFormFieldOvalWidget(
-                                          labelText: 'Hospital 2',
-                                          onChange: (value) {
-                                            nearhospital2 = value;
-                                          },
-                                          validator: (val) {
-                                            if (val!.isEmpty) {
-                                              return "Enter Hospital name";
-                                            } else {}
-                                          },
-                                          icon: Icons.place_outlined))
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: TextFormFieldOvalWidget(
-                                          labelText: 'Hospital 3',
-                                          onChange: (value) {
-                                            nearhospital3 = value;
-                                          },
-                                          validator: (val) {
-                                            if (val!.isEmpty) {
-                                              return "Enter Hospital name";
-                                            } else {}
-                                          },
-                                          icon: Icons.place_outlined))
-                                ],
-                              ),
-                            ])),
-                        const SizedBox(height: 15),
-                        TextFormFieldOvalNumberWidget(
-                            labelText: 'No of Doctors',
-                            onChange: (value) {
-                              noDoctors = value;
-                            },
-                            validator: (p0) {},
-                            icon: LineAwesomeIcons.stethoscope),
-                        const SizedBox(height: 10),
-                        TextFormFieldOvalNumberWidget(
-                            labelText: 'No of Bed',
-                            onChange: (value) {
-                              bed = value;
-                            },
-                            validator: (p0) {},
-                            icon: LineAwesomeIcons.bed),
-                        const SizedBox(height: 10),
-                        TextFormFieldOvalNumberWidget(
-                            labelText: "Ambulances",
-                            onChange: (value) {
-                              noambulance = value;
-                            },
-                            validator: (p0) {},
-                            icon: LineAwesomeIcons.ambulance),
-                        const SizedBox(height: 10),
-                        TextFormFieldOvalWidget(
-                            labelText: "Hospital Site Link",
-                            onChange: (value) {
-                              locationMap = value;
-                            },
-                            validator: (p0) {},
-                            icon: LineAwesomeIcons.hospital),
-                        const SizedBox(height: 10),
-                        TextFormFieldAreaWidget(
-                            labelText: "Overview",
-                            onChange: (value) {
-                              overview = value;
-                            },
-                            validator: (p0) {
-                              if (p0!.isEmpty) {
-                                return 'Please  Enter Overview ';
-                              } else {
-                                return null;
-                              }
-                            },
-                            icon: Icons.view_compact_alt_outlined),
-                        const SizedBox(height: 10),
-                        TextFormFieldAreaWidget(
-                            labelText: "Services",
-                            onChange: (value) {
-                              services = value;
-                            },
-                            validator: (p0) {
-                              if (p0!.isEmpty) {
-                                return 'Please  Enter Services ';
-                              } else {
-                                return null;
-                              }
-                            },
-                            icon: HumanitarianIcons.services_and_tools),
-                        const SizedBox(height: 15),
-                        const SizedBox(height: 10),
-                        Container(
-                            padding: const EdgeInsets.all(10),
-                            width: double.infinity,
-                            height: 620,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).cardColor),
-                            child: Column(children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                      child: Text(
-                                    'Upload Hospital Images',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  )),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 10),
-                                        Container(
-                                          padding: const EdgeInsets.all(10),
-                                          width: double.infinity,
-                                          height: 100,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: MyApp.themeNotifier.value ==
-                                                    ThemeMode.light
-                                                ? Colors.white
-                                                : Colors.black87,
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Flexible(
-                                                child: SizedBox(
-                                                  width: 100,
-                                                  height: 100,
-                                                  child: imagebool1 == false
-                                                      ? ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                          child: const Icon(
-                                                            Icons.photo,
-                                                          ))
-                                                      : CircleAvatar(
-                                                          backgroundImage:
-                                                              FileImage(
-                                                                  hospitalimage1!),
-                                                          radius: 50,
-                                                        ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 10),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  side: BorderSide.none,
-                                                  shape: const StadiumBorder(),
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 13,
-                                                      horizontal: 22),
-                                                  foregroundColor: Colors.white,
-                                                  backgroundColor:
-                                                      Theme.of(context)
-                                                          .backgroundColor,
-                                                ),
-                                                onPressed: () async {
-                                                  hospitalimage1 =
-                                                      await pickImage(context);
-                                                  setState(() {
-                                                    imagebool1 = true;
-                                                  });
-                                                },
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    const Icon(Icons.photo),
-                                                    Text(
-                                                      'Select Image',
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(width: 1),
-                                              ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    side: BorderSide.none,
-                                                    shape: const CircleBorder(),
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        vertical: 10),
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .backgroundColor,
-                                                  ),
-                                                  onPressed: () async {
-                                                    if (hospitalname.isEmpty) {
-                                                      newshowSnackbar(
-                                                          context,
-                                                          'Warning',
-                                                          'please fill the hospital Name',
-                                                          ContentType.warning);
-                                                    } else {
-                                                      if (imagebool1 == true) {
-                                                        if (hospitalimage1 ==
-                                                            null) return;
-
-                                                        Reference
-                                                            referenceRoot =
-                                                            FirebaseStorage
-                                                                .instance
-                                                                .ref();
-                                                        Reference
-                                                            referenceDirImages =
-                                                            referenceRoot.child(
-                                                                'hospital images/$hospitalname/photos');
-
-                                                        //Create a reference for the image to be stored
-                                                        Reference
-                                                            referenceImageToUpload =
-                                                            referenceDirImages
-                                                                .child(
-                                                                    '${hospitalname}image1');
-
-                                                        //Handle errors/success
-                                                        try {
-                                                          //Store the file
-                                                          await referenceImageToUpload
-                                                              .putFile(File(
-                                                                  hospitalimage1!
-                                                                      .path));
-                                                          image1Url =
-                                                              await referenceImageToUpload
-                                                                  .getDownloadURL();
-                                                        } catch (error) {
-                                                          //Some error occurred
-                                                        }
-                                                        if (image1Url.isEmpty) {
-                                                          newshowSnackbar(
-                                                              context,
-                                                              'Failed',
-                                                              'Please try again...That image 1 is not upload..',
-                                                              ContentType
-                                                                  .failure);
-                                                        } else {
-                                                          newshowSnackbar(
-                                                              context,
-                                                              'Upload Successfully',
-                                                              'Hospital image 1 Upload Successfully',
-                                                              ContentType
-                                                                  .success);
-                                                        }
-                                                      } else {
-                                                        newshowSnackbar(
-                                                            context,
-                                                            'Warning',
-                                                            'please select image',
-                                                            ContentType
-                                                                .warning);
-                                                      }
-                                                    }
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.cloud_upload,
-                                                    size: 30,
-                                                  )),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 10),
-                                        Container(
-                                          padding: const EdgeInsets.all(10),
-                                          width: double.infinity,
-                                          height: 100,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: MyApp.themeNotifier.value ==
-                                                    ThemeMode.light
-                                                ? Colors.white
-                                                : Colors.black87,
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Flexible(
-                                                child: SizedBox(
-                                                  width: 100,
-                                                  height: 100,
-                                                  child: imagebool2 == false
-                                                      ? ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                          child: const Icon(
-                                                            Icons.photo,
-                                                          ))
-                                                      : CircleAvatar(
-                                                          backgroundImage:
-                                                              FileImage(
-                                                                  hospitalimage2!),
-                                                          radius: 50,
-                                                        ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 10),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  side: BorderSide.none,
-                                                  shape: const StadiumBorder(),
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 13,
-                                                      horizontal: 22),
-                                                  foregroundColor: Colors.white,
-                                                  backgroundColor:
-                                                      Theme.of(context)
-                                                          .backgroundColor,
-                                                ),
-                                                onPressed: () async {
-                                                  hospitalimage2 =
-                                                      await pickImage(context);
-                                                  setState(() {
-                                                    imagebool2 = true;
-                                                  });
-                                                },
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    const Icon(Icons.photo),
-                                                    Text(
-                                                      'Select Image',
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(width: 1),
-                                              ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    side: BorderSide.none,
-                                                    shape: const CircleBorder(),
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        vertical: 10),
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .backgroundColor,
-                                                  ),
-                                                  onPressed: () async {
-                                                    if (hospitalname.isEmpty) {
-                                                      newshowSnackbar(
-                                                          context,
-                                                          'Warning',
-                                                          'please fill the hospital Name',
-                                                          ContentType.warning);
-                                                    } else {
-                                                      if (imagebool2 == true) {
-                                                        if (hospitalimage2 ==
-                                                            null) return;
-
-                                                        Reference
-                                                            referenceRoot =
-                                                            FirebaseStorage
-                                                                .instance
-                                                                .ref();
-                                                        Reference
-                                                            referenceDirImages =
-                                                            referenceRoot.child(
-                                                                'hospital images/$hospitalname/photos');
-
-                                                        //Create a reference for the image to be stored
-                                                        Reference
-                                                            referenceImageToUpload =
-                                                            referenceDirImages
-                                                                .child(
-                                                                    '${hospitalname}image2');
-
-                                                        //Handle errors/success
-                                                        try {
-                                                          //Store the file
-                                                          await referenceImageToUpload
-                                                              .putFile(File(
-                                                                  hospitalimage2!
-                                                                      .path));
-                                                          image2Url =
-                                                              await referenceImageToUpload
-                                                                  .getDownloadURL();
-                                                        } catch (error) {
-                                                          //Some error occurred
-                                                        }
-                                                        if (image2Url.isEmpty) {
-                                                          newshowSnackbar(
-                                                              context,
-                                                              'Failed',
-                                                              'Please try again...That image 2 is not upload..',
-                                                              ContentType
-                                                                  .failure);
-                                                        } else {
-                                                          newshowSnackbar(
-                                                              context,
-                                                              'Upload Successfully',
-                                                              'Hospital image 2 Upload Successfully',
-                                                              ContentType
-                                                                  .success);
-                                                        }
-                                                      } else {
-                                                        newshowSnackbar(
-                                                            context,
-                                                            'Warning',
-                                                            'please select image',
-                                                            ContentType
-                                                                .warning);
-                                                      }
-                                                    }
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.cloud_upload,
-                                                    size: 30,
-                                                  )),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 10),
-                                        Container(
-                                          padding: const EdgeInsets.all(10),
-                                          width: double.infinity,
-                                          height: 100,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: MyApp.themeNotifier.value ==
-                                                    ThemeMode.light
-                                                ? Colors.white
-                                                : Colors.black87,
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Flexible(
-                                                child: SizedBox(
-                                                  width: 100,
-                                                  height: 100,
-                                                  child: imagebool3 == false
-                                                      ? ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                          child: const Icon(
-                                                            Icons.photo,
-                                                          ))
-                                                      : CircleAvatar(
-                                                          backgroundImage:
-                                                              FileImage(
-                                                                  hospitalimage3!),
-                                                          radius: 50,
-                                                        ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 10),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  side: BorderSide.none,
-                                                  shape: const StadiumBorder(),
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 13,
-                                                      horizontal: 22),
-                                                  foregroundColor: Colors.white,
-                                                  backgroundColor:
-                                                      Theme.of(context)
-                                                          .backgroundColor,
-                                                ),
-                                                onPressed: () async {
-                                                  hospitalimage3 =
-                                                      await pickImage(context);
-                                                  setState(() {
-                                                    imagebool3 = true;
-                                                  });
-                                                },
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    const Icon(Icons.photo),
-                                                    Text(
-                                                      'Select Image',
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(width: 1),
-                                              ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    side: BorderSide.none,
-                                                    shape: const CircleBorder(),
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        vertical: 10),
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .backgroundColor,
-                                                  ),
-                                                  onPressed: () async {
-                                                    if (hospitalname.isEmpty) {
-                                                      newshowSnackbar(
-                                                          context,
-                                                          'Warning',
-                                                          'please fill the hospital Name',
-                                                          ContentType.warning);
-                                                    } else {
-                                                      if (imagebool3 == true) {
-                                                        if (hospitalimage3 ==
-                                                            null) return;
-
-                                                        Reference
-                                                            referenceRoot =
-                                                            FirebaseStorage
-                                                                .instance
-                                                                .ref();
-                                                        Reference
-                                                            referenceDirImages =
-                                                            referenceRoot.child(
-                                                                'hospital images/$hospitalname/photos');
-
-                                                        //Create a reference for the image to be stored
-                                                        Reference
-                                                            referenceImageToUpload =
-                                                            referenceDirImages
-                                                                .child(
-                                                                    '${hospitalname}image3');
-
-                                                        //Handle errors/success
-                                                        try {
-                                                          //Store the file
-                                                          await referenceImageToUpload
-                                                              .putFile(File(
-                                                                  hospitalimage3!
-                                                                      .path));
-                                                          image3Url =
-                                                              await referenceImageToUpload
-                                                                  .getDownloadURL();
-                                                        } catch (error) {
-                                                          //Some error occurred
-                                                        }
-                                                        if (image3Url.isEmpty) {
-                                                          newshowSnackbar(
-                                                              context,
-                                                              'Failed',
-                                                              'Please try again...That image 3 is not upload..',
-                                                              ContentType
-                                                                  .failure);
-                                                        } else {
-                                                          newshowSnackbar(
-                                                              context,
-                                                              'Upload Successfully',
-                                                              'Hospital image 3 Upload Successfully',
-                                                              ContentType
-                                                                  .success);
-                                                        }
-                                                      } else {
-                                                        newshowSnackbar(
-                                                            context,
-                                                            'Warning',
-                                                            'please select image',
-                                                            ContentType
-                                                                .warning);
-                                                      }
-                                                    }
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.cloud_upload,
-                                                    size: 30,
-                                                  )),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 10),
-                                        Container(
-                                          padding: const EdgeInsets.all(10),
-                                          width: double.infinity,
-                                          height: 100,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: MyApp.themeNotifier.value ==
-                                                    ThemeMode.light
-                                                ? Colors.white
-                                                : Colors.black87,
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Flexible(
-                                                child: SizedBox(
-                                                  width: 100,
-                                                  height: 100,
-                                                  child: imagebool4 == false
-                                                      ? ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                          child: const Icon(
-                                                            Icons.photo,
-                                                          ))
-                                                      : CircleAvatar(
-                                                          backgroundImage:
-                                                              FileImage(
-                                                                  hospitalimage4!),
-                                                          radius: 50,
-                                                        ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 10),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  side: BorderSide.none,
-                                                  shape: const StadiumBorder(),
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 13,
-                                                      horizontal: 22),
-                                                  foregroundColor: Colors.white,
-                                                  backgroundColor:
-                                                      Theme.of(context)
-                                                          .backgroundColor,
-                                                ),
-                                                onPressed: () async {
-                                                  hospitalimage4 =
-                                                      await pickImage(context);
-                                                  setState(() {
-                                                    imagebool4 = true;
-                                                  });
-                                                },
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    const Icon(Icons.photo),
-                                                    Text(
-                                                      'Select Image',
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(width: 1),
-                                              ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    side: BorderSide.none,
-                                                    shape: const CircleBorder(),
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        vertical: 10),
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .backgroundColor,
-                                                  ),
-                                                  onPressed: () async {
-                                                    if (hospitalname.isEmpty) {
-                                                      newshowSnackbar(
-                                                          context,
-                                                          'Warning',
-                                                          'please fill the hospital Name',
-                                                          ContentType.warning);
-                                                    } else {
-                                                      if (imagebool4 == true) {
-                                                        if (hospitalimage4 ==
-                                                            null) return;
-
-                                                        Reference
-                                                            referenceRoot =
-                                                            FirebaseStorage
-                                                                .instance
-                                                                .ref();
-                                                        Reference
-                                                            referenceDirImages =
-                                                            referenceRoot.child(
-                                                                'hospital images/$hospitalname/photos');
-
-                                                        //Create a reference for the image to be stored
-                                                        Reference
-                                                            referenceImageToUpload =
-                                                            referenceDirImages
-                                                                .child(
-                                                                    '${hospitalname}image4');
-
-                                                        //Handle errors/success
-                                                        try {
-                                                          //Store the file
-                                                          await referenceImageToUpload
-                                                              .putFile(File(
-                                                                  hospitalimage4!
-                                                                      .path));
-                                                          image4Url =
-                                                              await referenceImageToUpload
-                                                                  .getDownloadURL();
-                                                        } catch (error) {
-                                                          //Some error occurred
-                                                        }
-                                                        if (image4Url.isEmpty) {
-                                                          newshowSnackbar(
-                                                              context,
-                                                              'Failed',
-                                                              'Please try again...That image 4 is not upload..',
-                                                              ContentType
-                                                                  .failure);
-                                                        } else {
-                                                          newshowSnackbar(
-                                                              context,
-                                                              'Upload Successfully',
-                                                              'Hospital image 4 Upload Successfully',
-                                                              ContentType
-                                                                  .success);
-                                                        }
-                                                      } else {
-                                                        newshowSnackbar(
-                                                            context,
-                                                            'Warning',
-                                                            'please select image',
-                                                            ContentType
-                                                                .warning);
-                                                      }
-                                                    }
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.cloud_upload,
-                                                    size: 30,
-                                                  )),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 10),
-                                        Container(
-                                          padding: const EdgeInsets.all(10),
-                                          width: double.infinity,
-                                          height: 100,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: MyApp.themeNotifier.value ==
-                                                    ThemeMode.light
-                                                ? Colors.white
-                                                : Colors.black87,
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Flexible(
-                                                child: SizedBox(
-                                                  width: 100,
-                                                  height: 100,
-                                                  child: imagebool5 == false
-                                                      ? ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                          child: const Icon(
-                                                            Icons.photo,
-                                                          ))
-                                                      : CircleAvatar(
-                                                          backgroundImage:
-                                                              FileImage(
-                                                                  hospitalimage5!),
-                                                          radius: 50,
-                                                        ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 10),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  side: BorderSide.none,
-                                                  shape: const StadiumBorder(),
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 13,
-                                                      horizontal: 22),
-                                                  foregroundColor: Colors.white,
-                                                  backgroundColor:
-                                                      Theme.of(context)
-                                                          .backgroundColor,
-                                                ),
-                                                onPressed: () async {
-                                                  hospitalimage5 =
-                                                      await pickImage(context);
-                                                  setState(() {
-                                                    imagebool5 = true;
-                                                  });
-                                                },
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    const Icon(Icons.photo),
-                                                    Text(
-                                                      'Select Image',
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(width: 1),
-                                              ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    side: BorderSide.none,
-                                                    shape: const CircleBorder(),
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        vertical: 10),
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .backgroundColor,
-                                                  ),
-                                                  onPressed: () async {
-                                                    if (hospitalname.isEmpty) {
-                                                      newshowSnackbar(
-                                                          context,
-                                                          'Warning',
-                                                          'please fill the hospital Name',
-                                                          ContentType.warning);
-                                                    } else {
-                                                      if (imagebool5 == true) {
-                                                        if (hospitalimage5 ==
-                                                            null) return;
-
-                                                        Reference
-                                                            referenceRoot =
-                                                            FirebaseStorage
-                                                                .instance
-                                                                .ref();
-                                                        Reference
-                                                            referenceDirImages =
-                                                            referenceRoot.child(
-                                                                'hospital images/$hospitalname/photos');
-
-                                                        //Create a reference for the image to be stored
-                                                        Reference
-                                                            referenceImageToUpload =
-                                                            referenceDirImages
-                                                                .child(
-                                                                    '${hospitalname}image5');
-
-                                                        //Handle errors/success
-                                                        try {
-                                                          //Store the file
-                                                          await referenceImageToUpload
-                                                              .putFile(File(
-                                                                  hospitalimage5!
-                                                                      .path));
-                                                          image5Url =
-                                                              await referenceImageToUpload
-                                                                  .getDownloadURL();
-                                                        } catch (error) {
-                                                          //Some error occurred
-                                                        }
-                                                        if (image5Url.isEmpty) {
-                                                          newshowSnackbar(
-                                                              context,
-                                                              'Failed',
-                                                              'Please try again...That image 5 is not upload..',
-                                                              ContentType
-                                                                  .failure);
-                                                        } else {
-                                                          newshowSnackbar(
-                                                              context,
-                                                              'Upload Successfully',
-                                                              'Hospital image 5 Upload Successfully',
-                                                              ContentType
-                                                                  .success);
-                                                        }
-                                                      } else {
-                                                        newshowSnackbar(
-                                                            context,
-                                                            'Warning',
-                                                            'please select image',
-                                                            ContentType
-                                                                .warning);
-                                                      }
-                                                    }
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.cloud_upload,
-                                                    size: 30,
-                                                  )),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                            ])),
-                        const SizedBox(height: 15),
-                        SizedBox(
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                          padding: const EdgeInsets.all(10),
                           width: double.infinity,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                side: BorderSide.none,
-                                shape: const StadiumBorder(),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 13),
-                                foregroundColor: Colors.white,
-                                backgroundColor:
-                                    Theme.of(context).backgroundColor,
+                          height: 420,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Theme.of(context).cardColor),
+                          child: Column(children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: Text(
+                                  'Surroundings',
+                                  style: Theme.of(context).textTheme.headline5,
+                                )),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: TextFormFieldOvalWidget(
+                                        labelText: 'Surrounding Place 1',
+                                        onChange: (value) {
+                                          surround1 = value;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Enter Surroundings Place ";
+                                          } else {
+                                            return RegExp(
+                                                        r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
+                                                    .hasMatch(val)
+                                                ? "Please enter Surroundings Place"
+                                                : null;
+                                          }
+                                        },
+                                        icon: Icons.place_outlined))
+                              ],
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: TextFormFieldOvalWidget(
+                                        labelText: 'Distance',
+                                        onChange: (value) {
+                                          surroundDistance1 = value;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Enter Distance";
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                        icon: Icons.place_outlined)),
+                                const SizedBox(width: 5),
+                                Flexible(
+                                    child: TextFormFieldOvalWidget(
+                                        labelText: 'Time',
+                                        onChange: (value) {
+                                          surroundTime1 = value;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Enter time";
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                        icon: Icons.timer_outlined))
+                              ],
+                            ),
+                            const SizedBox(height: 25),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: TextFormFieldOvalWidget(
+                                        labelText: 'Surrounding Place 2',
+                                        onChange: (value) {
+                                          surround2 = value;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Enter Surroundings Place";
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                        icon: Icons.place_outlined))
+                              ],
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: TextFormFieldOvalWidget(
+                                        labelText: 'Distance',
+                                        onChange: (value) {
+                                          surroundDistance2 = value;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Enter Distance";
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                        icon: Icons.place_outlined)),
+                                const SizedBox(width: 5),
+                                Flexible(
+                                    child: TextFormFieldOvalWidget(
+                                        labelText: 'Time',
+                                        onChange: (value) {
+                                          surroundTime2 = value;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Enter Time";
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                        icon: Icons.timer_outlined))
+                              ],
+                            ),
+                          ])),
+                      const SizedBox(height: 10),
+                      Container(
+                          padding: const EdgeInsets.all(10),
+                          width: double.infinity,
+                          height: 320 + (230 * count),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Theme.of(context).cardColor),
+                          child: Column(children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'Doctors Name & Specialist',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5,
+                                      ),
+                                      IconButton(
+                                          color: Colors.green,
+                                          onPressed: () {
+                                            addDoctorDetails();
+                                          },
+                                          icon: const Icon(Icons.add_circle))
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            for (int i = 0; i < _DoctorName.length; i++)
+                              Column(
+                                children: [
+                                  const SizedBox(height: 10),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    width: double.infinity,
+                                    height: 220,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: MyApp.themeNotifier.value ==
+                                              ThemeMode.light
+                                          ? Colors.white
+                                          : Colors.black45,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Flexible(
+                                            child: Row(
+                                          children: [
+                                            Expanded(child: Container()),
+                                            IconButton(
+                                                onPressed: () {
+                                                  removeDoctorDetails(i);
+                                                },
+                                                icon: const Icon(
+                                                    color: Colors.redAccent,
+                                                    Icons.remove_circle)),
+                                          ],
+                                        )),
+                                        Flexible(
+                                          child: Row(
+                                            children: [
+                                              Flexible(
+                                                  child:
+                                                      TextFormFieldOvalControllerWidget(
+                                                          labelText:
+                                                              'Doctor Name',
+                                                          controller:
+                                                              _DoctorName[i],
+                                                          validator: (val) {
+                                                            if (val!.isEmpty) {
+                                                              return "Enter Doctor Name";
+                                                            } else {
+                                                              return RegExp(
+                                                                          r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
+                                                                      .hasMatch(
+                                                                          val)
+                                                                  ? "Please enter Doctor Name"
+                                                                  : null;
+                                                            }
+                                                          },
+                                                          icon: LineAwesomeIcons
+                                                              .stethoscope)),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        Flexible(
+                                          child: Column(
+                                            children: [
+                                              Flexible(
+                                                  child:
+                                                      TextFormFieldOvalControllerWidget(
+                                                          controller:
+                                                              _Specialist[i],
+                                                          labelText:
+                                                              'Specialist',
+                                                          validator: (val) {
+                                                            if (val!.isEmpty) {
+                                                              return "Enter Specialist";
+                                                            } else {
+                                                              return RegExp(
+                                                                          r'[!@#<>?:_`"~;[\]\\|=+)(*&^%0-9-]')
+                                                                      .hasMatch(
+                                                                          val)
+                                                                  ? "Please enter Specialist"
+                                                                  : null;
+                                                            }
+                                                          },
+                                                          icon: Icons
+                                                              .folder_special)),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              onPressed: () {
-                                //upload();
-                                save();
-                              },
-                              child: const Text('SAVE')),
-                        )
-                      ],
-                    ))
+                          ])),
+                      const SizedBox(height: 10),
+                      Container(
+                          padding: const EdgeInsets.all(10),
+                          width: double.infinity,
+                          height: 327,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Theme.of(context).cardColor),
+                          child: Column(children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: Text(
+                                  'Nearby Hospitals',
+                                  style: Theme.of(context).textTheme.headline5,
+                                )),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: TextFormFieldOvalWidget(
+                                        labelText: 'Hospital 1',
+                                        onChange: (value) {
+                                          nearhospital1 = value;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Enter Hospital name";
+                                          } else {}
+                                        },
+                                        icon: Icons.place_outlined))
+                              ],
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: TextFormFieldOvalWidget(
+                                        labelText: 'Hospital 2',
+                                        onChange: (value) {
+                                          nearhospital2 = value;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Enter Hospital name";
+                                          } else {}
+                                        },
+                                        icon: Icons.place_outlined))
+                              ],
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: TextFormFieldOvalWidget(
+                                        labelText: 'Hospital 3',
+                                        onChange: (value) {
+                                          nearhospital3 = value;
+                                        },
+                                        validator: (val) {
+                                          if (val!.isEmpty) {
+                                            return "Enter Hospital name";
+                                          } else {}
+                                        },
+                                        icon: Icons.place_outlined))
+                              ],
+                            ),
+                          ])),
+                      const SizedBox(height: 15),
+                      TextFormFieldOvalNumberWidget(
+                          labelText: 'No of Doctors',
+                          onChange: (value) {
+                            noDoctors = value;
+                          },
+                          validator: (p0) {},
+                          icon: LineAwesomeIcons.stethoscope),
+                      const SizedBox(height: 10),
+                      TextFormFieldOvalNumberWidget(
+                          labelText: 'No of Bed',
+                          onChange: (value) {
+                            bed = value;
+                          },
+                          validator: (p0) {},
+                          icon: LineAwesomeIcons.bed),
+                      const SizedBox(height: 10),
+                      TextFormFieldOvalNumberWidget(
+                          labelText: "Ambulances",
+                          onChange: (value) {
+                            noambulance = value;
+                          },
+                          validator: (p0) {},
+                          icon: LineAwesomeIcons.ambulance),
+                      const SizedBox(height: 10),
+                      TextFormFieldOvalWidget(
+                          labelText: "Hospital Site Link",
+                          onChange: (value) {
+                            locationMap = value;
+                          },
+                          validator: (p0) {},
+                          icon: LineAwesomeIcons.hospital),
+                      const SizedBox(height: 10),
+                      TextFormFieldAreaWidget(
+                          labelText: "Overview",
+                          onChange: (value) {
+                            overview = value;
+                          },
+                          validator: (p0) {
+                            if (p0!.isEmpty) {
+                              return 'Please  Enter Overview ';
+                            } else {
+                              return null;
+                            }
+                          },
+                          icon: Icons.view_compact_alt_outlined),
+                      const SizedBox(height: 10),
+                      TextFormFieldAreaWidget(
+                          labelText: "Services",
+                          onChange: (value) {
+                            services = value;
+                          },
+                          validator: (p0) {
+                            if (p0!.isEmpty) {
+                              return 'Please  Enter Services ';
+                            } else {
+                              return null;
+                            }
+                          },
+                          icon: HumanitarianIcons.services_and_tools),
+                      const SizedBox(height: 15),
+                      const SizedBox(height: 10),
+                      Container(
+                          padding: const EdgeInsets.all(10),
+                          width: double.infinity,
+                          height: 620,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Theme.of(context).cardColor),
+                          child: Column(children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                    child: Text(
+                                  'Upload Hospital Images',
+                                  style: Theme.of(context).textTheme.headline5,
+                                )),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(height: 10),
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        width: double.infinity,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: MyApp.themeNotifier.value ==
+                                                  ThemeMode.light
+                                              ? Colors.white
+                                              : Colors.black87,
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Flexible(
+                                              child: SizedBox(
+                                                width: 100,
+                                                height: 100,
+                                                child: imagebool1 == false
+                                                    ? ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(100),
+                                                        child: const Icon(
+                                                          Icons.photo,
+                                                        ))
+                                                    : CircleAvatar(
+                                                        backgroundImage:
+                                                            FileImage(
+                                                                hospitalimage1!),
+                                                        radius: 50,
+                                                      ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                side: BorderSide.none,
+                                                shape: const StadiumBorder(),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 13,
+                                                        horizontal: 22),
+                                                foregroundColor: Colors.white,
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .backgroundColor,
+                                              ),
+                                              onPressed: () async {
+                                                hospitalimage1 =
+                                                    await pickImage(context);
+                                                setState(() {
+                                                  imagebool1 = true;
+                                                });
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  const Icon(Icons.photo),
+                                                  Text(
+                                                    'Select Image',
+                                                    style: GoogleFonts.poppins(
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 1),
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  shape: const CircleBorder(),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 10),
+                                                  foregroundColor: Colors.white,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .backgroundColor,
+                                                ),
+                                                onPressed: () async {
+                                                  if (hospitalname.isEmpty) {
+                                                    newshowSnackbar(
+                                                        context,
+                                                        'Warning',
+                                                        'please fill the hospital Name',
+                                                        ContentType.warning);
+                                                  } else {
+                                                    if (imagebool1 == true) {
+                                                      if (hospitalimage1 ==
+                                                          null) return;
+
+                                                      Reference referenceRoot =
+                                                          FirebaseStorage
+                                                              .instance
+                                                              .ref();
+                                                      Reference
+                                                          referenceDirImages =
+                                                          referenceRoot.child(
+                                                              'hospital images/$hospitalname/photos');
+
+                                                      //Create a reference for the image to be stored
+                                                      Reference
+                                                          referenceImageToUpload =
+                                                          referenceDirImages.child(
+                                                              '${hospitalname}image1');
+
+                                                      //Handle errors/success
+                                                      try {
+                                                        //Store the file
+                                                        await referenceImageToUpload
+                                                            .putFile(File(
+                                                                hospitalimage1!
+                                                                    .path));
+                                                        image1Url =
+                                                            await referenceImageToUpload
+                                                                .getDownloadURL();
+                                                      } catch (error) {
+                                                        //Some error occurred
+                                                      }
+                                                      if (image1Url.isEmpty) {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Failed',
+                                                            'Please try again...That image 1 is not upload..',
+                                                            ContentType
+                                                                .failure);
+                                                      } else {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Upload Successfully',
+                                                            'Hospital image 1 Upload Successfully',
+                                                            ContentType
+                                                                .success);
+                                                      }
+                                                    } else {
+                                                      newshowSnackbar(
+                                                          context,
+                                                          'Warning',
+                                                          'please select image',
+                                                          ContentType.warning);
+                                                    }
+                                                  }
+                                                },
+                                                child: const Icon(
+                                                  Icons.cloud_upload,
+                                                  size: 30,
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(height: 10),
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        width: double.infinity,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: MyApp.themeNotifier.value ==
+                                                  ThemeMode.light
+                                              ? Colors.white
+                                              : Colors.black87,
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Flexible(
+                                              child: SizedBox(
+                                                width: 100,
+                                                height: 100,
+                                                child: imagebool2 == false
+                                                    ? ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(100),
+                                                        child: const Icon(
+                                                          Icons.photo,
+                                                        ))
+                                                    : CircleAvatar(
+                                                        backgroundImage:
+                                                            FileImage(
+                                                                hospitalimage2!),
+                                                        radius: 50,
+                                                      ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                side: BorderSide.none,
+                                                shape: const StadiumBorder(),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 13,
+                                                        horizontal: 22),
+                                                foregroundColor: Colors.white,
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .backgroundColor,
+                                              ),
+                                              onPressed: () async {
+                                                hospitalimage2 =
+                                                    await pickImage(context);
+                                                setState(() {
+                                                  imagebool2 = true;
+                                                });
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  const Icon(Icons.photo),
+                                                  Text(
+                                                    'Select Image',
+                                                    style: GoogleFonts.poppins(
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 1),
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  shape: const CircleBorder(),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 10),
+                                                  foregroundColor: Colors.white,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .backgroundColor,
+                                                ),
+                                                onPressed: () async {
+                                                  if (hospitalname.isEmpty) {
+                                                    newshowSnackbar(
+                                                        context,
+                                                        'Warning',
+                                                        'please fill the hospital Name',
+                                                        ContentType.warning);
+                                                  } else {
+                                                    if (imagebool2 == true) {
+                                                      if (hospitalimage2 ==
+                                                          null) return;
+
+                                                      Reference referenceRoot =
+                                                          FirebaseStorage
+                                                              .instance
+                                                              .ref();
+                                                      Reference
+                                                          referenceDirImages =
+                                                          referenceRoot.child(
+                                                              'hospital images/$hospitalname/photos');
+
+                                                      //Create a reference for the image to be stored
+                                                      Reference
+                                                          referenceImageToUpload =
+                                                          referenceDirImages.child(
+                                                              '${hospitalname}image2');
+
+                                                      //Handle errors/success
+                                                      try {
+                                                        //Store the file
+                                                        await referenceImageToUpload
+                                                            .putFile(File(
+                                                                hospitalimage2!
+                                                                    .path));
+                                                        image2Url =
+                                                            await referenceImageToUpload
+                                                                .getDownloadURL();
+                                                      } catch (error) {
+                                                        //Some error occurred
+                                                      }
+                                                      if (image2Url.isEmpty) {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Failed',
+                                                            'Please try again...That image 2 is not upload..',
+                                                            ContentType
+                                                                .failure);
+                                                      } else {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Upload Successfully',
+                                                            'Hospital image 2 Upload Successfully',
+                                                            ContentType
+                                                                .success);
+                                                      }
+                                                    } else {
+                                                      newshowSnackbar(
+                                                          context,
+                                                          'Warning',
+                                                          'please select image',
+                                                          ContentType.warning);
+                                                    }
+                                                  }
+                                                },
+                                                child: const Icon(
+                                                  Icons.cloud_upload,
+                                                  size: 30,
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(height: 10),
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        width: double.infinity,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: MyApp.themeNotifier.value ==
+                                                  ThemeMode.light
+                                              ? Colors.white
+                                              : Colors.black87,
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Flexible(
+                                              child: SizedBox(
+                                                width: 100,
+                                                height: 100,
+                                                child: imagebool3 == false
+                                                    ? ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(100),
+                                                        child: const Icon(
+                                                          Icons.photo,
+                                                        ))
+                                                    : CircleAvatar(
+                                                        backgroundImage:
+                                                            FileImage(
+                                                                hospitalimage3!),
+                                                        radius: 50,
+                                                      ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                side: BorderSide.none,
+                                                shape: const StadiumBorder(),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 13,
+                                                        horizontal: 22),
+                                                foregroundColor: Colors.white,
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .backgroundColor,
+                                              ),
+                                              onPressed: () async {
+                                                hospitalimage3 =
+                                                    await pickImage(context);
+                                                setState(() {
+                                                  imagebool3 = true;
+                                                });
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  const Icon(Icons.photo),
+                                                  Text(
+                                                    'Select Image',
+                                                    style: GoogleFonts.poppins(
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 1),
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  shape: const CircleBorder(),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 10),
+                                                  foregroundColor: Colors.white,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .backgroundColor,
+                                                ),
+                                                onPressed: () async {
+                                                  if (hospitalname.isEmpty) {
+                                                    newshowSnackbar(
+                                                        context,
+                                                        'Warning',
+                                                        'please fill the hospital Name',
+                                                        ContentType.warning);
+                                                  } else {
+                                                    if (imagebool3 == true) {
+                                                      if (hospitalimage3 ==
+                                                          null) return;
+
+                                                      Reference referenceRoot =
+                                                          FirebaseStorage
+                                                              .instance
+                                                              .ref();
+                                                      Reference
+                                                          referenceDirImages =
+                                                          referenceRoot.child(
+                                                              'hospital images/$hospitalname/photos');
+
+                                                      //Create a reference for the image to be stored
+                                                      Reference
+                                                          referenceImageToUpload =
+                                                          referenceDirImages.child(
+                                                              '${hospitalname}image3');
+
+                                                      //Handle errors/success
+                                                      try {
+                                                        //Store the file
+                                                        await referenceImageToUpload
+                                                            .putFile(File(
+                                                                hospitalimage3!
+                                                                    .path));
+                                                        image3Url =
+                                                            await referenceImageToUpload
+                                                                .getDownloadURL();
+                                                      } catch (error) {
+                                                        //Some error occurred
+                                                      }
+                                                      if (image3Url.isEmpty) {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Failed',
+                                                            'Please try again...That image 3 is not upload..',
+                                                            ContentType
+                                                                .failure);
+                                                      } else {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Upload Successfully',
+                                                            'Hospital image 3 Upload Successfully',
+                                                            ContentType
+                                                                .success);
+                                                      }
+                                                    } else {
+                                                      newshowSnackbar(
+                                                          context,
+                                                          'Warning',
+                                                          'please select image',
+                                                          ContentType.warning);
+                                                    }
+                                                  }
+                                                },
+                                                child: const Icon(
+                                                  Icons.cloud_upload,
+                                                  size: 30,
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(height: 10),
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        width: double.infinity,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: MyApp.themeNotifier.value ==
+                                                  ThemeMode.light
+                                              ? Colors.white
+                                              : Colors.black87,
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Flexible(
+                                              child: SizedBox(
+                                                width: 100,
+                                                height: 100,
+                                                child: imagebool4 == false
+                                                    ? ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(100),
+                                                        child: const Icon(
+                                                          Icons.photo,
+                                                        ))
+                                                    : CircleAvatar(
+                                                        backgroundImage:
+                                                            FileImage(
+                                                                hospitalimage4!),
+                                                        radius: 50,
+                                                      ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                side: BorderSide.none,
+                                                shape: const StadiumBorder(),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 13,
+                                                        horizontal: 22),
+                                                foregroundColor: Colors.white,
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .backgroundColor,
+                                              ),
+                                              onPressed: () async {
+                                                hospitalimage4 =
+                                                    await pickImage(context);
+                                                setState(() {
+                                                  imagebool4 = true;
+                                                });
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  const Icon(Icons.photo),
+                                                  Text(
+                                                    'Select Image',
+                                                    style: GoogleFonts.poppins(
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 1),
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  shape: const CircleBorder(),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 10),
+                                                  foregroundColor: Colors.white,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .backgroundColor,
+                                                ),
+                                                onPressed: () async {
+                                                  if (hospitalname.isEmpty) {
+                                                    newshowSnackbar(
+                                                        context,
+                                                        'Warning',
+                                                        'please fill the hospital Name',
+                                                        ContentType.warning);
+                                                  } else {
+                                                    if (imagebool4 == true) {
+                                                      if (hospitalimage4 ==
+                                                          null) return;
+
+                                                      Reference referenceRoot =
+                                                          FirebaseStorage
+                                                              .instance
+                                                              .ref();
+                                                      Reference
+                                                          referenceDirImages =
+                                                          referenceRoot.child(
+                                                              'hospital images/$hospitalname/photos');
+
+                                                      //Create a reference for the image to be stored
+                                                      Reference
+                                                          referenceImageToUpload =
+                                                          referenceDirImages.child(
+                                                              '${hospitalname}image4');
+
+                                                      //Handle errors/success
+                                                      try {
+                                                        //Store the file
+                                                        await referenceImageToUpload
+                                                            .putFile(File(
+                                                                hospitalimage4!
+                                                                    .path));
+                                                        image4Url =
+                                                            await referenceImageToUpload
+                                                                .getDownloadURL();
+                                                      } catch (error) {
+                                                        //Some error occurred
+                                                      }
+                                                      if (image4Url.isEmpty) {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Failed',
+                                                            'Please try again...That image 4 is not upload..',
+                                                            ContentType
+                                                                .failure);
+                                                      } else {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Upload Successfully',
+                                                            'Hospital image 4 Upload Successfully',
+                                                            ContentType
+                                                                .success);
+                                                      }
+                                                    } else {
+                                                      newshowSnackbar(
+                                                          context,
+                                                          'Warning',
+                                                          'please select image',
+                                                          ContentType.warning);
+                                                    }
+                                                  }
+                                                },
+                                                child: const Icon(
+                                                  Icons.cloud_upload,
+                                                  size: 30,
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(height: 10),
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        width: double.infinity,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: MyApp.themeNotifier.value ==
+                                                  ThemeMode.light
+                                              ? Colors.white
+                                              : Colors.black87,
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Flexible(
+                                              child: SizedBox(
+                                                width: 100,
+                                                height: 100,
+                                                child: imagebool5 == false
+                                                    ? ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(100),
+                                                        child: const Icon(
+                                                          Icons.photo,
+                                                        ))
+                                                    : CircleAvatar(
+                                                        backgroundImage:
+                                                            FileImage(
+                                                                hospitalimage5!),
+                                                        radius: 50,
+                                                      ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                side: BorderSide.none,
+                                                shape: const StadiumBorder(),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 13,
+                                                        horizontal: 22),
+                                                foregroundColor: Colors.white,
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .backgroundColor,
+                                              ),
+                                              onPressed: () async {
+                                                hospitalimage5 =
+                                                    await pickImage(context);
+                                                setState(() {
+                                                  imagebool5 = true;
+                                                });
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  const Icon(Icons.photo),
+                                                  Text(
+                                                    'Select Image',
+                                                    style: GoogleFonts.poppins(
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 1),
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  shape: const CircleBorder(),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 10),
+                                                  foregroundColor: Colors.white,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .backgroundColor,
+                                                ),
+                                                onPressed: () async {
+                                                  if (hospitalname.isEmpty) {
+                                                    newshowSnackbar(
+                                                        context,
+                                                        'Warning',
+                                                        'please fill the hospital Name',
+                                                        ContentType.warning);
+                                                  } else {
+                                                    if (imagebool5 == true) {
+                                                      if (hospitalimage5 ==
+                                                          null) return;
+
+                                                      Reference referenceRoot =
+                                                          FirebaseStorage
+                                                              .instance
+                                                              .ref();
+                                                      Reference
+                                                          referenceDirImages =
+                                                          referenceRoot.child(
+                                                              'hospital images/$hospitalname/photos');
+
+                                                      //Create a reference for the image to be stored
+                                                      Reference
+                                                          referenceImageToUpload =
+                                                          referenceDirImages.child(
+                                                              '${hospitalname}image5');
+
+                                                      //Handle errors/success
+                                                      try {
+                                                        //Store the file
+                                                        await referenceImageToUpload
+                                                            .putFile(File(
+                                                                hospitalimage5!
+                                                                    .path));
+                                                        image5Url =
+                                                            await referenceImageToUpload
+                                                                .getDownloadURL();
+                                                      } catch (error) {
+                                                        //Some error occurred
+                                                      }
+                                                      if (image5Url.isEmpty) {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Failed',
+                                                            'Please try again...That image 5 is not upload..',
+                                                            ContentType
+                                                                .failure);
+                                                      } else {
+                                                        newshowSnackbar(
+                                                            context,
+                                                            'Upload Successfully',
+                                                            'Hospital image 5 Upload Successfully',
+                                                            ContentType
+                                                                .success);
+                                                      }
+                                                    } else {
+                                                      newshowSnackbar(
+                                                          context,
+                                                          'Warning',
+                                                          'please select image',
+                                                          ContentType.warning);
+                                                    }
+                                                  }
+                                                },
+                                                child: const Icon(
+                                                  Icons.cloud_upload,
+                                                  size: 30,
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 15),
+                          ])),
+                      const SizedBox(height: 15),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              side: BorderSide.none,
+                              shape: const StadiumBorder(),
+                              padding: const EdgeInsets.symmetric(vertical: 13),
+                              foregroundColor: Colors.white,
+                              backgroundColor:
+                                  Theme.of(context).backgroundColor,
+                            ),
+                            onPressed: () {
+                              //upload();
+                              save();
+                            },
+                            child: const Text('SAVE')),
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
           ),

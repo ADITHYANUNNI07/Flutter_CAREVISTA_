@@ -9,8 +9,6 @@ import 'package:carevista_ver05/SCREEN/addons/patientrecord.dart';
 import 'package:carevista_ver05/SCREEN/editprofile.dart';
 import 'package:carevista_ver05/SCREEN/home/favorites.dart';
 import 'package:carevista_ver05/SCREEN/login.dart';
-import 'package:carevista_ver05/SCREEN/profile/additionaldetail.dart';
-import 'package:carevista_ver05/SCREEN/profile/medicalrecord.dart';
 import 'package:carevista_ver05/SCREEN/profile/settingsnofifavorites.dart';
 import 'package:carevista_ver05/SCREEN/profile/usertoaddhospital.dart';
 import 'package:carevista_ver05/Service/auth_service.dart';
@@ -21,7 +19,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   String userName;

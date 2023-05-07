@@ -41,7 +41,8 @@ class DatabaseService {
       "phoneNo": phone,
       //"profilepic": profile,
       "uid": uid,
-      "email": email, "AdKey": adKey,
+      "email": email,
+      "AdKey": adKey,
       "Gender": gender,
       "DOB": dob,
       "profilepic": imageUrl,
@@ -144,6 +145,28 @@ class DatabaseService {
     QuerySnapshot snapshot =
         await userCollection.where("phoneNo", isEqualTo: phone).get();
     return snapshot;
+  }
+}
+
+class DatabaseServiceFeedback {
+  final CollectionReference feedbackCollection =
+      FirebaseFirestore.instance.collection("Feedback");
+  final currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+  Future feedback(String uid, String username, String phone, String email,
+      String adkey, int rating, String suggestion, String imageUrl) async {
+    return await feedbackCollection
+        .doc('$uid+$rating+${suggestion.length.toString()}')
+        .set({
+      "uid": uid,
+      "username": username,
+      "phone": phone,
+      "email": email,
+      "adKey": adkey,
+      "rating": rating,
+      "suggestion": suggestion,
+      "imageUrl": imageUrl,
+      'currentDate': currentDate
+    });
   }
 }
 

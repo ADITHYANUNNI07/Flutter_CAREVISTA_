@@ -27,7 +27,7 @@ class DiseaseComplication extends StatelessWidget {
             },
           ),
           title: Text(
-            'Disease Complication',
+            'Disease Compilation',
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 25,

@@ -1,6 +1,7 @@
 import 'package:carevista_ver05/Administration/addorremoveadmin.dart';
 import 'package:carevista_ver05/Administration/admininformation.dart';
 import 'package:carevista_ver05/Administration/approveuserhospital.dart';
+import 'package:carevista_ver05/Administration/feedbackview.dart';
 import 'package:carevista_ver05/Administration/hospitalinfo.dart';
 import 'package:carevista_ver05/Administration/userinfo.dart';
 import 'package:carevista_ver05/Helper/helper_function.dart';
@@ -209,7 +210,14 @@ class _AdminMainPageState extends State<AdminMainPage> {
                       subtitle: '',
                       icon: Icons.feedback,
                       endIcon: endIcon,
-                      onPress: () {},
+                      onPress: () {
+                        nextScreen(
+                            context,
+                            const FeedbackView(
+                              adkey: 'false',
+                              centertitle: 'User Feedback',
+                            ));
+                      },
                     ),
                     const SizedBox(height: 5),
                     const Divider(),
@@ -219,7 +227,14 @@ class _AdminMainPageState extends State<AdminMainPage> {
                       subtitle: '',
                       icon: Icons.feedback,
                       endIcon: endIcon,
-                      onPress: () {},
+                      onPress: () {
+                        nextScreen(
+                            context,
+                            const FeedbackView(
+                              adkey: 'true',
+                              centertitle: 'Admin Feedback',
+                            ));
+                      },
                     ),
                     const SizedBox(height: 5),
                     const Divider(),

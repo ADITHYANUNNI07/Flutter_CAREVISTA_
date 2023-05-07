@@ -7,7 +7,7 @@ class HelperFunction {
   static String userPhoneKey = "USERPHONEKEY";
   static String userUIDKey = "USERUIDKEY";
   static String adkey = "ADMINKEY";
-  static String imageURL = "ADMINKEY";
+  static String imageURL = "USERIMAGEKEY";
 //Saving the data to SF
   static Future<bool> saveUserLoggedInStatus(bool isUserLoggedIn) async {
     SharedPreferences sf = await SharedPreferences.getInstance();

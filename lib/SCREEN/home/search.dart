@@ -299,7 +299,7 @@ class _SearchState extends State<Search> {
             ),
             IconButton(
               onPressed: () async {
-                nextScreen(
+                nextScreenReplace(
                     context,
                     ProfilePage(
                         imageUrl: await getImageURLFromUserId(Uid),

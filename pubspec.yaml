@@ -64,6 +64,8 @@ dependencies:
   location: ^4.4.0
   lottie: ^2.3.2
   firebase_messaging: ^14.4.1
+  google_sign_in: ^6.1.0
+  flutter_emoji_feedback: ^0.1.2
 
  
 

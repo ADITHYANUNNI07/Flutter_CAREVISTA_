@@ -10,6 +10,7 @@ import 'package:carevista_ver05/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 
@@ -197,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                onPressed: () {},
+                                onPressed: () async {},
                                 icon: Image.asset(
                                   'Assets/images/Google_Icon.png',
                                   width: 21,

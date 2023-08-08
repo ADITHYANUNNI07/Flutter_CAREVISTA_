@@ -16,6 +16,7 @@ import 'package:carevista_ver05/Service/auth_service.dart';
 import 'package:carevista_ver05/Theme/theme.dart';
 import 'package:carevista_ver05/admin/addHospital.dart';
 import 'package:carevista_ver05/admin/admin.dart';
+import 'package:carevista_ver05/admin/userhospitalverification.dart';
 import 'package:carevista_ver05/main.dart';
 import 'package:carevista_ver05/utils/utils.dart';
 import 'package:carevista_ver05/widget/widget.dart';
@@ -46,6 +47,7 @@ class _DashboardState extends State<Dashboard> {
   String adminKey = "";
   bool adKey = false;
   String phoneNo = "";
+  String hello = "";
   final scaffoldKey = GlobalKey<ScaffoldState>();
   AuthService authService = AuthService();
   int selsctedIconIndex = 2;
@@ -307,6 +309,19 @@ class _DashboardState extends State<Dashboard> {
                               context,
                               AdminKeyEnableScreen(
                                 administrationphoneno: adminPhone!,
+                              ));
+                        },
+                      )
+                    : const SizedBox(),
+                adKey
+                    ? MenuWidget(
+                        title: "Hospital Verification",
+                        icon: Icons.local_hospital,
+                        onPress: () {
+                          nextScreen(
+                              context,
+                              UserHospitalVerifation(
+                                email: email,
                               ));
                         },
                       )

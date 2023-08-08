@@ -74,6 +74,7 @@ class AuthService {
       await HelperFunction.saveUserEmailSF("");
       await HelperFunction.saveUserNameSF("");
       await HelperFunction.saveUserPhoneSF("");
+      await HelperFunction.saveUserImageURLSF("");
       await firebaseAuth.signOut();
     } catch (e) {
       return null;
